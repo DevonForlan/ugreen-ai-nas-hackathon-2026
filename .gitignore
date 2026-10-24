@@ -1,0 +1,37 @@
+# ---- Secrets / credentials ----
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+credentials*
+secrets*
+id_rsa*
+id_ed25519*
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# ---- Node ----
+node_modules/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs / temp ----
+*.log
+tmp/
+temp/
+
+# ---- Editor / local tool state ----
+.vscode/
+.idea/
+.claude/settings.local.json

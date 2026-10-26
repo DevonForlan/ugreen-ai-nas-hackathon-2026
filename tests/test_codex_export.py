@@ -75,6 +75,8 @@ class ExportTests(unittest.TestCase):
                 self.assertNotIn(text, content)
             for text in ('Visible task', 'Visible answer', 'Tests passed', 'Visible failure', 'python -m unittest'):
                 self.assertIn(text, content)
+            for heading in ('User Messages', 'Codex Visible Responses', 'Tool / Command Calls', 'Tool / Command Results', 'Errors', 'Tests'):
+                self.assertIn('## ' + heading + '\n', content)
             before = target.stat().st_mtime_ns
             ex.export_one(source, project, output, s)
             self.assertEqual(s['unchanged'], 1)

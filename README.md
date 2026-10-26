@@ -70,6 +70,8 @@ Codex tooling: [Session 匯出](docs/CODEX_LOGGING_GUIDE.md)、[Usage](docs/CODE
 
 Task 收尾：`./scripts/finalize.ps1 <TaskId> "<commit message>"`；詳見 [Finalize Workflow](docs/CODEX_FINALIZE_GUIDE.md)。ChatGPT 入口：[PROJECT_STATUS](docs/00_PROJECT_STATUS.md)、[Codex reports](collaboration/codex-reports/)、[Decision Log](docs/06_DECISION_LOG.md)。
 
+收尾會顯示真實 quota / token [Usage Footer](docs/CODEX_USAGE_GUIDE.md)，並送出 [Windows 通知與系統音效](docs/CODEX_NOTIFICATION_GUIDE.md)。無法確認的 quota 顯示 UNKNOWN；沒有常駐程序。
+
 尚未開始：
 
 - 正式競賽研究

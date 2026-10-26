@@ -1,7 +1,8 @@
 # Codex project workflow
 
-GitHub Issues and versioned Git history are the source of truth. Codex researches,
-implements, and tests; Claude Code reviews and checks acceptance criteria.
+GitHub Issues and versioned Git history are the source of truth. User owns final
+decisions. Codex researches, develops and tests. Claude Code reviews/verifies.
+ChatGPT plans research, designs requirements and performs final review.
 
 - Start from the assigned requirement and relevant project instructions. Search
   with scoped `rg`; read only files needed for the task. Do not repeatedly scan
@@ -37,17 +38,35 @@ secret scan, or tests prevent synchronization, explicitly report
   formal research document, not only the transcript.
 - Create `collaboration/codex-reports/YYYY-MM-DD_HHMM_<task-id>.md` using the
   current template, including tests, open questions, pending decisions, next
-  step, reviewer scope and Commit SHA. Use `PENDING` before the task commit.
+  step, reviewer scope and Git Commit. Use `PENDING` before the task commit.
+  Include both Objective and Request. Preserve historical report formats.
 - Run `./scripts/finalize.ps1 <TaskId> "<commit message>"`. It performs scans,
   tests, staging, a task commit, one bounded SHA metadata commit, and push.
   The report references the task commit, not its own metadata commit.
 - ChatGPT entrypoints: `docs/00_PROJECT_STATUS.md`, `collaboration/codex-reports/`,
-  `docs/06_DECISION_LOG.md`. Only the user approves decisions; do not invent
+  sanitized `collaboration/codex-sessions/`, `docs/06_DECISION_LOG.md`, and actual
+  commits/diffs. Only the user approves decisions; do not invent
   approval. Claude reviews requirement, report, diff, and test results first.
 - Never upload raw runtime JSONL, auth caches, hidden reasoning, internal
   system/developer messages, complete environment dumps, cookies, or secrets.
   The scanner is heuristic; review all intended changes. Ignored local files
   are not part of `git add -A`.
+
+## Usage Footer and Notifications
+
+- After each substantive task/response, when tools are available, run
+  `./scripts/show-codex-usage.ps1` and copy its exact short footer. Use UNKNOWN
+  for unavailable values. Never infer subscription quota from local token usage.
+  This is a project instruction, not a forced global CLI response hook.
+- Footer percentages mean remaining quota. Only actual 300-minute / 10080-minute
+  Codex quota windows may populate 5H / Weekly. Never read or export auth tokens.
+- Finalize automatically appends usage, elapsed finalize time, and one-shot native
+  Windows notification + system sound. SUCCESS requires remote SHA verification;
+  local success/push failure is WARNING; secret/test/fatal failure is FAILED.
+- Honor NoUsage, NoNotification, NoSound and corresponding documented environment
+  switches. No daemon, Windows Service, registry modification, or persistent UI.
+- Workflow changes require the separate Git integration suite in tests/integration;
+  normal task finalization runs the fast project unittest suite.
 
 See `docs/CODEX_LOGGING_GUIDE.md`, `docs/CODEX_USAGE_GUIDE.md`, and
 `docs/CODEX_CONTEXT_GUIDE.md` and `docs/CODEX_FINALIZE_GUIDE.md` for workflows.

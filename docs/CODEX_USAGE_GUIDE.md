@@ -48,3 +48,26 @@ ccusage --help
 沿用既有 npm 使用者全域路徑；不改 Windows Registry、Services、Firewall、System PATH。每次升級重新核對 help。
 
 來源（2026-10-26 查核）：[ccusage Codex 文件](https://ccusage.com/guide/codex/)、[OpenAI 指令文件](https://developers.openai.com/codex/cli/slash-commands)。
+
+## 短 Usage Footer（2026-10-27）
+
+```powershell
+.\scripts\show-codex-usage.ps1
+.\scripts\show-codex-usage.ps1 -Json
+.\scripts\show-codex-usage.ps1 -OfflineQuota
+.\scripts\show-codex-usage.ps1 -SessionId '<session-id>'
+```
+
+輸出為 `5H UNKNOWN | Weekly 95% | Session 15,547,537 tokens` 這類單行；數字僅為一次測試快照，不是固定值。百分比表示**剩餘額度**。
+
+本機 Codex 0.164.0 已實測公開 app-server `account/rateLimits/read`。Helper 短暫啟動既有 native Codex executable，使用 `--no-daemon` 與 stdio，僅 initialize / initialized / rateLimits read，不建立 agent thread、不執行 inference、不兌換 reset。取得回應或逾時後終止子程序；沒有常駐服務。僅輸出窗口百分比及必要的本機用量，原始 RPC 回應不寫檔或印出。使用原生 Codex 登入流程，不讀取、匯出或傳遞 auth.json/token。
+
+依回傳 `windowDurationMins` 辨識窗口：300 才是 5H，10080 才是 Weekly；不能假設 primary 一定是 5H。`usedPercent` 轉成剩餘百分比。缺窗口、未知 bucket、過期/無效數值、未登入或逾時皆顯示 UNKNOWN；不使用 ccusage 推算。實測帳號只有 weekly 窗口，5H 顯示 UNKNOWN 是正確行為。離線 quota 模式不啟動 RPC，兩個 quota 均為 UNKNOWN。
+
+Session tokens 來自 `ccusage codex session --offline --json --no-cost`，只取匹配此專案 session ID 的 `totalTokens`，不使用全域 totals。優先採指定 SessionId 或 CODEX_THREAD_ID / CODEX_SESSION_ID；沒有識別碼時採本專案最近更新的 session，並可在 JSON 輸出查看所選 ID。多個並行 session 時請明確指定。包含 cached token 的累計可很大，不能拿來估算 ChatGPT subscription quota。
+
+`/usage`、`/status` 與其帳號端回應才是 quota/rate limit 依據；5-hour / weekly 數值必須有真實窗口資料。ccusage 是本機 session usage，並非訂閱額度或帳單。
+
+Finalize 自動呼叫 footer。一般回覆由 AGENTS.md 指示盡可能追加；未修改 CLI 安裝檔，也沒有保證所有 UI/其他專案對話都會自動插入 footer 的全域 hook。
+
+官方依據：[Codex App Server](https://developers.openai.com/codex/app-server)、[原生指令](https://developers.openai.com/codex/cli/slash-commands)。

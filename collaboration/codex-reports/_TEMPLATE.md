@@ -6,6 +6,10 @@ Task name and Issue URL.
 
 Scope and acceptance criteria.
 
+# Request
+
+Original Issue / Requirement and acceptance criteria.
+
 # Work Completed
 
 # Findings
@@ -44,6 +48,6 @@ Original Issue, this report, relevant diff and test results.
 
 Concrete next action; no automatic expansion of task scope.
 
-# Commit SHA
+# Git Commit
 
 PENDING

@@ -131,7 +131,7 @@ def scan_repo(root, staged=False, revision=None):
 
 def show(count, findings):
     for path, line, rule in findings:
-        print(f'{path}:{line}: {rule}')
+        print(f'File: {path} | Rule: {rule} | Line: {line} | Finding: REDACTED')
     print(f'Secret scan: files={count} findings={len(findings)} (heuristic)')
 
 

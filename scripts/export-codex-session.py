@@ -127,11 +127,13 @@ def export_one(source, project, output, stats):
     target = output / f'{start[:10]}_{start[11:13]}{start[14:16]}_{sid}.md'
     if target.is_symlink() or (target.exists() and target.read_text(encoding='utf-8').splitlines()[0] != marker):
         raise ValueError('Destination ownership mismatch')
-    parts = [marker, '# Codex Session', f'- Session ID: {sid}', f'- Start time: {start}',
-             f'- End time: {ended or "Not recorded (last event is not an end time)"}',
-             f'- Last recorded event: {last}', f'- Working directory: {sanitize(meta["cwd"])}',
+    parts = [marker, '# Codex Session', f'- Session ID: {sid}', f'- Start Time: {start}',
+             f'- End Time: {ended or "Not recorded (last event is not an end time)"}',
+             f'- Last recorded event: {last}', f'- Working Directory: {sanitize(meta["cwd"])}',
              '- Timestamp timezone: preserved from source (usually UTC).',
              '- Export: visible text and tools only; sanitized; unknown/internal events omitted.', '']
+    sections = {name: [] for name in ('User Messages', 'Codex Visible Responses', 'Tool / Command Calls', 'Tool / Command Results', 'Errors', 'Tests')}
+    test_calls = set()
     # Response items are canonical; duplicate event_msg transcript copies are omitted.
     for e in records(source, {'malformed_lines': 0}, limit):
         p = e.get('payload', {})
@@ -154,8 +156,24 @@ def export_one(source, project, output, stats):
             label = 'Error / warning / interruption'
             value = {k: p[k] for k in ('message', 'error', 'reason') if k in p}
         if label and value:
-            parts += [f'## {label} — {sanitize(str(e.get("timestamp", "")))}', fenced(printable(value))]
-    rendered = sanitize('\n'.join(parts))
+            section = {'User prompt': 'User Messages', 'Codex response': 'Codex Visible Responses',
+                       'Tool / command call': 'Tool / Command Calls',
+                       'Tool / command result (including errors and test output)': 'Tool / Command Results'}.get(label, 'Errors')
+            timestamp = sanitize(str(e.get('timestamp', '')))
+            clean = printable(value)
+            sections[section] += [f'### {label} — {timestamp}', fenced(clean)]
+            call_id = str(p.get('call_id', 'not recorded'))
+            if section == 'Tool / Command Calls' and re.search(r'(?i)unittest|pytest|\bnpm (?:run )?test|cargo test|dotnet test', clean):
+                test_calls.add(call_id)
+            if section == 'Tool / Command Results':
+                reference = f'- Call ID: {sanitize(call_id)}; timestamp: {timestamp}. Full output: Tool / Command Results.\n'
+                if call_id in test_calls or re.search(r'Ran \d+ tests|test result:|FAILED \(', clean):
+                    sections['Tests'].append(reference)
+                if re.search(r'Traceback|FAILED \(|"exit_code"\s*:\s*[1-9]|Error:', clean):
+                    sections['Errors'].append(reference)
+    for name, entries in sections.items():
+        parts += ['## ' + name, *(entries or ['No separately recorded entries.']), '']
+    rendered = '\n'.join(line.rstrip() for line in sanitize('\n'.join(parts)).splitlines()).rstrip() + '\n'
     if target.exists() and target.read_text(encoding='utf-8') == rendered:
         stats['unchanged'] += 1
         return

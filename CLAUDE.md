@@ -7,9 +7,9 @@
 | Role | Title |
 |---|---|
 | **User** | Project Owner / Final Decision Maker |
-| **ChatGPT** | Research Planner / Reviewer |
-| **Codex** | Researcher / Engineer / Tester |
-| **Claude Code** | Reviewer / Acceptance Checker |
+| **ChatGPT** | Research Planner / Requirement Designer / Final Reviewer |
+| **Codex** | Researcher / Developer / Tester |
+| **Claude Code** | Reviewer / Verifier |
 | **GitHub** | Single Source of Truth |
 
 ## 2. Decision Authority

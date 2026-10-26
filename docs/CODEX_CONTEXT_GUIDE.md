@@ -23,3 +23,11 @@
 收尾：更新精簡 PROJECT_STATUS 與 report，再執行 `./scripts/finalize.ps1 <TaskId> "<message>"` 完成 export、scan、tests、commit、push；成功同步才算 task 完成。失敗須標示 `LOCAL ONLY — NOT SYNCED`。之後交由 Claude Review。詳見 [Finalize Workflow](CODEX_FINALIZE_GUIDE.md)；沒有 hooks、daemon 或背景服務，不需修改全域 Codex config。
 
 來源（2026-10-26）：[OpenAI Codex slash commands](https://developers.openai.com/codex/cli/slash-commands)。
+
+## 實務補充（2026-10-27）
+
+長對話、context 接近上限、大量研究準備進入 coding、完成 milestone 後，先寫 summary + file reference，再考慮 `/compact`。Task 完全切換、domain 不同、歷史已不相關或 context 被大量 log 污染時，另開 session。
+
+一個 Issue = 一個 scope。先讀 PROJECT_STATUS 與對應 report；既有研究文件是可重用成果，不重做已記錄研究。優先讀 Git diff；大 log 用 `rg` 或尾端/範圍讀取，將完整 build log 留在 ignored 本機路徑，只回傳摘要、錯誤與檔案參照。Reviewer 先看 requirement、report、diff、test result，再針對疑點讀程式。
+
+Codex 0.164.0 本次重新核對 help 與 TUI 指令選單。不要把 `/usage`、`/status`、`/compact` 當 PowerShell subcommand；也不要為了驗證而壓縮進行中的工作。Footer quota 與 context 是不同資訊，UNKNOWN 不表示 quota 已用完。

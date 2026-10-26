@@ -63,4 +63,14 @@ python -m unittest discover -s tests/integration -p 'test_*.py' -v
 
 PROJECT_STATUS 每個正式 task 都須更新 Last Updated、Current Phase、Current Objective、Completed、In Progress、Blockers、Pending User Decisions、Next Planned Step。report 必須使用 `_TEMPLATE.md` 的全部 headings；腳本檢查結構及檔案有更新，但不能自動判斷文字是否正確。決策仍由使用者批准。
 
+## Usage / 通知整合（2026-10-27）
+
+完整入口與 wrapper 支援 NoUsage、NoNotification、NoSound。正常流程末尾依序顯示 Usage Footer、finalize Duration、原生 Windows 通知。Git 結果以獨立的每次執行 JSON outcome 傳遞，暫存於 Git control directory 並在讀取後刪除，不進 repository；不靠搜尋輸出文字判斷 SUCCESS。
+
+Report 新格式包含 Request，最後使用 `# Git Commit`，先填 PENDING；舊 `# Commit SHA` 紀錄保留相容。一次 metadata commit 記錄主成果 SHA。Agent 先更新 Project Status 語意內容，腳本在正式提交前更新 Last Updated；不自動編造研究結果、決策、Current Phase 或 Completed。
+
+Nothing to commit 仍會確認 remote SHA，未同步時明確標記 LOCAL ONLY — NOT SYNCED。Origin fetch/push 目的地不同、branch 在執行途中切換、或同步後 working tree 又有改動時停止，避免錯誤宣稱完整同步。DryRun 不會通知或顯示音效；PushOnly 仍需 clean tree 與測試。
+
+詳見 [Usage Guide](CODEX_USAGE_GUIDE.md) 與 [Notification Guide](CODEX_NOTIFICATION_GUIDE.md)。
+
 一般 unittest 是日常 finalize gate；`tests/integration/` 的真實 Git / bare remote 整合測試是 workflow 變更時需另行完成的維護驗證，本次已納入驗證範圍。該目錄刻意不設 `__init__.py`，避免每個普通 task 重複跑完整 Git 生命週期。測試結果須記入 task report。

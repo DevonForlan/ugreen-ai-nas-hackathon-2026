@@ -38,6 +38,7 @@ temp/
 .claude/conversation-logs/
 
 # Codex local state and raw session exports (Markdown remains versionable)
+*.jsonl
 .codex/
 **/sessions/**/*.jsonl
 **/archived_sessions/**/*.jsonl
@@ -53,3 +54,8 @@ auth.json
 *.credentials.json
 !collaboration/codex-sessions/*.md
 !collaboration/codex-reports/*.md
+!docs/*.md
+!scripts/*.py
+!scripts/*.ps1
+!tests/*.py
+!tests/integration/*.py

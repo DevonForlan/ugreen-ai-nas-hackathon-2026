@@ -28,7 +28,7 @@ class FinalizeTests(unittest.TestCase):
         self.remote = Path(self.tmp.name) / 'remote.git'
         self.home = Path(self.tmp.name) / 'codex-home'
         (self.home / 'sessions').mkdir(parents=True)
-        self.env = dict(os.environ, CODEX_HOME=str(self.home), PYTHONIOENCODING='utf-8', GIT_TERMINAL_PROMPT='0')
+        self.env = dict(os.environ, CODEX_HOME=str(self.home), PYTHONIOENCODING='utf-8', GIT_TERMINAL_PROMPT='0', CODEX_USAGE_DISABLED='1', CODEX_NOTIFY_DISABLED='1', CODEX_SOUND_DISABLED='1')
         self.status = self.root / 'docs/00_PROJECT_STATUS.md'
         if hasattr(type(self), 'template'):
             shutil.copytree(type(self).template / 'repo', self.root, dirs_exist_ok=True)
@@ -41,7 +41,7 @@ class FinalizeTests(unittest.TestCase):
         self.git('config', 'commit.gpgSign', 'false')
         self.git('config', 'core.hooksPath', str(self.root / '.git/empty-test-hooks'))
         (self.root / 'scripts').mkdir()
-        for name in ('finalize-codex-task.py', 'finalize-codex-task.ps1', 'finalize.ps1', 'scan-codex-secrets.py', 'export-codex-session.py'):
+        for name in ('finalize-codex-task.py', 'finalize-codex-task.ps1', 'finalize.ps1', 'scan-codex-secrets.py', 'export-codex-session.py', 'notify-codex.ps1', 'codex-notification.py'):
             shutil.copy(BASE / 'scripts' / name, self.root / 'scripts' / name)
         (self.root / '.gitignore').write_text('__pycache__/\n*.pyc\n.env\n.codex/\n', encoding='utf-8')
         (self.root / 'docs').mkdir()
@@ -70,7 +70,7 @@ class FinalizeTests(unittest.TestCase):
         folder = self.root / 'collaboration/codex-reports'
         folder.mkdir(parents=True, exist_ok=True)
         self.report = folder / '2026-10-26_1500_TEST.md'
-        self.report.write_text('\n'.join('# ' + h + '\n\n' + ('PENDING' if h == 'Commit SHA' else 'Task evidence') + '\n' for h in finalizer.HEADINGS), encoding='utf-8')
+        self.report.write_text('\n'.join('# ' + h + '\n\n' + ('PENDING' if h == 'Git Commit' else 'Task evidence') + '\n' for h in finalizer.HEADINGS), encoding='utf-8')
         (self.root / 'note.txt').write_text('safe task change\n', encoding='utf-8')
 
     def cli(self, *args, ps=False):
@@ -111,7 +111,7 @@ class FinalizeTests(unittest.TestCase):
         (self.root / 'note.txt').write_text(secret, encoding='utf-8')
         p = self.cli()
         self.assertNotEqual(p.returncode, 0)
-        self.assertIn('note.txt:1: provider-token', p.stdout)
+        self.assertIn('File: note.txt | Rule: provider-token | Line: 1', p.stdout)
         self.assertNotIn(secret, p.stdout + p.stderr)
         self.assertEqual(self.git('diff', '--cached', '--name-only'), '')
         self.assertEqual(self.git('rev-list', '--count', 'HEAD'), '1')
@@ -126,7 +126,7 @@ class FinalizeTests(unittest.TestCase):
         self.assertTrue(scanner.scan_repo(self.root, staged=True)[1])
         p = self.cli()
         self.assertNotEqual(p.returncode, 0)
-        self.assertIn('note.txt:1: provider-token', p.stdout)
+        self.assertIn('File: note.txt | Rule: provider-token | Line: 1', p.stdout)
         self.assertNotIn(secret, p.stdout + p.stderr)
         self.assertEqual(self.git('diff', '--cached', '--name-only'), '')
 
@@ -162,9 +162,13 @@ class FinalizeTests(unittest.TestCase):
     def test_push_failure_and_retry(self):
         self.prepare()
         self.git('remote', 'set-url', 'origin', str(self.remote) + '-missing')
-        p = self.cli()
+        name = 'codex-finalize-' + 'a' * 32 + '.json'
+        p = self.cli('--result-name', name)
         self.assertNotEqual(p.returncode, 0)
         self.assertIn('LOCAL ONLY', p.stdout)
+        state = json.loads((self.root / '.git' / name).read_text(encoding='utf-8'))
+        self.assertEqual(state['status'], 'WARNING')
+        self.assertFalse(state['synced'])
         self.assertEqual(self.git('rev-list', '--count', 'HEAD'), '3')
         self.git('remote', 'set-url', 'origin', str(self.remote))
         p = self.cli('--push-only')

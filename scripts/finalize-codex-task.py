@@ -3,6 +3,8 @@
 import argparse
 import hashlib
 import importlib.util
+import json
+from datetime import datetime
 import os
 from pathlib import Path
 import re
@@ -16,8 +18,16 @@ spec.loader.exec_module(scanner)
 export_spec = importlib.util.spec_from_file_location('codex_export', ROOT / 'scripts/export-codex-session.py')
 exporter = importlib.util.module_from_spec(export_spec)
 export_spec.loader.exec_module(exporter)
-HEADINGS = ['Task', 'Objective', 'Work Completed', 'Findings', 'Files Changed', 'Commands Executed', 'Tests', 'Git Diff Summary', 'Known Issues', 'Security Notes', 'Open Questions', 'Pending User Decisions', 'Recommended Reviewer Scope', 'Recommended Next Step', 'Commit SHA']
+HEADINGS = ['Task', 'Objective', 'Request', 'Work Completed', 'Findings', 'Files Changed', 'Commands Executed', 'Tests', 'Git Diff Summary', 'Known Issues', 'Security Notes', 'Open Questions', 'Pending User Decisions', 'Recommended Reviewer Scope', 'Recommended Next Step', 'Git Commit']
 STATUS = ['Current Phase', 'Current Objective', 'Completed', 'In Progress', 'Blockers', 'Pending User Decisions', 'Next Planned Step']
+
+
+class SecurityScanError(RuntimeError):
+    pass
+
+
+def failure_status(phase, task_committed, error):
+    return 'WARNING' if phase == 'PUSH' and task_committed and not isinstance(error, SecurityScanError) else 'FAILED'
 
 
 def run(args, capture=False):
@@ -53,7 +63,7 @@ def scan(staged=False, revision=None, reset=False):
     if findings:
         if reset:
             git('reset', capture=True)
-        raise RuntimeError('Secret/path scan blocked finalization; no secret values printed')
+        raise SecurityScanError('Secret/path scan blocked finalization; no secret values printed')
 
 
 def validate_exports():
@@ -79,6 +89,8 @@ def report_for(task):
         raise RuntimeError('Update the task report before finalizing')
     text = report.read_text(encoding='utf-8')
     for heading in HEADINGS:
+        if heading == 'Git Commit' and '# Commit SHA' in text:
+            continue  # Existing reports remain readable; new template uses Git Commit.
         if not re.search(r'^# ' + re.escape(heading) + r'\s*$', text, re.M):
             raise RuntimeError(f'Missing report section: {heading}')
     status = (ROOT / 'docs/00_PROJECT_STATUS.md').read_text(encoding='utf-8')
@@ -93,6 +105,15 @@ def report_for(task):
     return report
 
 
+def update_status_timestamp():
+    path = ROOT / 'docs/00_PROJECT_STATUS.md'
+    text = path.read_text(encoding='utf-8')
+    stamp = datetime.now().astimezone().strftime('%Y-%m-%d %H:%M %z')
+    updated = re.sub(r'(?m)^Last Updated:.*$', 'Last Updated: ' + stamp, text, count=1)
+    if updated != text:
+        path.write_text(updated, encoding='utf-8', newline='\n')
+
+
 def push(branch):
     print('Step 8 - verify branch and remote', flush=True)
     git('branch', '--show-current', capture=False)
@@ -100,10 +121,12 @@ def push(branch):
         raise RuntimeError('Branch changed during finalization; stop and inspect')
     remotes = git('remote', '-v')
     if scanner.scan_text(remotes) or re.search(r'https?://[^/@]+@', remotes):
-        raise RuntimeError('Remote contains embedded authentication; use credential manager')
+        raise SecurityScanError('Remote contains embedded authentication; use credential manager')
     print(remotes, flush=True)
     if 'origin' not in git('remote').splitlines():
         raise RuntimeError('Missing origin remote')
+    if git('remote', 'get-url', '--all', 'origin') != git('remote', 'get-url', '--push', '--all', 'origin'):
+        raise RuntimeError('Origin fetch/push destinations differ; inspect configuration')
     remote_head = git('ls-remote', '--heads', 'origin', f'refs/heads/{branch}')
     if remote_head:
         git('fetch', '--no-tags', 'origin', f'refs/heads/{branch}')
@@ -125,6 +148,9 @@ def push(branch):
     git('status', capture=False)
     git('log', '-1', '--oneline', capture=False)
     print(f'Branch: {branch}\nCommit SHA: {sha}\nCommit message: {git("log", "-1", "--format=%s")}\nPush result: SYNCED (remote SHA verified)\nWorking tree status: {"CLEAN" if not git("status", "--porcelain") else "DIRTY"}', flush=True)
+    if git('status', '--porcelain'):
+        raise RuntimeError('Remote synced but working tree changed; local work remains')
+    return sha
 
 
 def main():
@@ -135,8 +161,13 @@ def main():
     parser.add_argument('--message')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--push-only', action='store_true')
+    parser.add_argument('--result-name', help='Internal per-run result filename inside Git directory')
     args = parser.parse_args()
+    outcome = {'status': 'FAILED', 'synced': False, 'taskCommitted': False}
+    phase = 'VALIDATE'
     try:
+        if args.result_name and not re.fullmatch(r'codex-finalize-[a-f0-9]{32}\.json', args.result_name):
+            raise RuntimeError('Invalid result filename')
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,63}', args.task_id):
             raise RuntimeError('Invalid TaskId')
         if not os.path.samefile(git('rev-parse', '--show-toplevel'), ROOT):
@@ -155,10 +186,14 @@ def main():
                 raise RuntimeError('PushOnly requires a clean working tree')
             if args.dry_run:
                 print('DRY RUN: push skipped')
+                outcome['status'] = 'DRY_RUN'
             else:
                 if any((ROOT / 'tests').glob('test_*.py')):
                     run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_*.py'])
-                push(branch)
+                phase = 'PUSH'
+                outcome['taskCommitted'] = True
+                outcome['commit'] = push(branch)
+                outcome.update(status='SUCCESS', synced=True)
             return 0
         print('Step 1 - export sessions', flush=True)
         run([sys.executable, 'scripts/export-codex-session.py'])
@@ -170,11 +205,25 @@ def main():
         git('status', '--short', capture=False)
         if not git('status', '--porcelain'):
             print('Nothing to commit')
+            if args.dry_run:
+                outcome['status'] = 'DRY_RUN'
+                return 0
             upstream = subprocess.run(['git', 'rev-parse', '--abbrev-ref', '@{upstream}'], cwd=ROOT, capture_output=True)
             if upstream.returncode or git('rev-list', '@{upstream}..HEAD'):
                 print('LOCAL ONLY — NOT SYNCED: use -PushOnly to verify/push existing commits')
+                outcome['status'] = 'WARNING'
+                return 1
+            phase = 'PUSH'
+            outcome['taskCommitted'] = True
+            sha = git('rev-parse', 'HEAD')
+            remote = git('ls-remote', '--heads', 'origin', f'refs/heads/{branch}')
+            if not remote or remote.split()[0] != sha:
+                raise RuntimeError('Nothing to commit, but remote SHA does not match')
+            outcome.update(status='SUCCESS', synced=True, commit=sha)
             return 0
         report = report_for(args.task_id)
+        if not args.dry_run:
+            update_status_timestamp()
         if any((ROOT / 'tests').glob('test_*.py')):
             print('Run Python regression tests', flush=True)
             run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_*.py'])
@@ -189,6 +238,7 @@ def main():
         git('diff', '--cached', capture=False)
         if args.dry_run:
             print('DRY RUN: export/scan/tests complete; no staging, commit, reset, or push')
+            outcome['status'] = 'DRY_RUN'
             return 0
         print('Step 5 - stage all non-ignored, pre-scanned changes', flush=True)
         git('add', '-A')
@@ -202,20 +252,33 @@ def main():
         print('Step 7 - commit', flush=True)
         git('commit', '-m', message)
         task_sha = git('rev-parse', 'HEAD')
+        outcome.update(taskCommitted=True, taskCommit=task_sha)
+        phase = 'METADATA'
         text = report.read_text(encoding='utf-8')
-        text = re.sub(r'(?ms)(^# Commit SHA\s*\n).*?(?=^# |\Z)', lambda m: m[1] + '\n' + task_sha + '\n', text)
+        text = re.sub(r'(?ms)(^# (?:Git Commit|Commit SHA)\s*\n).*?(?=^# |\Z)', lambda m: m[1] + '\n' + task_sha + '\n', text)
         report.write_text(text, encoding='utf-8', newline='\n')
         scan()
         git('add', '--', report.relative_to(ROOT).as_posix())
         scan(staged=True, reset=True)
         git('commit', '-m', f'chore: record {args.task_id} task commit')
         print(f'Task commit SHA: {task_sha}', flush=True)
-        push(branch)
+        phase = 'PUSH'
+        outcome['commit'] = push(branch)
+        outcome.update(status='SUCCESS', synced=True)
         return 0
     except Exception as exc:
+        outcome['status'] = failure_status(phase, outcome['taskCommitted'], exc)
         detail = str(exc) if isinstance(exc, RuntimeError) else type(exc).__name__
         print(f'LOCAL ONLY — NOT SYNCED\n{detail}', flush=True)
         return 1
+    finally:
+        if args.result_name and re.fullmatch(r'codex-finalize-[a-f0-9]{32}\.json', args.result_name):
+            try:
+                path = ROOT / git('rev-parse', '--git-path', args.result_name)
+                with path.open('x', encoding='utf-8') as stream:
+                    json.dump(outcome, stream)
+            except (OSError, RuntimeError):
+                print('Finalize result metadata unavailable; see terminal status.')
 
 
 if __name__ == '__main__':

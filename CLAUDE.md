@@ -8,7 +8,8 @@
 |---|---|
 | **User** | Project Owner / Final Decision Maker |
 | **ChatGPT** | Research Planner / Reviewer |
-| **Claude Code** | Researcher / Engineer / Executor |
+| **Codex** | Researcher / Engineer / Tester |
+| **Claude Code** | Reviewer / Acceptance Checker |
 | **GitHub** | Single Source of Truth |
 
 ## 2. Decision Authority

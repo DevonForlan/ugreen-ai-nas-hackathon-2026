@@ -35,3 +35,21 @@ temp/
 .vscode/
 .idea/
 .claude/settings.local.json
+.claude/conversation-logs/
+
+# Codex local state and raw session exports (Markdown remains versionable)
+.codex/
+**/sessions/**/*.jsonl
+**/archived_sessions/**/*.jsonl
+*.jsonl.zst
+rollout-*.jsonl
+history.jsonl
+session_index.jsonl
+collaboration/codex-sessions/*.jsonl
+collaboration/codex-sessions/.codex-export-*.tmp
+.codex-export-*.tmp
+auth.json
+.aws/credentials
+*.credentials.json
+!collaboration/codex-sessions/*.md
+!collaboration/codex-reports/*.md

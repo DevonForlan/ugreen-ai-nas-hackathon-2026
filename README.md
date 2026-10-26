@@ -66,6 +66,10 @@ submissions/              參賽提交物（題目核准後才使用）
 
 **Phase 0：Project Collaboration Infrastructure Setup**
 
+Codex tooling: [Session 匯出](docs/CODEX_LOGGING_GUIDE.md)、[Usage](docs/CODEX_USAGE_GUIDE.md)、[Context / 協作](docs/CODEX_CONTEXT_GUIDE.md)。Codex 開發與測試，Claude Code Review / 驗收；使用者保留最終決策權。
+
+Task 收尾：`./scripts/finalize.ps1 <TaskId> "<commit message>"`；詳見 [Finalize Workflow](docs/CODEX_FINALIZE_GUIDE.md)。ChatGPT 入口：[PROJECT_STATUS](docs/00_PROJECT_STATUS.md)、[Codex reports](collaboration/codex-reports/)、[Decision Log](docs/06_DECISION_LOG.md)。
+
 尚未開始：
 
 - 正式競賽研究

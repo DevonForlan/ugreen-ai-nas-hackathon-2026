@@ -1,0 +1,40 @@
+{
+  "body_sha256": "bde76527f6cbf124b72415be6206b4457b4b316efd9f624ae6cc25819616d483",
+  "cc_rounds": 0,
+  "codex_attempts": 1,
+  "handoff": {
+    "base": "531516dc5cffe65a0cc3bcfc143448ac13c7faa6",
+    "head": "9d3bda28c1f9188c0d59effbd95f998e4a79cce9",
+    "report": "collaboration/codex-reports/2026-10-27_1133_AUTO-001.md",
+    "review_context_bytes": 124702,
+    "task_sha": "c3f28aa428a1f2be60f56966dd00ea80036c170e",
+    "tests": [
+      {
+        "command": [
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_*.py",
+          "-v"
+        ],
+        "exit_code": 0,
+        "output": "ry_edges (test_agent_workflow.WorkflowTests.test_mandatory_gate_overrides_ordinary_edges) ... ok\ntest_max_attempts_survive_new_engine (test_agent_workflow.WorkflowTests.test_max_attempts_survive_new_engine) ... ok\ntest_missing_owner_plan_gates_without_model (test_agent_workflow.WorkflowTests.test_missing_owner_plan_gates_without_model) ... ok\ntest_model_subprocess_does_not_inherit_gh_credential_environment (test_agent_workflow.WorkflowTests.test_model_subprocess_does_not_inherit_gh_credential_environment) ... ok\ntest_notification_fallback_does_not_change_result (test_agent_workflow.WorkflowTests.test_notification_fallback_does_not_change_result) ... ok\ntest_npm_native_claude_entry_is_resolved_from_manifest (test_agent_workflow.WorkflowTests.test_npm_native_claude_entry_is_resolved_from_manifest) ... ok\ntest_only_preapproved_followup_is_created_and_not_executed (test_agent_workflow.WorkflowTests.test_only_preapproved_followup_is_created_and_not_executed) ... ok\ntest_requirement_mutation_and_dual_labels_rejected (test_agent_workflow.WorkflowTests.test_requirement_mutation_and_dual_labels_rejected) ... ok\ntest_review_packet_is_bounded_without_truncating_evidence (test_agent_workflow.WorkflowTests.test_review_packet_is_bounded_without_truncating_evidence) ... ok\ntest_scope_prefix_blocks_competition_tasks (test_agent_workflow.WorkflowTests.test_scope_prefix_blocks_competition_tasks) ... ok\ntest_third_unsuccessful_review_requires_user (test_agent_workflow.WorkflowTests.test_third_unsuccessful_review_requires_user) ... ok\ntest_unapproved_followup_cannot_expand_scope (test_agent_workflow.WorkflowTests.test_unapproved_followup_cannot_expand_scope) ... ok\ntest_unauthorized_author_and_editor_rejected (test_agent_workflow.WorkflowTests.test_unauthorized_author_and_editor_rejected) ... ok\ntest_user_stop_during_codex_cannot_be_overwritten_by_handoff (test_agent_workflow.WorkflowTests.test_user_stop_during_codex_cannot_be_overwritten_by_handoff) ... ok\ntest_export_isolation_idempotence_and_ownership (test_codex_export.ExportTests.test_export_isolation_idempotence_and_ownership) ... ok\ntest_nested_json (test_codex_export.ExportTests.test_nested_json) ... ok\ntest_secret_classes (test_codex_export.ExportTests.test_secret_classes) ... ok\ntest_owned_markdown_and_reject_foreign_or_raw (test_codex_finalize_exports.ExportFolderTests.test_owned_markdown_and_reject_foreign_or_raw) ... ok\ntest_paths_and_nonregular_content_fail_closed (test_codex_scan.ScannerTests.test_paths_and_nonregular_content_fail_closed) ... ok\ntest_redacted_markers_and_code_references (test_codex_scan.ScannerTests.test_redacted_markers_and_code_references) ... ok\ntest_short_credentials_are_not_exempt (test_codex_scan.ScannerTests.test_short_credentials_are_not_exempt) ... ok\ntest_payload_is_sanitized_bounded_and_xml_escaped (test_codex_usage_notifications.NotificationTests.test_payload_is_sanitized_bounded_and_xml_escaped) ... ok\ntest_status_sound_mapping (test_codex_usage_notifications.NotificationTests.test_status_sound_mapping) ... ok\ntest_sync_failure_is_warning_security_failure_is_failed (test_codex_usage_notifications.NotificationTests.test_sync_failure_is_warning_security_failure_is_failed) ... ok\ntest_multiple_buckets_do_not_guess_entitlement (test_codex_usage_notifications.UsageTests.test_multiple_buckets_do_not_guess_entitlement) ... ok\ntest_quota_uses_actual_window_not_primary_position (test_codex_usage_notifications.UsageTests.test_quota_uses_actual_window_not_primary_position) ... ok\ntest_rpc_is_bounded_and_child_is_closed (test_codex_usage_notifications.UsageTests.test_rpc_is_bounded_and_child_is_closed) ... ok\ntest_session_is_not_global_totals (test_codex_usage_notifications.UsageTests.test_session_is_not_global_totals) ... ok\ntest_unknown_and_invalid_quota_never_inferred (test_codex_usage_notifications.UsageTests.test_unknown_and_invalid_quota_never_inferred) ... ok\n\n----------------------------------------------------------------------\nRan 45 tests in 0.972s\n\nOK\n"
+      }
+    ]
+  },
+  "history": [
+    {
+      "agent": "codex",
+      "duration_seconds": null,
+      "iteration": 1,
+      "mode": "manual implementation; no headless agent invoked",
+      "task_id": "AUTO-001",
+      "usage": "UNKNOWN"
+    }
+  ],
+  "state": "CODEX_RUNNING"
+}

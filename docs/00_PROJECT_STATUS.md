@@ -1,16 +1,17 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-27 15:08 +0800
+Last Updated: 2026-10-27 16:04 +0800
 
 ## Current Phase
 
-Phase 0 - Collaboration infrastructure. Competition research has not started.
+REG-001 registration preparation only. R01-R06 and product implementation have not started.
+AUTO-001 automation remains paused pending User decisions.
 
 ## Current Objective
 
-AUTO-001 bounded GitHub-driven agent workflow: independent Claude Code review completed.
-Result: **USER_DECISION_REQUIRED** (see `collaboration/cc-reports/2026-10-27_1508_AUTO-001_manual-review.md`).
-AUTO-001 is not DONE.
+REG-001: prepare official-source solo-registration checklist, Round 1 proposal draft
+and submission/package checklist. No login, consent, registration or submission performed.
+No product topic selected. Independent document review remains pending after publication.
 
 ## Completed
 
@@ -21,15 +22,22 @@ AUTO-001 is not DONE.
 - 9 real Git integration tests passed in temporary repositories (unittest result: OK).
 - Real GitHub lock test passed: second acquisition rejected, owned refs released.
 - Independent CC review of AUTO-001: 8/10 acceptance criteria met; criterion 5 (scope fail-closed) not fully met.
+- REG-001 document preparation: official registration OPEN as checked 2026-10-27;
+  solo entry allowed; registration/Round 1 deadline 2026-11-15 23:45 PST
+  (Taipei 2026-11-16 15:45). See `docs/07_REGISTRATION_CHECKLIST.md` for sources.
+- Three REG-001 draft/checklist outputs prepared; all product answers remain TBD.
 
 ## In Progress
 
-- None. Waiting for User decision on AUTO-001.
+- REG-001 publication and independent document review; actual registration is User-only.
+- AUTO-001 remains USER_DECISION_REQUIRED per manual CC review; it is not DONE.
 
 ## Blockers
 
 - AUTO-001 acceptance blocked on the User decisions below.
 - Interactive CC review is not recorded in the ledger; Issue #1 label remains READY_FOR_CC_REVIEW until User reconciles it.
+- REG-001 preparation is independent, manually requested work; no autonomous runner invoked.
+  Login-only custom form/upload fields remain UNKNOWN until User checks them.
 
 ## Pending User Decisions
 
@@ -38,5 +46,7 @@ AUTO-001 is not DONE.
 
 ## Next Planned Step
 
-User decides the items above and reconciles Issue #1 state.
-Do not start R01-R06 or product implementation.
+User reviews REG-001 documents, personally confirms eligibility/terms and joins on Devpost.
+Exact registration status remains unconfirmed; final submission requires later approved content.
+AUTO-001 decisions above remain open; no control-plane/policy/ledger changes were made.
+Stop here. Do not start R01-R06, AUTO-002 or product implementation.

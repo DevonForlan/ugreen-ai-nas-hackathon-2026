@@ -72,6 +72,8 @@ Task 收尾：`./scripts/finalize.ps1 <TaskId> "<commit message>"`；詳見 [Fin
 
 收尾會顯示真實 quota / token [Usage Footer](docs/CODEX_USAGE_GUIDE.md)，並送出 [Windows 通知與系統音效](docs/CODEX_NOTIFICATION_GUIDE.md)。無法確認的 quota 顯示 UNKNOWN；沒有常駐程序。
 
+AUTO-001：[有上限的 GitHub agent workflow](docs/AUTONOMOUS_DEVELOPMENT_GUIDE.md)。先用 `python scripts/agent-orchestrator.py --dry-run` 查看，正式 task 由 owner plan 授權；Codex 交接後必須經 Claude review 才能 DONE。
+
 尚未開始：
 
 - 正式競賽研究

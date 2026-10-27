@@ -1,0 +1,40 @@
+{
+  "repository": "DevonForlan/ugreen-ai-nas-hackathon-2026",
+  "trusted_authors": [
+    "DevonForlan"
+  ],
+  "allowed_task_prefixes": [
+    "AUTO-",
+    "TOOLING-"
+  ],
+  "max_codex_attempts": 3,
+  "max_cc_review_rounds": 3,
+  "max_steps": 6,
+  "agent_timeout_seconds": 900,
+  "max_review_bytes": 131072,
+  "plans": {
+    "AUTO-001": {
+      "issue_number": 1,
+      "body_sha256": "bde76527f6cbf124b72415be6206b4457b4b316efd9f624ae6cc25819616d483",
+      "codex_enabled": false,
+      "cc_enabled": true,
+      "manual_handoff": true,
+      "sandbox_acknowledged": false,
+      "allowed_write_paths": [],
+      "required_tests": [
+        [
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_*.py",
+          "-v"
+        ]
+      ],
+      "followups": {}
+    }
+  }
+}

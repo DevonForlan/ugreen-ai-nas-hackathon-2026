@@ -1,0 +1,58 @@
+name: Agent task
+description: Owner-approved, bounded Codex implementation and Claude review
+title: "[TASK-ID] Objective"
+labels: [READY_FOR_CODEX]
+body:
+  - type: markdown
+    attributes:
+      value: "Only repository owner / explicitly trusted authors are eligible. An owner-approved execution plan is also required. Never paste credentials."
+  - type: input
+    id: task_id
+    attributes: {label: Task ID, placeholder: "AUTO-002"}
+    validations: {required: true}
+  - type: textarea
+    id: objective
+    attributes: {label: Objective}
+    validations: {required: true}
+  - type: textarea
+    id: background
+    attributes: {label: Background}
+    validations: {required: true}
+  - type: textarea
+    id: scope
+    attributes: {label: Scope, description: "Exact deliverables and allowed paths; does not replace the approved execution plan."}
+    validations: {required: true}
+  - type: textarea
+    id: out_of_scope
+    attributes: {label: Out of Scope}
+    validations: {required: true}
+  - type: textarea
+    id: acceptance
+    attributes: {label: Acceptance Criteria, description: "Use concrete, verifiable checkboxes."}
+    validations: {required: true}
+  - type: textarea
+    id: tests
+    attributes: {label: Required Tests}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Required Evidence}
+    validations: {required: true}
+  - type: textarea
+    id: security
+    attributes: {label: Security Constraints}
+    validations: {required: true}
+  - type: textarea
+    id: stop
+    attributes: {label: Stop Conditions}
+    validations: {required: true}
+  - type: textarea
+    id: maximum
+    attributes:
+      label: Maximum Iterations
+      value: "Codex attempts: 3\nCC review rounds: 3"
+    validations: {required: true}
+  - type: textarea
+    id: decisions
+    attributes: {label: User Decision Conditions}
+    validations: {required: true}

@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "result": {"type": "string", "enum": ["PASS", "CHANGES_REQUESTED", "USER_DECISION_REQUIRED"]},
+    "summary": {"type": "string"},
+    "required_changes": {"type": "array", "items": {"type": "string"}},
+    "recommended_next_task": {"type": "string"},
+    "user_question": {"type": "string"}
+  },
+  "required": ["result", "summary", "required_changes", "recommended_next_task", "user_question"]
+}

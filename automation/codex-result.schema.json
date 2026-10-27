@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "result": {"type": "string", "enum": ["HANDOFF", "USER_DECISION_REQUIRED"]},
+    "summary": {"type": "string"},
+    "report_path": {"type": "string"},
+    "gate_reason": {"type": "string"},
+    "user_question": {"type": "string"}
+  },
+  "required": ["result", "summary", "report_path", "gate_reason", "user_question"]
+}

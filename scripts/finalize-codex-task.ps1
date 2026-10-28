@@ -41,7 +41,7 @@ if (Test-Path -LiteralPath $resultPath) {
 if (-not $DryRun) {
     if (-not $NoUsage -and $env:CODEX_USAGE_DISABLED -ne '1') {
         try { & (Join-Path $PSScriptRoot 'show-codex-usage.ps1') }
-        catch { '5H UNKNOWN | Weekly UNKNOWN | Session UNKNOWN tokens' }
+        catch { & (Join-Path $PSScriptRoot 'show-codex-usage.ps1') -FallbackOnly }
     }
     $timer.Stop()
     'Duration (finalize): {0}m {1}s' -f [Math]::Floor($timer.Elapsed.TotalMinutes), $timer.Elapsed.Seconds

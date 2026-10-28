@@ -26,24 +26,56 @@ class UsageTests(unittest.TestCase):
     def window(self, minutes, used=18):
         return {'usedPercent': used, 'windowDurationMins': minutes, 'resetsAt': int(time.time()) + 3600}
 
-    def test_quota_uses_actual_window_not_primary_position(self):
-        v = {'rateLimits': {'limitId': 'codex', 'primary': self.window(10080, 9), 'secondary': self.window(300)}}
-        self.assertEqual(usage.quota_percentages(v), {'5H': 82, 'Weekly': 91})
-        v['rateLimits']['secondary'] = None
-        self.assertEqual(usage.quota_percentages(v), {'5H': None, 'Weekly': 91})
+    def parse(self, **windows):
+        return usage.quota_percentages({'rateLimits': windows})
 
-    def test_unknown_and_invalid_quota_never_inferred(self):
-        self.assertEqual(usage.quota_percentages(None), {'5H': None, 'Weekly': None})
-        for used in (True, -1, 101, float('nan'), '18'):
-            v = {'rateLimits': {'primary': self.window(300, used)}}
-            self.assertIsNone(usage.quota_percentages(v)['5H'])
-        v = {'rateLimits': {'primary': self.window(60)}}
-        self.assertIsNone(usage.quota_percentages(v)['5H'])
-        self.assertIn('5H UNKNOWN | Weekly UNKNOWN', usage.footer(usage.quota_percentages(None), 99999999))
+    def test_five_and_six_hour_windows_are_dynamic(self):
+        for minutes,label in ((300,'5H'),(360,'6H'),(330,'5H30M'),(45,'45M'),(90,'1H30M')):
+            row=self.parse(primary=self.window(minutes))[0]
+            self.assertEqual(row['name'],label)
+            self.assertEqual(row['remainingPercent'],82)
+            self.assertIn('100 - native usedPercent',row['percentageSource'])
+
+    def test_unknown_duration_does_not_hide_actual_percentage(self):
+        row=self.parse(primary={'usedPercent':21})[0]
+        self.assertEqual(row['name'],'Window UNKNOWN')
+        self.assertEqual(row['remainingPercent'],79)
+        self.assertIsNone(row['resetAtLocal'])
+
+    def test_timezone_and_weekly_reset(self):
+        stamp=usage.local_timestamp('2026-10-28T06:00:00Z')
+        self.assertEqual(stamp,'2026-10-28 14:00:00 +08:00')
+        self.assertEqual(usage.local_timestamp(1793167200),stamp)
+        rows=self.parse(primary=dict(usedPercent=21,windowDurationMins=10080,resetsAt='2026-11-02T00:00:00Z'))
+        self.assertEqual(rows[0]['name'],'Weekly (168H)')
+        self.assertEqual(rows[0]['resetAtLocal'],'2026-11-02 08:00:00 +08:00')
+        self.assertIsNone(usage.local_timestamp('2026-10-28T06:00:00'))
+
+    def test_remaining_and_used_semantics(self):
+        direct=self.parse(primary={'remainingPercent':30})[0]
+        self.assertEqual(direct['remainingPercent'],30)
+        self.assertEqual(direct['percentageSource'],'native remainingPercent')
+        conflict=self.parse(primary={'remainingPercent':30,'usedPercent':20})[0]
+        self.assertIsNone(conflict['remainingPercent'])
+        for used in (True,-1,101,float('nan'),'18'):
+            self.assertIsNone(self.parse(primary=self.window(360,used))[0]['remainingPercent'])
+
+    def test_missing_reset_does_not_invalidate_percentage(self):
+        row=self.parse(primary={'windowDurationMins':360,'usedPercent':21})[0]
+        self.assertEqual(row['remainingPercent'],79)
+        self.assertIn('Reset: UNKNOWN',usage.footer([row],10))
 
     def test_multiple_buckets_do_not_guess_entitlement(self):
-        v = {'rateLimitsByLimitId': {'other': {'primary': self.window(300)}}}
-        self.assertIsNone(usage.quota_percentages(v)['5H'])
+        self.assertEqual(usage.quota_percentages({'rateLimitsByLimitId':{'other':{'primary':self.window(300)}}}),[])
+
+    def test_native_unavailable_and_footer_updated_time(self):
+        text=usage.footer(usage.quota_percentages(None),999)
+        self.assertIn('Window UNKNOWN',text)
+        self.assertNotIn('5H',text)
+        self.assertIn('Updated: UNKNOWN',text)
+        row=self.parse(primary=self.window(360))[0]
+        self.assertIn('Updated: 2026-10-28 14:00:00 +08:00',usage.footer([row],999,'2026-10-28 14:00:00 +08:00'))
+        self.assertIn('Session 999 tokens',text)
 
     def test_session_is_not_global_totals(self):
         sid = 'session-12345678'

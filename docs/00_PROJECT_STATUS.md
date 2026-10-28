@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-28 10:19 +0800
+Last Updated: 2026-10-28 11:52 +0800
 
 ## Current Phase
 
@@ -9,10 +9,12 @@ AUTO-001 automation remains paused pending User decisions.
 
 ## Current Objective
 
-AUTO-002 transcript infrastructure published for independent review.
-Active interactive final-response capture remains UNKNOWN; check run ledger.
+AUTO-002 quota footer addendum: dynamic native windows, remaining/reset/Updated in Taipei.
+Original interactive capture remains LOCAL_ONLY; no post-exit proof or CC PASS claimed.
 
 ## Completed
+
+- Dynamic quota windows and Taipei reset/retrieval timestamps implemented; session tokens retained.
 
 - AUTO-002 global/project sanitized archives, post-exit headless capture and receipts implemented; 78 tests passed.
 

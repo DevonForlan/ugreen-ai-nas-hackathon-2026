@@ -67,8 +67,10 @@ secret scan, or tests prevent synchronization, explicitly report
   `./scripts/show-codex-usage.ps1` and copy its exact short footer. Use UNKNOWN
   for unavailable values. Never infer subscription quota from local token usage.
   This is a project instruction, not a forced global CLI response hook.
-- Footer percentages mean remaining quota. Only actual 300-minute / 10080-minute
-  Codex quota windows may populate 5H / Weekly. Never read or export auth tokens.
+- Footer labels come from native window duration (300 minutes = 5H, 360 = 6H;
+  other durations stay dynamic). Missing duration is Window UNKNOWN. Show remaining
+  percentage with used-to-remaining conversion noted, reset/Updated in Asia/Taipei
+  UTC+08:00, and session tokens. Never read/export auth tokens or infer quota.
 - Finalize automatically appends usage, elapsed finalize time, and one-shot native
   Windows notification + system sound. SUCCESS requires remote SHA verification;
   local success/push failure is WARNING; secret/test/fatal failure is FAILED.

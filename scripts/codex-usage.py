@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """One-shot usage footer: native Codex quota RPC + local ccusage statistics."""
 import argparse
+from datetime import datetime, timedelta, timezone
 import importlib.util
 import json
 import math
@@ -92,24 +93,61 @@ def quota_snapshot(timeout=20):
             reader.join(timeout=1)
 
 
+TAIPEI = timezone(timedelta(hours=8), 'Asia/Taipei')
+
+
+def local_timestamp(value):
+    try:
+        if type(value) in (int, float) and math.isfinite(value):
+            stamp = datetime.fromtimestamp(value, timezone.utc)
+        elif isinstance(value, str):
+            stamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            if stamp.tzinfo is None:
+                return None
+        else:
+            return None
+        return stamp.astimezone(TAIPEI).strftime('%Y-%m-%d %H:%M:%S %z')[:-2]+':00'
+    except (ValueError, OverflowError, OSError):
+        return None
+
+
+def window_label(minutes):
+    if type(minutes) not in (int,float) or not math.isfinite(minutes) or minutes <= 0:
+        return 'Window UNKNOWN'
+    hours, remainder = divmod(minutes,60)
+    duration = (f'{hours:g}H' if hours else '') + (f'{remainder:g}M' if remainder else '')
+    return f'Weekly ({duration})' if minutes == 10080 else duration
+
+
 def quota_percentages(snapshot):
-    result = {'5H': None, 'Weekly': None}
+    result = []
     if not isinstance(snapshot, dict):
         return result
     buckets = snapshot.get('rateLimitsByLimitId')
     bucket = buckets.get('codex') if isinstance(buckets, dict) else snapshot.get('rateLimits')
     if not isinstance(bucket, dict) or bucket.get('limitId') not in {None, 'codex'}:
         return result
-    for label, minutes in (('5H', 300), ('Weekly', 10080)):
-        windows = [w for w in (bucket.get('primary'), bucket.get('secondary'))
-                   if isinstance(w, dict) and w.get('windowDurationMins') == minutes]
-        if len(windows) != 1:
+    for slot in ('primary','secondary'):
+        window = bucket.get(slot)
+        if not isinstance(window,dict):
             continue
-        used = windows[0].get('usedPercent')
-        reset = windows[0].get('resetsAt')
-        if (type(used) in (int, float) and math.isfinite(used) and 0 <= used <= 100 and
-                type(reset) in (int, float) and math.isfinite(reset) and reset > time.time()):
-            result[label] = round(100 - used, 1)  # remaining %, never derived from tokens
+        def valid(value):
+            return type(value) in (int,float) and math.isfinite(value) and 0 <= value <= 100
+        used, remaining = window.get('usedPercent'), window.get('remainingPercent')
+        source = 'UNKNOWN'
+        if valid(remaining):
+            source = 'native remainingPercent'
+            if valid(used) and not math.isclose(remaining,100-used,abs_tol=0.1):
+                remaining, source = None, 'conflicting native percentages'
+        elif valid(used):
+            remaining,source = round(100-used,1),'100 - native usedPercent'
+        else:
+            remaining = None
+        minutes = window.get('windowDurationMins')
+        label = window_label(minutes)
+        result.append({'slot':slot,'name':label,'windowDurationMins':minutes if label!='Window UNKNOWN' else None,
+                       'remainingPercent':remaining,'percentageSource':source,
+                       'resetAtLocal':local_timestamp(window.get('resetsAt')),'timezone':'Asia/Taipei'})
     return result
 
 
@@ -167,11 +205,22 @@ def local_usage(sid=None):
         return selected, None
 
 
-def footer(quotas, tokens):
-    def percent(value):
-        return 'UNKNOWN' if value is None else f'{value:g}%'
+def footer(quotas, tokens, updated_at=None):
     count = 'UNKNOWN' if tokens is None else f'{tokens:,}'
-    return f'5H {percent(quotas["5H"])} | Weekly {percent(quotas["Weekly"])} | Session {count} tokens'
+    rows = list(quotas)
+    if not rows:
+        rows.append({'name':'Window UNKNOWN','remainingPercent':None,'resetAtLocal':None,'percentageSource':'UNKNOWN'})
+    if not any(w.get('windowDurationMins')==10080 for w in rows):
+        rows.append({'name':'Weekly (Window UNKNOWN)','remainingPercent':None,'resetAtLocal':None,'percentageSource':'UNKNOWN'})
+    lines = ['Usage (Asia/Taipei / UTC+08:00)']
+    for w in rows:
+        value = w['remainingPercent']
+        bar = '' if value is None else '['+'█'*int(value/10)+'░'*(10-int(value/10))+'] '
+        percent = 'UNKNOWN' if value is None else f'{value:g}% remaining'
+        conversion = ' (100 − used%)' if w['percentageSource']=='100 - native usedPercent' else ''
+        lines.append(f'{w["name"]}  {bar}{percent}{conversion} | Reset: {w["resetAtLocal"] or "UNKNOWN"}')
+    lines += [f'Session {count} tokens',f'Updated: {updated_at or "UNKNOWN"}']
+    return '\n'.join(lines)
 
 
 def main():
@@ -181,11 +230,12 @@ def main():
     parser.add_argument('--json', action='store_true')
     args = parser.parse_args()
     snapshot = None if args.offline_quota else quota_snapshot()
+    updated = local_timestamp(time.time()) if snapshot is not None else None
     quotas = quota_percentages(snapshot)
     sid, tokens = local_usage(args.session_id)
-    line = footer(quotas, tokens)
+    line = footer(quotas, tokens, updated)
     if args.json:
-        print(json.dumps({'fiveHourRemainingPercent': quotas['5H'], 'weeklyRemainingPercent': quotas['Weekly'],
+        print(json.dumps({'windows': quotas, 'updatedAtLocal':updated,'timezone':'Asia/Taipei',
                           'sessionId': sid, 'sessionTokens': tokens, 'footer': line,
                           'quotaSource': 'codex-account-rateLimits' if snapshot else 'UNKNOWN'}))
     else:

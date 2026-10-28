@@ -58,15 +58,19 @@ ccusage --help
 .\scripts\show-codex-usage.ps1 -SessionId '<session-id>'
 ```
 
-輸出為 `5H UNKNOWN | Weekly 95% | Session 15,547,537 tokens` 這類單行；數字僅為一次測試快照，不是固定值。百分比表示**剩餘額度**。
+輸出改為多行 Usage：每個 native window 都列出實際長度、remaining、Reset 完整日期時間；保留 Session tokens 與 Updated。時間統一為 Asia/Taipei / UTC+08:00。
 
 本機 Codex 0.164.0 已實測公開 app-server `account/rateLimits/read`。Helper 短暫啟動既有 native Codex executable，使用 `--no-daemon` 與 stdio，僅 initialize / initialized / rateLimits read，不建立 agent thread、不執行 inference、不兌換 reset。取得回應或逾時後終止子程序；沒有常駐服務。僅輸出窗口百分比及必要的本機用量，原始 RPC 回應不寫檔或印出。使用原生 Codex 登入流程，不讀取、匯出或傳遞 auth.json/token。
 
-依回傳 `windowDurationMins` 辨識窗口：300 才是 5H，10080 才是 Weekly；不能假設 primary 一定是 5H。`usedPercent` 轉成剩餘百分比。缺窗口、未知 bucket、過期/無效數值、未登入或逾時皆顯示 UNKNOWN；不使用 ccusage 推算。實測帳號只有 weekly 窗口，5H 顯示 UNKNOWN 是正確行為。離線 quota 模式不啟動 RPC，兩個 quota 均為 UNKNOWN。
+依 `windowDurationMins` 動態辨識：300 → 5H、360 → 6H、330 → 5H30M，10080 → Weekly (168H)。缺少長度顯示 Window UNKNOWN，不假定 primary 的時長。只顯示 native 回傳的窗口；沒有 weekly 時顯示明確 UNKNOWN 的 weekly placeholder。
+
+`remainingPercent` 直接採用；只有 `usedPercent` 時以 100 − used 換算並在行內註明。兩者矛盾時 percentage UNKNOWN。percentage、duration、reset 分別驗證：缺 reset 不抹掉已知剩餘百分比。沒有時區的日期不猜測，顯示 UNKNOWN。
+
+Updated 是成功取得 native RPC 回應的時間，先於本機 token 查詢；離線或 native unavailable 時為 UNKNOWN，不捏造取得時間。JSON 改為 windows[]、updatedAtLocal、timezone、sessionId、sessionTokens、quotaSource、footer，不再使用固定 fiveHourRemainingPercent 欄位。PowerShell 及 finalize fallback 共用 show-codex-usage.ps1 -FallbackOnly，沒有固定短期 window。
 
 Session tokens 來自 `ccusage codex session --offline --json --no-cost`，只取匹配此專案 session ID 的 `totalTokens`，不使用全域 totals。優先採指定 SessionId 或 CODEX_THREAD_ID / CODEX_SESSION_ID；沒有識別碼時採本專案最近更新的 session，並可在 JSON 輸出查看所選 ID。多個並行 session 時請明確指定。包含 cached token 的累計可很大，不能拿來估算 ChatGPT subscription quota。
 
-`/usage`、`/status` 與其帳號端回應才是 quota/rate limit 依據；5-hour / weekly 數值必須有真實窗口資料。ccusage 是本機 session usage，並非訂閱額度或帳單。
+`/usage`、`/status` 與其帳號端回應才是 quota/rate limit 依據；任何窗口及 weekly 數值都必須有真實資料。ccusage 是本機 session usage，不能推算訂閱額度或帳單。
 
 Finalize 自動呼叫 footer。一般回覆由 AGENTS.md 指示盡可能追加；未修改 CLI 安裝檔，也沒有保證所有 UI/其他專案對話都會自動插入 footer 的全域 hook。
 

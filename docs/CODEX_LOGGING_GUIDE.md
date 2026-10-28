@@ -45,3 +45,15 @@ Markdown 可版本控制；raw sessions、auth cache、暫存檔不進 Git。預
 Markdown 依 User Messages、Codex Visible Responses、Tool / Command Calls、Tool / Command Results、Errors、Tests 分節，各節保留 timestamp/call ID。Errors / Tests 會索引完整工具輸出，避免重複大量 log。啟發式分類不取代原始工具結果；未記錄的 session end 不補造。Finalize 自動匯出，未安裝每回合監控 hook 或背景服務。
 
 Markdown 實體行尾空白與 EOF 空行會正規化，避免 transcript 的 Markdown hard-break 空白觸發 Git whitespace 檢查；原生 JSONL 不變，JSON 文字欄位中的 escaped whitespace 保留。
+# AUTO-002 retention and freshness
+
+The extended [Agent transcript-sync guide](AGENT_TRANSCRIPT_SYNC_GUIDE.md) defines
+global sanitized history, Claude parity, turn identity and post-exit proof. Native
+storage stays untouched. Session filenames use start time, not last activity.
+New exports expose latest event/response/export time, event cursor and capture/sync
+flags. Active interactive exports cannot certify their own future final response.
+Use `python scripts/export-agent-history.py` for both agents, or the compatible
+Codex-only command below. `scripts/start-codex.ps1` / `start-claude.ps1` refresh after
+CLI exit; no hook, service or daemon is installed. Headless wrappers own final capture
+and `collaboration/run-ledger/` receipts. Read `status`, not just file existence.
+

@@ -41,7 +41,8 @@ def forbidden(path):
             name.endswith(('.pem', '.key', '.p12', '.pfx', '.credentials.json', '.jsonl', '.jsonl.zst')) or
             name in {'cookies.txt', 'cookies.json', 'environment-dump.txt', 'env-dump.txt'}):
         return 'forbidden-credential-or-raw-file'
-    if path.replace('\\', '/').startswith(('collaboration/codex-sessions/', 'collaboration/codex-reports/')) and p.suffix != '.md':
+    if path.replace('\\', '/').startswith(('collaboration/codex-sessions/', 'collaboration/codex-reports/',
+                                           'collaboration/cc-sessions/', 'collaboration/cc-reports/')) and p.suffix != '.md':
         return 'non-markdown-collaboration-file'
     return None
 

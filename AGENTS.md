@@ -54,6 +54,15 @@ secret scan, or tests prevent synchronization, explicitly report
 
 ## Usage Footer and Notifications
 
+- Visible transcripts also follow `docs/AGENT_TRANSCRIPT_SYNC_GUIDE.md`: retain native
+  sources, refresh the global sanitized archive and project-only exports. Read freshness
+  metadata instead of assuming the filename date is the last activity date.
+- Only an outer runner after process exit may certify final-response capture. Active
+  TUI snapshots remain UNKNOWN/LOCAL_ONLY; never claim your own future final response
+  is already captured. `SYNC_COMPLETE` is transcript transport, not task acceptance.
+- Keep AUTO-001 disabled pending its existing User decisions; transcript improvements
+  do not approve policy/control-plane trust or host test execution boundaries.
+
 - After each substantive task/response, when tools are available, run
   `./scripts/show-codex-usage.ps1` and copy its exact short footer. Use UNKNOWN
   for unavailable values. Never infer subscription quota from local token usage.

@@ -413,6 +413,7 @@ class LiveTools:
         return git('rev-parse', 'HEAD')
 
     def codex(self, prompt, timeout):
+        capture_started = datetime.now(timezone.utc).isoformat()
         native = load_module('agent_usage', 'codex-usage.py').native_codex()
         if not native:
             raise Gate('Native Codex CLI unavailable; no TUI fallback.')
@@ -441,9 +442,15 @@ class LiveTools:
                 value = json.loads(clean_text(output.read_text(encoding='utf-8'), 20000))
             except (OSError, ValueError) as exc:
                 raise Gate('Codex returned no valid final handoff JSON.') from exc
+            if hasattr(self, 'transcript_context'):
+                import agent_transcripts as history
+                session, proof = history.codex_result(raw,prompt,output.read_text(encoding='utf-8'),ROOT,
+                    capture_started,history.now())
+                self._retain_capture(session,proof)
             return value, usage
 
     def cc(self, prompt, timeout):
+        capture_started = datetime.now(timezone.utc).isoformat()
         launcher = claude_launcher()
         schema = (ROOT / 'automation/cc-review.schema.json').read_text(encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='agent-review-') as folder:
@@ -460,7 +467,36 @@ class LiveTools:
         if envelope.get('is_error'):
             raise Gate('Claude could not review; authentication or runtime needs User attention.')
         value = envelope.get('structured_output', envelope.get('result'))
+        if hasattr(self, 'transcript_context'):
+            import agent_transcripts as history
+            session,proof = history.claude_result(envelope,prompt,ROOT,capture_started,history.now())
+            self._retain_capture(session,proof)
         return review_json(value), safe_usage(envelope.get('usage'))
+
+    def _retain_capture(self,session,proof):
+        import agent_transcripts as history
+        history.archive(session,proof=proof)
+        self.pending_transcript=(session,proof)
+
+    def flush_capture(self,failed=False):
+        if not getattr(self,'pending_transcript',None):
+            return
+        import agent_transcripts as history
+        session,proof=self.pending_transcript
+        context=self.transcript_context
+        self.capture_artifacts=history.save_run(session,proof,ROOT,context['task_id'],context['round'],failed=failed)
+        self.pending_transcript=None
+        if not proof and not failed:
+            raise Gate('Final visible response capture is not proven; preserve LOCAL_ONLY ledger.')
+
+    def publish_capture(self):
+        if not getattr(self,'capture_artifacts',None):
+            return None
+        from agent_history_sync import publish
+        item,path,value=self.capture_artifacts
+        result=publish(item,path,value,ROOT)
+        self.capture_artifacts=None
+        return result
 
     def tests(self, commands):
         results = []
@@ -482,6 +518,11 @@ class LiveTools:
             value = json.loads(path.read_text(encoding='utf-8'))
             if not value.get('synced'):
                 raise RemoteError('Finalize did not verify GitHub synchronization.')
+            receipt=self.publish_capture()
+            if receipt:
+                value['commit']=receipt['commit']
+                if receipt['status']!='SYNC_COMPLETE':
+                    raise Gate('Transcript sync is incomplete; do not hand off as complete.')
             return value
         finally:
             if path.exists():
@@ -495,6 +536,7 @@ class LiveTools:
         return git('diff', '--no-ext-diff', '--no-textconv', base, head, '--', *names) if names else ''
 
     def review_report(self, issue, fields, state, review):
+        self.flush_capture()
         path = f'collaboration/cc-reports/{datetime.now():%Y-%m-%d_%H%M}_{fields["Task ID"]}_round-{state["cc_rounds"]}.md'
         body = '# CC Review\n\n' + json.dumps({'issue': issue['number'], 'reviewed_commit': state['handoff']['head'],
                    'review': review}, ensure_ascii=False, indent=2) + '\n'
@@ -516,7 +558,11 @@ class LiveTools:
         status_path.write_text(clean_text(status), encoding='utf-8')
         if scanner.scan_repo(ROOT)[1]:
             raise Gate('Security review report failed scan.')
-        git('add', '--', path, 'docs/00_PROJECT_STATUS.md')
+        capture_paths=[]
+        if getattr(self,'capture_artifacts',None):
+            item,ledger_path,_=self.capture_artifacts
+            capture_paths=[item['transcript'].relative_to(ROOT).as_posix(),ledger_path.relative_to(ROOT).as_posix()]
+        git('add', '--', path, 'docs/00_PROJECT_STATUS.md', *capture_paths)
         if scanner.scan_repo(ROOT, staged=True)[1]:
             git('reset')
             raise Gate('Staged review report failed secret scan.')
@@ -527,6 +573,9 @@ class LiveTools:
         sha = git('rev-parse', 'HEAD')
         if git('ls-remote', 'origin', 'refs/heads/' + branch).split()[0] != sha:
             raise RemoteError('Review report remote SHA mismatch.')
+        receipt=self.publish_capture()
+        if receipt and receipt['status']!='SYNC_COMPLETE':
+            raise Gate('Claude transcript not fully synchronized; no acceptance transition.')
         return path
 
 
@@ -625,6 +674,7 @@ class Engine:
             base = self.tools.preflight(self.policy['repository'])
             before = self.tools.snapshot()
             state['codex_attempts' if actor == 'codex' else 'cc_rounds'] += 1
+            self.tools.transcript_context={'task_id':task,'round':state['codex_attempts' if actor=='codex' else 'cc_rounds']}
             version = self.save(issue, state, version, 'CODEX_RUNNING' if actor == 'codex' else 'CC_REVIEWING', actor)
             def stop_check():
                 fresh = self.hub.issue(issue['number'])
@@ -682,6 +732,8 @@ class Engine:
                     raise Gate('Secret or unsafe content detected after implementation/tests.')
                 if self.hub.issue(issue['number'])['body'] != issue['body']:
                     raise Gate('Issue changed while Codex was working.')
+                if hasattr(self.tools,'flush_capture'):
+                    self.tools.flush_capture()
                 try:
                     outcome = self.tools.finalize(task)
                 except Gate:
@@ -734,10 +786,14 @@ class Engine:
             self.gate(issue, state, version, 'User interrupted execution. No automatic continuation.')
             raise
         except Gate as exc:
+            if hasattr(self.tools,'flush_capture'):
+                self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'USER_DECISION_REQUIRED'})
             self.gate(issue, state, version, clean_text(str(exc), 8000), clean_text(exc.question, 8000))
             return 'USER_DECISION_REQUIRED'
         except Exception:
+            if hasattr(self.tools,'flush_capture'):
+                self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'FAILED'})
             try:
                 self.save(issue, state, version, 'FAILED', emergency=True)

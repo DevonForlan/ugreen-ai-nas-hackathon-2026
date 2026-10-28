@@ -23,6 +23,7 @@ PATTERNS = [
 
 
 def sanitize(text):
+    text = re.sub(r'data:(?:image|audio|video)/[A-Za-z0-9.+-]+;base64,[A-Za-z0-9+/=]+', '[NON-TEXT DATA OMITTED]', text)
     for pattern, replacement in PATTERNS:
         text = pattern.sub(replacement, text)
     return re.sub(r'<(system|developer|analysis|reasoning|internal_metadata)(?:\s[^>]*)?>[\s\S]*?(?:</\1>|\Z)', '[INTERNAL CONTENT OMITTED]', text, flags=re.I)
@@ -30,6 +31,11 @@ def sanitize(text):
 
 def safe_value(value):
     if isinstance(value, dict):
+        if value.get('type') in {'image', 'image_url', 'input_image', 'audio', 'input_audio'}:
+            return '[NON-TEXT ATTACHMENT RETAINED ONLY IN NATIVE SOURCE]'
+        if (value.get('role') in {'system', 'developer'} or value.get('channel') in {'analysis', 'reasoning'}
+                or value.get('type') in {'thinking', 'reasoning', 'encrypted_reasoning'}):
+            return '[INTERNAL CONTENT OMITTED]'
         return {k: (REDACTED if re.fullmatch(SENSITIVE, k, re.I) else safe_value(v))
                 for k, v in value.items()
                 if k.lower() not in {'reasoning', 'analysis', 'encrypted_content', 'system', 'developer',
@@ -38,6 +44,12 @@ def safe_value(value):
     if isinstance(value, list):
         return [safe_value(v) for v in value]
     if isinstance(value, str):
+        try:
+            nested = json.loads(value)
+        except ValueError:
+            nested = None
+        if isinstance(nested, (dict, list)):
+            return safe_value(nested)
         return sanitize(value)
     return value
 
@@ -200,6 +212,15 @@ def main():
     source = (args.source or Path(os.environ.get('CODEX_HOME') or Path.home() / '.codex') / 'sessions').resolve()
     if not source.is_dir():
         parser.error('Session source directory does not exist')
+    # Keep the legacy standalone file usable; installed project tooling uses the
+    # shared global/project archive. Integration fixtures may copy only this file.
+    if (Path(__file__).parent / 'agent_transcripts.py').exists():
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from agent_transcripts import refresh
+        result = refresh(('codex',), project_path=project, roots={'codex': [source]})
+        print(json.dumps(result, sort_keys=True))
+        return 1 if result['failures'] else 0
     output = project / 'collaboration' / 'codex-sessions'
     output.mkdir(parents=True, exist_ok=True)
     if output.resolve() != output.absolute():

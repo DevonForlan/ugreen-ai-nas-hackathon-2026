@@ -202,3 +202,15 @@ acquisition, but never invokes an agent. Use only an authorized task. Unit tests
 agents/GitHub: all legal/illegal transitions, max counters, handoff, PASS/changes/User/failed,
 locking, malformed JSON, GitHub failure, notification fallback, source rejection and
 scope/body changes. No permanent Actions/self-hosted runner is installed in phase 1.
+# AUTO-002 transcript transport; AUTO-001 remains paused
+
+Headless runner instrumentation now captures/sanitizes final visible output only
+after process exit, writes global/project history and a per-run ledger, and verifies
+transcript publication before handoff/acceptance. See the
+[Agent transcript-sync guide](AGENT_TRANSCRIPT_SYNC_GUIDE.md) for exact guarantees,
+interactive limitations and recovery. Capture failure prevents a successful handoff.
+This does not approve AUTO-001's trust root or host-test boundary. Keep
+`codex_enabled=false`; do not run the autonomous loop while its User decisions remain open.
+The existing mocked workflow tests alone are not proof of live transcript transport;
+AUTO-002 adds separate capture/publication tests using synthetic events and child processes.
+

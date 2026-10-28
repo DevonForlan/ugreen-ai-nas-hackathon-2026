@@ -1,6 +1,6 @@
 {
   "agent": "codex",
-  "commit_sha": null,
+  "commit_sha": "675887264937688f0f7627e7d76e7df28880e511",
   "ended_at": null,
   "final_response_captured": "unknown",
   "github_synced": false,
@@ -15,11 +15,13 @@
   "secret_scan": "PASS",
   "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
   "snapshot_marker": "37fd89d36168e18fa8df225ab73c1e45f694ff7089ab4c2d6c18812213b0b78d",
+  "snapshot_uploaded": true,
   "source_event_count": 3237,
   "started_at": "2026-10-25T13:37:20.179Z",
   "status": "LOCAL_ONLY",
   "task_id": "AUTO-002",
   "transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
   "transcript_sha256": "9bc3fecc7a23261ed903802b8872e0a5c6c413e840820c850ab2aeeb9ddd7fff",
+  "verified_at": "2026-10-28T02:23:20.755405Z",
   "visible_event_count": 782
 }

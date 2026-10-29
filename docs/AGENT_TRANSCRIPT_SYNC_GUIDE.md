@@ -214,6 +214,9 @@ Each payload and its staged blobs are secret/path scanned. A compare-and-swap
 branch update protects against concurrent local changes. Push is normal, never
 force; `ls-remote` must match the payload SHA. One bounded receipt commit pins that
 verified payload, then its own push/remote SHA is verified. No self-SHA commit loop.
+During publication, local status is PENDING/LOCAL_ONLY; GitHub retains its previous
+verified receipt until the new payload is verified. Payload commits stage Markdown
+only, so routine successful updates do not transiently downgrade the remote receipt.
 No model calls, token estimates or auth extraction occur.
 
 The status top level is the most recently processed agent; `sessions` contains

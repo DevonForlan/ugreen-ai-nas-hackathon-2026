@@ -286,7 +286,10 @@ class Watcher:
             selected_scan(self.root, names)
             status['secret_scan'] = 'PASS'
             save()
-            payload = publish(self.root, names, 'logs: live '+self.agent+' visible snapshot')
+            # Keep GitHub's last verified receipt intact while a new payload is
+            # in flight. LOCAL_ONLY/PENDING lives locally until verified; never
+            # publish a transient downgrade for an ordinary successful update.
+            payload = publish(self.root, [names[0]], 'logs: live '+self.agent+' visible snapshot')
             synced = datetime.now(timezone.utc)
             stamp = datetime.fromisoformat(last['timestamp'].replace('Z', '+00:00'))
             status.update(github_sync_status='SYNC_COMPLETE', github_commit_sha=payload,

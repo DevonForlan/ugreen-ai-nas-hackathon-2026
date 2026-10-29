@@ -100,6 +100,14 @@ Requirements:
 For the already-running current Codex session, provide a safe attach mode that can begin watching
 the current native session without restarting or losing the conversation.
 
+The same requirement applies to the currently active Claude Code session:
+- Session ID: `011dd980-c4b8-4c73-8f95-af1164147f82`
+- Project: `C:/Users/devon.tseng/Desktop/actinspace/UGREEN Hackathon 2026`
+- attach without restarting Claude Code;
+- capture all user-visible Claude replies plus visible tool actions/results/errors shown in the terminal;
+- exclude hidden reasoning/system/developer/auth/secrets;
+- publish sanitized CC transcript under `collaboration/cc-sessions/` while CC is still running.
+
 ### 5. Failure handling
 
 - Git/network failure -> preserve local transcript and status LOCAL_ONLY/FAILED.
@@ -110,7 +118,12 @@ the current native session without restarting or losing the conversation.
 
 ### 6. Acceptance test using the current session
 
-Use the currently active multi-day Codex session as the real regression case.
+Use both currently active sessions as real regression cases:
+
+1. Codex active multi-day session.
+2. Claude Code active session `011dd980-c4b8-4c73-8f95-af1164147f82`.
+
+Claude acceptance must include the visible REG-002 reply and visible tool-action/result lines already shown in the terminal, sanitized and synced to GitHub.
 
 Acceptance test:
 1. attach live-sync watcher to the active Codex session;
@@ -122,7 +135,7 @@ Acceptance test:
 7. from GitHub, the newest visible response timestamp/content must match the local visible turn;
 8. no raw JSONL or hidden reasoning is committed.
 
-The task is NOT complete if it only works after Codex exits.
+The task is NOT complete if it only works after Codex or Claude Code exits. PASS requires live sync for both agents.
 
 ### 7. Tests
 
@@ -162,6 +175,8 @@ Run existing AUTO-002 transcript tests as regression coverage.
 State explicitly:
 - watcher mechanism used
 - whether active current Codex session was attached successfully
+- whether active current Claude Code session `011dd980-c4b8-4c73-8f95-af1164147f82` was attached successfully
+- latest visible CC turn timestamp and GitHub commit SHA containing it
 - latest visible turn timestamp
 - GitHub commit SHA containing that turn
 - github_remote_verified true/false
@@ -170,7 +185,6 @@ State explicitly:
 - secret scan result
 - final AUTO-003 status: PASS / FAILED / USER_DECISION_REQUIRED
 
-Only PASS if a visible response from the still-running current Codex session is successfully visible
-on GitHub without closing Codex.
+Only PASS if visible responses from both still-running Codex and Claude Code sessions are successfully visible on GitHub without closing either agent.
 
 After PASS, stop. Do not resume REG-002 automatically.

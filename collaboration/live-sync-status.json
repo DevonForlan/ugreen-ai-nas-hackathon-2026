@@ -1,23 +1,44 @@
 {
-  "agent": "codex",
+  "agent": "claude",
   "final_response_captured": "unknown",
-  "github_commit_sha": "382440cc199077efb1ef811f10d5d2393009471d",
-  "github_remote_verified": true,
-  "github_sync_status": "SYNC_COMPLETE",
-  "github_synced_at": "2026-10-29T01:45:33.352576+00:00",
-  "incomplete_reason": null,
-  "lag_seconds": 50.142,
-  "last_visible_event_at": "2026-10-29T01:44:43.211Z",
-  "last_visible_response_at": "2026-10-29T01:42:57.917Z",
-  "last_visible_turn_id": "turn-000046",
+  "github_commit_sha": null,
+  "github_remote_verified": false,
+  "github_sync_status": "LOCAL_ONLY",
+  "github_synced_at": null,
+  "incomplete_reason": "PUBLICATION_PENDING",
+  "lag_seconds": null,
+  "last_visible_event_at": "2026-10-29T01:46:25.947Z",
+  "last_visible_response_at": "2026-10-29T01:45:52.187Z",
+  "last_visible_turn_id": "turn-000005",
   "local_archive_updated": true,
-  "local_transcript_sha256": "e7b8def658b3aec895014057913f74691eefe6a0f753df14bdba22f30a279ef3",
+  "local_transcript_sha256": "1cea158c85ace0ed2d1d09306e1d24c9cd6132413ba423265c56222ac725e57c",
   "malformed_events": 0,
   "schema_version": 1,
   "scope": "Exact visible snapshot; not future final response or task acceptance",
   "secret_scan": "PASS",
-  "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
+  "session_id": "011dd980-c4b8-4c73-8f95-af1164147f82",
   "sessions": {
+    "claude:011dd980-c4b8-4c73-8f95-af1164147f82": {
+      "agent": "claude",
+      "final_response_captured": "unknown",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "github_sync_status": "LOCAL_ONLY",
+      "github_synced_at": null,
+      "incomplete_reason": "PUBLICATION_PENDING",
+      "lag_seconds": null,
+      "last_visible_event_at": "2026-10-29T01:46:25.947Z",
+      "last_visible_response_at": "2026-10-29T01:45:52.187Z",
+      "last_visible_turn_id": "turn-000005",
+      "local_archive_updated": true,
+      "local_transcript_sha256": "1cea158c85ace0ed2d1d09306e1d24c9cd6132413ba423265c56222ac725e57c",
+      "malformed_events": 0,
+      "schema_version": 1,
+      "scope": "Exact visible snapshot; not future final response or task acceptance",
+      "secret_scan": "PASS",
+      "session_id": "011dd980-c4b8-4c73-8f95-af1164147f82",
+      "visible_sha256": "2c6d51b779cc2c51e3b54bba4ecea1d78906f1455143035761ed3f7dfb239299"
+    },
     "codex:01a17347-a748-7a61-8544-48c906a9373d": {
       "agent": "codex",
       "final_response_captured": "unknown",
@@ -40,5 +61,5 @@
       "visible_sha256": "2541c09d104ac322dd08d8f2d83090b0e9a5cd5c258753451767d2349a9833c5"
     }
   },
-  "visible_sha256": "2541c09d104ac322dd08d8f2d83090b0e9a5cd5c258753451767d2349a9833c5"
+  "visible_sha256": "2c6d51b779cc2c51e3b54bba4ecea1d78906f1455143035761ed3f7dfb239299"
 }

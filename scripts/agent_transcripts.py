@@ -24,7 +24,7 @@ def module(name, file):
 base = module('history_sanitizer', 'export-codex-session.py')
 scan = module('history_scanner', 'scan-codex-secrets.py')
 ID = re.compile(r'[A-Za-z0-9_-]{8,100}')
-PRIVATE_CALL = re.compile(r'(?i)inspect-transcript-shapes\.py|Get-ChildItem\s+Env:|(?:^|[;\n])\s*(?:printenv|env|set)\s*(?:$|[;\n])|(?:\.codex|\.claude)[\\/][^\n]*?(?:auth|credentials)|\bauth\.json\b')
+PRIVATE_CALL = re.compile(r'(?i)inspect-transcript-shapes\.py|\.claude[\\/]sessions|Get-ChildItem\s+Env:|(?:^|[;\n])\s*(?:printenv|env|set)\s*(?:$|[;\n])|(?:\.codex|\.claude)[\\/][^\n]*?(?:auth|credentials)|\bauth\.json\b')
 ENV_DUMP = re.compile(r'(?m)^[A-Z_][A-Z0-9_]{2,}\s*=')
 
 
@@ -377,15 +377,15 @@ def render(session, manifest, project_path=None, synced=False):
     return '\n'.join(line.rstrip() for line in base.sanitize('\n'.join(lines)).splitlines()).rstrip()+'\n'
 
 
-def archive(session, root=None, project_path=None, proof=None):
+def archive(session, root=None, project_path=None, proof=None, allow_stream_growth=False):
     root=archive_root(root)
     if session.get('agent') not in {'codex','claude'} or not ID.fullmatch(session.get('session_id') or ''):
         raise ValueError('Unsafe archive identity')
     with lease(root/session['agent']/session['session_id']/'.archive.lock'):
-        return _archive(session,root,project_path,proof)
+        return _archive(session,root,project_path,proof,allow_stream_growth)
 
 
-def _archive(session, root=None, project_path=None, proof=None):
+def _archive(session, root=None, project_path=None, proof=None, allow_stream_growth=False):
     root = archive_root(root)
     directory = root/session['agent']/session['session_id']
     path = directory/'manifest.json'
@@ -394,12 +394,23 @@ def _archive(session, root=None, project_path=None, proof=None):
         raise ValueError('Archive ownership mismatch')
     if old and old['source_event_count'] > session['source_event_count']:
         raise ValueError('Native source shrank; earlier archive preserved')
+    prior = {}
     if old:
         # Never silently erase earlier visible turns if a native source is rewritten.
         previous = json.loads((directory/'visible.json').read_text(encoding='utf-8'))
         prior = {e['event_id']:dict(e,text=clean(e['text'])) for e in previous}
         current = {e['event_id']:e for e in events(session)}
-        if any(key not in current or current[key] != value for key,value in prior.items()):
+        def preserved(key, value):
+            candidate = current.get(key)
+            if candidate == value:
+                return True
+            # Claude can append a newer snapshot of the same UUID/block while
+            # streaming. Explicit live mode permits text growth, never erasure.
+            return (allow_stream_growth and candidate is not None and value['kind']=='assistant'
+                and candidate['kind']=='assistant' and candidate['text'].startswith(value['text'])
+                and {k:v for k,v in candidate.items() if k not in {'text','timestamp'}} ==
+                    {k:v for k,v in value.items() if k not in {'text','timestamp'}})
+        if any(not preserved(key,value) for key,value in prior.items()):
             raise ValueError('Native visible prefix changed; earlier archive preserved')
     proof = proof or (old or {}).get('exit_proof')
     valid = captured(session, proof)
@@ -416,13 +427,19 @@ def _archive(session, root=None, project_path=None, proof=None):
     changed = write_json(directory/'visible.json', events(session))
     changed |= atomic(directory/'session.md', render(session,manifest))
     for turn in session['turns']:
+        turn_path = directory/'turns'/(turn['turn_id']+'.md')
+        if (allow_stream_growth and turn_path.exists() and
+                all(prior.get(e['event_id']) == e for e in turn['events'])):
+            # Historical turn content is unchanged. Its existing marker describes
+            # that older exact snapshot; the manifest/session carry current freshness.
+            continue
         turn_sync = any(v.get('turns',{}).get(turn['turn_id']) == sha(turn['events']) for v in manifest['github_sync'].values())
         turn_final = manifest['final_response_captured'] if turn is session['turns'][-1] else 'unknown'
         content = ('# '+turn['turn_id']+'\n\nSession ID: '+session['session_id']+
                    '\nFinal response captured: '+str(turn_final).lower()+'\nGitHub snapshot synced: '+str(turn_sync).lower()+
                    '\nSnapshot marker: '+session['marker']+'\n\n'+
                    '\n'.join(f'## {e["kind"]} / {e["timestamp"]}\n'+base.fenced(e['text']) for e in turn['events']))
-        changed |= atomic(directory/'turns'/(turn['turn_id']+'.md'),base.sanitize(content))
+        changed |= atomic(turn_path,base.sanitize(content))
     changed |= write_json(path,manifest)
     target = None
     if project_path and ownership(session,project_path):

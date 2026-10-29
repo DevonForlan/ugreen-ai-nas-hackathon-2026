@@ -58,8 +58,14 @@ secret scan, or tests prevent synchronization, explicitly report
   sources, refresh the global sanitized archive and project-only exports. Read freshness
   metadata instead of assuming the filename date is the last activity date.
 - Only an outer runner after process exit may certify final-response capture. Active
-  TUI snapshots remain UNKNOWN/LOCAL_ONLY; never claim your own future final response
-  is already captured. `SYNC_COMPLETE` is transcript transport, not task acceptance.
+  sessions retain final_response_captured=unknown. AUTO-003 live receipts may mark an
+  exact, remotely verified visible snapshot SYNC_COMPLETE while its agent is running;
+  never claim its future final response is captured. This is transport, not acceptance.
+- Interactive start wrappers enable the bounded live-sync companion. Attach existing
+  sessions with scripts/attach-agent-live-sync.ps1 and an independently verified owner
+  PID. Read collaboration/live-sync-status.json (including its per-session receipts).
+  Native sources are read-only; only sanitized transcripts/receipts are auto-published.
+  Watcher and finalize share an exclusive Git mutation lease. Never steal stale locks.
 - Keep AUTO-001 disabled pending its existing User decisions; transcript improvements
   do not approve policy/control-plane trust or host test execution boundaries.
 

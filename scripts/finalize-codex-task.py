@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('secret_scan', ROOT / 'scripts/scan-codex-secrets.py')
@@ -165,6 +167,8 @@ def main():
     args = parser.parse_args()
     outcome = {'status': 'FAILED', 'synced': False, 'taskCommitted': False}
     phase = 'VALIDATE'
+    publish_lock = None
+    lock_identity = uuid.uuid4().hex
     try:
         if args.result_name and not re.fullmatch(r'codex-finalize-[a-f0-9]{32}\.json', args.result_name):
             raise RuntimeError('Invalid result filename')
@@ -172,6 +176,19 @@ def main():
             raise RuntimeError('Invalid TaskId')
         if not os.path.samefile(git('rev-parse', '--show-toplevel'), ROOT):
             raise RuntimeError('Scripts must live directly under the target repository root')
+        if not args.dry_run:
+            candidate = Path(git('rev-parse', '--absolute-git-dir'))/'agent-transcript-publish.lock'
+            deadline = time.monotonic()+180
+            while True:
+                try:
+                    with candidate.open('x', encoding='utf-8') as stream:
+                        stream.write(lock_identity)
+                    publish_lock = candidate
+                    break
+                except FileExistsError:
+                    if time.monotonic() >= deadline:
+                        raise RuntimeError('Transcript publisher owns Git mutation; retry later. No lock stolen.')
+                    time.sleep(0.5)
         branch = git('branch', '--show-current')
         if not branch or git('diff', '--name-only', '--diff-filter=U'):
             raise RuntimeError('Detached HEAD or unresolved conflict')
@@ -272,6 +289,8 @@ def main():
         print(f'LOCAL ONLY — NOT SYNCED\n{detail}', flush=True)
         return 1
     finally:
+        if publish_lock and publish_lock.exists() and publish_lock.read_text(encoding='utf-8') == lock_identity:
+            publish_lock.unlink()
         if args.result_name and re.fullmatch(r'codex-finalize-[a-f0-9]{32}\.json', args.result_name):
             try:
                 path = ROOT / git('rev-parse', '--git-path', args.result_name)

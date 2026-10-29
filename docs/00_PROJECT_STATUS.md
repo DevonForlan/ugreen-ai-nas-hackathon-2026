@@ -1,18 +1,22 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-28 11:52 +0800
+Last Updated: 2026-10-29 09:56 +0800
 
 ## Current Phase
 
-REG-001 registration preparation only. R01-R06 and product implementation have not started.
+Collaboration infrastructure: AUTO-003 live transcript transport verified.
+REG-002 registration is paused; R01-R06 and product implementation have not started.
 AUTO-001 automation remains paused pending User decisions.
 
 ## Current Objective
 
-AUTO-002 quota footer addendum: dynamic native windows, remaining/reset/Updated in Taipei.
-Original interactive capture remains LOCAL_ONLY; no post-exit proof or CC PASS claimed.
+AUTO-003: near-real-time sanitized transcript publication for active Codex and Claude.
+REG-002 is PAUSED_BY_USER; no registration was submitted or verified. Do not resume.
 
 ## Completed
+
+- AUTO-003 Codex live checkpoint is readable from GitHub while Codex remains running;
+  both active agents have verified GitHub payloads and SHA-256 matches.
 
 - Dynamic quota windows and Taipei reset/retrieval timestamps implemented; session tokens retained.
 
@@ -32,7 +36,9 @@ Original interactive capture remains LOCAL_ONLY; no post-exit proof or CC PASS c
 
 ## In Progress
 
-- REG-001 publication and independent document review; actual registration is User-only.
+- AUTO-003 publication and independent CC review. 90 fast + 12 integration tests passed.
+  Live transport passes; measured latency still exceeds the <=15s target under concurrent load.
+- REG-002 paused before login/registration; User has authorized later submission only after required confirmations.
 - AUTO-001 remains USER_DECISION_REQUIRED per manual CC review; it is not DONE.
 
 ## Blockers
@@ -51,5 +57,7 @@ Original interactive capture remains LOCAL_ONLY; no post-exit proof or CC PASS c
 
 ## Next Planned Step
 
-Independent Claude review of AUTO-002. AUTO-001 stays disabled.
-Do not start research/product work. Interactive final reply requires an outside post-exit capture; no self-certification.
+Review AUTO-003 report and live acceptance receipts; assess the documented latency limitation.
+Stop after publication; Codex does not approve its own task DONE.
+Do not resume REG-002 or start R01-R06. AUTO-001 remains disabled.
+AUTO-002 final-response capture is still unknown for the active multi-day session.

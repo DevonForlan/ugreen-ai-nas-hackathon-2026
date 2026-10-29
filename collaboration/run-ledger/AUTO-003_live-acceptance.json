@@ -1,0 +1,39 @@
+{
+  "acceptance": "live transport only; independent task review pending",
+  "agents": [
+    {
+      "agent": "codex",
+      "github_api_content_verified": true,
+      "github_commit_sha": "eb0ee4ceb181cceca52bb9535cdbd7b10009c2dd",
+      "lag_seconds": 20.512,
+      "last_visible_event_at": "2026-10-29T01:52:39.458Z",
+      "last_visible_response_at": "2026-10-29T01:50:30.019Z",
+      "marker": "LIVE-SYNC-CHECKPOINT-20261029-B",
+      "marker_found": true,
+      "owner_alive_at_verification": true,
+      "owner_pid": 24784,
+      "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
+      "sha256_matches_receipt": true,
+      "tool_sections_present": true,
+      "transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md"
+    },
+    {
+      "agent": "claude",
+      "github_api_content_verified": true,
+      "github_commit_sha": "533dbfb369782fae8ad9298b6eb018400b999f76",
+      "lag_seconds": 68.888,
+      "last_visible_event_at": "2026-10-29T01:49:36.882Z",
+      "last_visible_response_at": "2026-10-29T01:49:36.882Z",
+      "marker": "REG-002 status: **BLOCKED**",
+      "marker_found": true,
+      "owner_alive_at_verification": true,
+      "owner_pid": 25008,
+      "session_id": "011dd980-c4b8-4c73-8f95-af1164147f82",
+      "sha256_matches_receipt": true,
+      "tool_sections_present": true,
+      "transcript_path": "collaboration/cc-sessions/2026-10-24_0917_011dd980-c4b8-4c73-8f95-af1164147f82.md"
+    }
+  ],
+  "observed_at": "2026-10-29T01:53:48.892438Z",
+  "task": "AUTO-003"
+}

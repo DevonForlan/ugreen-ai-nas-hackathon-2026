@@ -47,9 +47,8 @@ python 'C:\Users\devon.tseng\Desktop\actinspace\UGREEN Hackathon 2026\scripts\ex
 ```
 
 Nothing modifies Registry, PATH, native installation/configuration or native storage.
-No daemon, service or background watcher is installed. Unwrapped CLI use remains
-recoverable from native storage where available, but derived/global history updates
-only when this command or a wrapper reaches a safe refresh point.
+No daemon or service is installed. AUTO-003 adds a bounded, process-owned companion
+to interactive launchers; unwrapped sessions require explicit attach for live updates.
 
 Exports use fixed source byte boundaries, sanitized atomic writes and per-session
 exclusive writer locks. Unchanged files keep mtime and export timestamp. Appended
@@ -164,3 +163,88 @@ Sources: [official Codex exec](https://learn.chatgpt.com/docs/non-interactive-mo
 [official Codex hooks](https://learn.chatgpt.com/docs/hooks),
 [official Claude headless](https://code.claude.com/docs/en/headless), plus local
 `codex --version`, `codex features list`, `codex exec --help`, `claude --version/--help`.
+
+
+## AUTO-003 live companion (interactive, no restart required)
+
+The default `start-codex.ps1` / `start-claude.ps1` launches a real interactive CLI
+and attaches a companion after exactly one changed project session is identified.
+`-NoPush` disables automatic publication. Multiple candidate sessions produce a
+visible warning; identity is never guessed. This does not enable AUTO-001.
+
+For an already-running process, use its verified OS PID and exact session ID:
+
+```powershell
+.\scripts\attach-agent-live-sync.ps1 -Agent codex -SessionId <native-session-id> -OwnerPid <verified-pid>
+.\scripts\attach-agent-live-sync.ps1 -Agent claude -SessionId <native-session-id> -OwnerPid <verified-pid>
+```
+
+A session ID alone does not prove a process owns it. Never pick a PID by age.
+Attach is foreground in its own terminal; no TUI keyboard injection or CLI restart.
+The companion exits when its owner exits or after `-MaxRuntime` (default 8 hours).
+No service, scheduled task, Registry, global PATH, CLI config or auth changes.
+Normal wrappers wait for their companion and warn visibly if it stops/crashes.
+The attach terminal also prints a sanitized failure warning; keep that terminal visible.
+
+Mechanism: standard-library read-only binary polling every 0.5 seconds. Keep a byte
+cursor, hold incomplete trailing lines until newline, and classify only visible
+Codex response items / warnings and Claude user/assistant text/tool blocks. Ignore
+reasoning/internal-only records. Debounce for 3 seconds; cap a continuous burst at
+10 seconds to prevent starvation. This is record/response quiescence, not a
+per-token hook or a guarantee that a complete TUI turn has ended.
+
+Official lifecycle hooks are documented at https://learn.chatgpt.com/docs/hooks .
+This task uses polling rather than relying on a hook being configured retroactively
+inside an existing process. AUTO-002 performs the authoritative visible parsing,
+project ownership check, sanitizer and global/project atomic writes. After a visible
+append, it validates the fixed native snapshot; unchanged event sanitization is
+cached in bounded RAM using SHA keys and sanitized values only. Unchanged historical
+turn files retain their prior exact-snapshot markers. No raw cursor/cache enters Git.
+Claude UUID/block growth is allowed only for appended assistant text; deletions or
+non-prefix rewrites fail closed and retain the older archive. Reopen/rotation with
+an intact session prefix can replay idempotently; loss of earlier native records
+requires explicit reconciliation, never erasure of retained history.
+
+### Git publication and status
+
+Only the exact project's sanitized session Markdown and `live-sync-status.json`
+are auto-staged through a temporary isolated index. Dirty developer files are
+preserved. Existing staging or unrelated unpublished history blocks publication.
+Each payload and its staged blobs are secret/path scanned. A compare-and-swap
+branch update protects against concurrent local changes. Push is normal, never
+force; `ls-remote` must match the payload SHA. One bounded receipt commit pins that
+verified payload, then its own push/remote SHA is verified. No self-SHA commit loop.
+No model calls, token estimates or auth extraction occur.
+
+The status top level is the most recently processed agent; `sessions` contains
+independent receipts keyed by `agent:session_id`, so one agent never certifies
+another. `github_commit_sha` pins the transcript payload, not the receipt commit.
+`local_transcript_sha256` identifies the precise sanitized snapshot. SYNC_COMPLETE
+means that visible snapshot is transported, not task acceptance, process exit or
+capture of any future final response. `final_response_captured` stays `unknown`.
+Later native appends can legitimately make a previously verified receipt older.
+`lag_seconds` measures native last-visible-event UTC -> verified payload push time;
+receipt publication adds network latency. Target <=15 seconds is best effort;
+large cold histories, network/GitHub latency and Git serialization can exceed it.
+Missing/malformed records are counted, not echoed. Failed scans block upload;
+Git/network/divergence failures leave an explicit LOCAL_ONLY/FAILED local receipt.
+
+Each session has a nonce-owned `.git/agent-live-sync-<agent>-<id>.lock`.
+A shared `.git/agent-transcript-publish.lock` serializes watcher and task finalize
+mutation. Finalize waits up to 180 seconds without stealing the lock. Watchers
+continue after it releases. Existing Git index staging is never reset wholesale.
+Other external Git writers must coordinate; unexpected remote/local changes stop
+publication. Fetch and inspect, reconcile safely, then explicitly reattach.
+
+### Stop / recovery
+
+```powershell
+New-Item -ItemType File .git/agent-live-sync.stop -Force
+```
+
+This explicitly stops all repository companions after an in-flight operation and
+one final bounded snapshot attempt. Wait for the attach terminal/process to exit.
+Remove this stop-request file before intentionally restarting companions. Do not
+remove an ownership lock until its owner is confirmed stopped; never infer staleness
+from age. No automatic force/reset/rebase/retry of divergent history is performed.
+REG-002 remains paused after AUTO-003 and is not restarted by any companion.

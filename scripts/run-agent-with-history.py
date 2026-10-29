@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Outer process owner: wait for agent exit, then sanitize/archive/publish. No loop."""
+"""Outer owner: interactive live companion plus post-exit capture; no agent work loop."""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
+import time
 from agent_transcripts import (archive, claude_result, codex_result, discover, events, module,
                                now, project, read_native, refresh, save_run)
 from agent_history_sync import publish
@@ -60,6 +61,7 @@ def main():
     parser.add_argument('--timeout',type=int,default=1800)
     parser.add_argument('--archive-root',type=Path)
     parser.add_argument('--publish',action='store_true')
+    parser.add_argument('--live-sync',action='store_true',help='Owned interactive transcript companion')
     parser.add_argument('cli_args',nargs=argparse.REMAINDER)
     args=parser.parse_args()
     cwd=args.project.resolve()
@@ -77,9 +79,48 @@ def main():
                 '--background','--bg','--cloud','--teleport'))):
             parser.error('Use the headless history runner for non-interactive/ephemeral execution; TUI wrapper requires native persistence')
         result=1
+        companion=None
+        process=None
         try:
-            result=subprocess.call(argv+extra,cwd=cwd)  # real TUI, no keyboard simulation
+            process=subprocess.Popen(argv+extra,cwd=cwd)  # real TUI, no keyboard simulation
+            warned=False
+            while process.poll() is None:
+                if args.live_sync and args.publish and gitroot and companion is None:
+                    candidates=[]
+                    for path in discover(args.agent):
+                        if before.get(str(path)) == (path.stat().st_size,path.stat().st_mtime_ns):
+                            continue
+                        session=read_native(path,args.agent)
+                        if session and session['projects']==[project(gitroot)]:
+                            candidates.append((path,session['session_id']))
+                    if len(candidates)==1:
+                        path,sid=candidates[0]
+                        command=[sys.executable,'-X','utf8',str(Path(__file__).with_name('agent_live_sync.py')),
+                            '--agent',args.agent,'--source',str(path),'--session-id',sid,
+                            '--project',str(gitroot),'--owner-pid',str(process.pid)]
+                        companion=subprocess.Popen(command,cwd=cwd,
+                            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform=='win32' else 0)
+                        print('Live sanitized transcript sync attached: '+sid,flush=True)
+                    elif len(candidates)>1 and not warned:
+                        print('WARNING: live sync needs an exact session; multiple changed sessions. Use attach mode.',flush=True)
+                        warned=True
+                if companion is not None and companion.poll() is not None and not warned:
+                    print('WARNING: live sync stopped; agent continues. LOCAL ONLY — inspect live-sync-status.json.',flush=True)
+                    warned=True
+                time.sleep(1)
+            result=process.returncode
         finally:
+            if process is not None and process.poll() is None:
+                process.terminate()
+                process.wait(timeout=15)
+            if companion is not None:
+                # Owner exit ends the bounded companion. No detached/orphan watcher.
+                try:
+                    companion.wait(timeout=180)
+                except subprocess.TimeoutExpired:
+                    companion.terminate()
+                    companion.wait(timeout=15)
+                    print('WARNING: live companion forcibly stopped after owner exit; inspect lock before reuse.',flush=True)
             stats=refresh(root=args.archive_root,project_path=gitroot)
             print(json.dumps({'archive_refresh':stats,'interactive_final_capture':'unknown'}))
         candidates=[]

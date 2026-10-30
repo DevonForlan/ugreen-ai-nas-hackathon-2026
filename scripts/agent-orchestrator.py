@@ -5,9 +5,11 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 import sys
+import time
 
-from agent_workflow import (ROOT, STATES, Engine, Gate, GitHub, LiveTools, Locked, RemoteError,
-                            clean_text, digest, git, local_lock, parse_task, relative, state_label, trusted, trusted_author, review_prompt)
+from agent_workflow import (ROOT, CONTROL_ROOT, STATES, Engine, Gate, GitHub, LiveTools, Locked, RemoteError,
+                            clean_text, digest, git, local_lock, parse_task, relative, state_label, trusted, trusted_author, review_prompt,
+                            bind_lease,recover_locks,trusted_lease_path)
 
 
 def preview(hub, policy, issues, required_agent=None, inventory=None):
@@ -118,12 +120,24 @@ def main():
     parser.add_argument('--manual-handoff', action='store_true')
     parser.add_argument('--report')
     parser.add_argument('--base')
+    parser.add_argument('--poll-seconds',type=float,default=30)
+    parser.add_argument('--max-polls',type=int,default=60)
+    parser.add_argument('--max-runtime',type=int,default=7200)
+    parser.add_argument('--resume',action='store_true',help='Recover only verified durable handoff/review, never uncertain running work')
+    parser.add_argument('--recover-locks',action='store_true',help='Operator-only: verified dead local owner, matching trusted identity and remote markers; no state/counter reset')
     args = parser.parse_args()
-    policy = json.loads((ROOT / 'automation/policy.json').read_text(encoding='utf-8'))
+    if not 1<=args.poll_seconds<=300 or not 1<=args.max_polls<=120 or not 30<=args.max_runtime<=21600:
+        raise Gate('Polling/runtime budget outside approved bounds.')
+    policy = json.loads((CONTROL_ROOT / 'automation/policy.json').read_text(encoding='utf-8'))
     repo = args.repository or policy['repository']
     if repo != policy['repository']:
         raise Gate('Repository must match the checked-in owner policy.')
     hub, tools = GitHub(repo), LiveTools()
+    if args.recover_locks:
+        if not args.issue or args.dry_run:raise Gate('Recovery requires an explicit approved Issue; no implicit dry-run mutation.')
+        recover_locks(hub,policy,hub.issue(args.issue),ROOT/git('rev-parse','--git-path','agent-workflow.lock'))
+        print('Owned dead-controller leases recovered; task state/counters untouched. Use --resume to validate durable evidence.')
+        return 0
     stop = ROOT / git('rev-parse', '--git-path', 'AUTO_STOP.json')
     tools.stop_file = stop
     if args.setup_labels:
@@ -132,12 +146,19 @@ def main():
         else:
             setup_labels(hub)
         return 0
-    inventory = hub.issues()
+    all_inventory = hub.issues()
+    # Only explicitly enabled owner-pinned plans drive work. Unrelated Issues,
+    # comments/commits and the disabled historical AUTO-001 plan grant no authority.
+    approved_numbers={p['issue_number'] for p in policy['plans'].values() if p.get('codex_enabled') or (p.get('cc_enabled') and not p.get('manual_handoff'))}
+    inventory=[item for item in all_inventory if item['number'] in approved_numbers]
     issues = [hub.issue(args.issue)] if args.issue else inventory
     if args.dry_run:
         preview(hub, policy, issues, args.agent, inventory)
         if stop.exists():
             print('LOCAL STOP exists: reconcile before any live execution.')
+        return 0
+    if args.issue and args.issue not in approved_numbers and not (args.manual_handoff or args.smoke_lock):
+        print('No enabled pinned plan for this Issue; unrelated activity ignored. No mutation/model call.')
         return 0
     if stop.exists():
         raise Gate('Persistent local emergency stop exists; User must reconcile it.')
@@ -150,7 +171,7 @@ def main():
             print('STOP: owner task source/editor requires reconciliation.')
             return 2
         target_manual = args.manual_handoff and issue['number'] == args.issue and state_label(issue) == 'CODEX_RUNNING'
-        if state_label(issue) in {'USER_DECISION_REQUIRED', 'FAILED', 'CODEX_RUNNING', 'CC_REVIEWING'} and not (target_manual or args.smoke_lock):
+        if state_label(issue) in {'USER_DECISION_REQUIRED', 'FAILED', 'CODEX_RUNNING', 'CC_REVIEWING'} and not (target_manual or args.smoke_lock or (args.resume and args.issue==issue['number'] and state_label(issue) in {'CODEX_RUNNING','CC_REVIEWING'})):
             tools.notify('WARNING', 'Agent automation stopped', f'Issue #{issue["number"]} requires User reconciliation.')
             print('STOP: issue requires decision/reconciliation; no agent launched.')
             return 2
@@ -171,7 +192,8 @@ def main():
         if args.agent != expected:
             raise Gate('Runner role is not eligible for current state.')
     lock = ROOT / git('rev-parse', '--git-path', 'agent-workflow.lock')
-    with local_lock(lock), hub.lock(issue['number']):
+    with local_lock(lock) as record, hub.lock(issue['number']) as marker:
+        bind_lease(record,lock,hub,issue,marker,policy)
         try:
             if pending_gate:
                 raise pending_gate
@@ -190,12 +212,23 @@ def main():
                 return 0
             engine = Engine(hub, tools, policy)
             limit = 1 if args.one_step or args.agent else min(6, max(1, policy['max_steps']))
-            for _ in range(limit):
+            deadline=time.monotonic()+args.max_runtime
+            steps=0
+            for poll in range(args.max_polls):
+                if time.monotonic()>=deadline or steps>=limit:
+                    break
                 issue = hub.issue(issue['number'])
-                state = engine.step(issue)
+                with tools.execution_lease():
+                    if args.resume and state_label(issue) in {'CODEX_RUNNING','CC_REVIEWING'}:
+                        state=engine.recover(issue)
+                    else:
+                        state=engine.step(issue)
+                steps+=1
                 print(json.dumps({'issue': issue['number'], 'state': state}))
                 if state in {'DONE', 'USER_DECISION_REQUIRED', 'FAILED', 'CODEX_RUNNING', 'CC_REVIEWING'}:
                     return 0 if state == 'DONE' else 2
+                if steps<limit and poll+1<args.max_polls:
+                    time.sleep(min(args.poll_seconds,max(0,deadline-time.monotonic())))
             # A bounded invocation ends; persistent counters protect the next invocation too.
             print('Bounded step budget exhausted; no background continuation.')
             return 0

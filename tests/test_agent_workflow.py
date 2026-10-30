@@ -71,6 +71,7 @@ class Tools:
         self.report = 'collaboration/codex-reports/2026-10-27_0100_AUTO-T1.md'
 
     def preflight(self, repository): return self.head
+    def observation_only(self, base, head): return head == 'e' * 40
     def snapshot(self): return dict(self.tree)
     def notify(self, *args):
         if self.notify_error:
@@ -349,7 +350,10 @@ class LockTests(unittest.TestCase):
                     if ref in self.refs: raise w.RemoteError('exists')
                     self.refs[ref] = payload['sha']
                 elif method == 'DELETE': del self.refs[path.split('/git/refs/')[1]]
-                else: return {'object': {'sha': self.refs[path.split('/git/ref/')[1]]}}
+                else:
+                    key=path.split('/git/ref/')[1]
+                    if missing and key not in self.refs:return None
+                    return {'object': {'sha': self.refs[key]}}
         hub = Hub()
         with hub.lock(1):
             with self.assertRaises(w.Locked):

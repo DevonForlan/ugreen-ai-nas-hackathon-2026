@@ -13,8 +13,10 @@ import subprocess
 import tempfile
 import time
 import uuid
+from agent_security import scope_snapshot, protected, sandbox_command, gate_details, git_prefix, verify_control, process_birth, host_id
 
-ROOT = Path(__file__).resolve().parents[1]
+CONTROL_ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(os.environ.get('CODEX_AGENT_WORKSPACE') or CONTROL_ROOT).resolve()
 STATES = ('READY_FOR_CODEX', 'CODEX_RUNNING', 'READY_FOR_CC_REVIEW', 'CC_REVIEWING',
           'CHANGES_REQUESTED', 'USER_DECISION_REQUIRED', 'DONE', 'FAILED')
 EDGES = {
@@ -32,12 +34,12 @@ FIELDS = ('Task ID', 'Objective', 'Background', 'Scope', 'Out of Scope', 'Accept
 GATES = ('product direction change', 'competition topic selection', 'major architecture change',
          'scope expansion', 'paid external service', 'new credential requirement', 'secret detected',
          'destructive data operation', 'production deployment', 'force push', 'security uncertainty',
-         'repeated test failure', 'Codex / Claude conclusion conflict')
+         'repeated test failure', 'Codex / Claude conclusion conflict','login/MFA/CAPTCHA','legal/waiver/contract acceptance')
 PROTECTED = ('scripts/', 'automation/', '.github/', 'AGENTS.md', 'CLAUDE.md', '.gitignore', '.codex/', '.claude/', '.git/', '__agent_control__/')
 
 
 def load_module(name, filename):
-    spec = importlib.util.spec_from_file_location(name, ROOT / 'scripts' / filename)
+    spec = importlib.util.spec_from_file_location(name, CONTROL_ROOT / 'scripts' / filename)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -49,9 +51,9 @@ exporter = load_module('agent_export', 'export-codex-session.py')
 
 class Gate(RuntimeError):
     """A User decision is required; diagnostics must not contain untrusted values."""
-    def __init__(self, reason, question='How should this task proceed?'):
+    def __init__(self, reason, question=None):
         super().__init__(reason)
-        self.question = question
+        self.question = question or gate_details(reason)[0]
 
 
 class RemoteError(RuntimeError):
@@ -64,6 +66,12 @@ class Locked(RuntimeError):
 
 def digest(text):
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+
+def object_id(value):
+    if not isinstance(value,str) or not re.fullmatch(r'[0-9a-f]{40}(?:[0-9a-f]{24})?',value):
+        raise Gate('Expected immutable commit SHA is missing or malformed.')
+    return value
 
 
 def clean_text(text, limit=65536):
@@ -155,7 +163,7 @@ def allowed_changes(names, plan, task_id):
     allowed = [relative(x.rstrip('/')) + ('/' if x.endswith('/') else '') for x in plan['allowed_write_paths']]
     for name in names:
         relative(name)
-        if any(name == p or (p.endswith('/') and name.startswith(p)) for p in PROTECTED):
+        if protected(name) or any(name == p or (p.endswith('/') and name.startswith(p)) for p in PROTECTED):
             raise Gate('Control-plane modification requires User approval.')
         standard = (name == 'docs/00_PROJECT_STATUS.md' or
                     (name.startswith('collaboration/codex-reports/') and name.endswith('_' + task_id + '.md')))
@@ -169,7 +177,7 @@ def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, 
     inherited = {k: v for k, v in os.environ.items() if not isolate_env or k.upper() in allowed_env}
     env = dict(inherited, PYTHONIOENCODING='utf-8', GIT_TERMINAL_PROMPT='0', GCM_INTERACTIVE='Never',
                CODEX_AGENT_WORKFLOW='1', CODEX_USAGE_DISABLED='1', CODEX_NOTIFY_DISABLED='1', CODEX_SOUND_DISABLED='1',
-               CLAUDE_CODE_DISABLE_BACKGROUND_TASKS='1')
+               CLAUDE_CODE_DISABLE_BACKGROUND_TASKS='1',PYTHONDONTWRITEBYTECODE='1',GIT_OPTIONAL_LOCKS='0')
     p = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.PIPE if input_text is not None else subprocess.DEVNULL,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8', errors='replace',
                          env=env, start_new_session=os.name != 'nt',
@@ -208,7 +216,7 @@ def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, 
 
 
 def git(*args):
-    return command(['git', *args]).strip()
+    return command(git_prefix(ROOT)+list(args)).strip()
 
 
 def claude_launcher():
@@ -286,12 +294,13 @@ class GitHub:
         return self.api(f'{self.prefix}/issues/{number}/comments', 'POST', {'body': clean_text(body)})
 
     def blocked_elsewhere(self, number, policy):
+        enabled={p['issue_number'] for p in policy['plans'].values() if p.get('codex_enabled') or (p.get('cc_enabled') and not p.get('manual_handoff'))}
         for label in ('USER_DECISION_REQUIRED', 'FAILED'):
             for page in range(1, 21):
                 rows = self.api(f'{self.prefix}/issues?state=open&labels={label}&per_page=100&page={page}')
                 for item in rows:
                     source = {'author': item.get('user', {}).get('login', '')}
-                    if 'pull_request' not in item and item['number'] != number and trusted_author(source, policy):
+                    if 'pull_request' not in item and item['number'] in enabled and item['number'] != number and trusted_author(source, policy):
                         return True
                 if len(rows) < 100:
                     break
@@ -330,11 +339,14 @@ class GitHub:
         return value['content']['sha']
 
     def artifact(self, path, sha):
+        object_id(sha)
         item = self.api(f'{self.prefix}/contents/{relative(path)}?ref={sha}')
         return clean_text(base64.b64decode(item['content']).decode('utf-8'))
 
     @contextmanager
     def lock(self, number):
+        if self.api(self.prefix+'/git/ref/heads/agent-locks/recovery',missing=True):
+            raise Locked('Owner lock recovery is active; no task may start.')
         base = self.head()
         tree = self.api(f'{self.prefix}/git/commits/{base}')['tree']['sha']
         marker = self.api(self.prefix + '/git/commits', 'POST', {
@@ -348,7 +360,9 @@ class GitHub:
                 except RemoteError as exc:
                     raise Locked('Remote task/workspace lock is held or unavailable; no lease stealing.') from exc
                 held.append(ref)
-            yield
+            if self.api(self.prefix+'/git/ref/heads/agent-locks/recovery',missing=True):
+                raise Locked('Recovery began during claim; release only our markers and stop.')
+            yield marker
         finally:
             for ref in reversed(held):
                 value = self.api(self.prefix + '/git/ref/' + ref)
@@ -360,34 +374,118 @@ class GitHub:
 @contextmanager
 def local_lock(path):
     owner = uuid.uuid4().hex
+    record={'owner':owner,'pid':os.getpid(),'process_birth':process_birth(os.getpid()),'host_id':host_id()}
     try:
         with path.open('x', encoding='utf-8') as stream:
-            json.dump({'owner': owner, 'pid': os.getpid()}, stream)
+            json.dump(record, stream)
     except FileExistsError as exc:
         raise Locked('Local workflow lock exists; never infer expiry from time.') from exc
     try:
-        yield
+        yield record
     finally:
         if json.loads(path.read_text(encoding='utf-8'))['owner'] != owner:
             raise Locked('Local lock ownership changed.')
         path.unlink()
 
 
+def trusted_lease_path():
+    folder=CONTROL_ROOT/'runtime'
+    folder.mkdir(parents=True,exist_ok=True)
+    return folder/('lease-'+digest(str(ROOT).casefold())[:24]+'.json')
+
+
+def bind_lease(record,path,hub,issue,marker,policy):
+    record.update(repository=policy['repository'],issue_number=issue['number'],body_sha256=digest(issue['body']),
+                  remote_marker=marker,status='CLAIMED')
+    path.write_text(json.dumps(record),encoding='utf-8')
+    # Recovery identity is outside the agent-writable worktree, so an interrupted
+    # model cannot forge a dead PID in the file used to authorize recovery.
+    trusted_lease_path().write_text(json.dumps(record),encoding='utf-8')
+
+
+def recover_locks(hub,policy,issue,path):
+    if CONTROL_ROOT==ROOT:
+        raise Locked('Recovery must use the reviewed isolated controller installation.')
+    verify_control(ROOT,policy)
+    if not trusted(issue,policy):raise Locked('Untrusted recovery task source.')
+    plan=next((p for p in policy['plans'].values() if p.get('issue_number')==issue['number']),None)
+    if not plan or plan['body_sha256']!=digest(issue['body']):raise Locked('Recovery task digest differs.')
+    record=json.loads(trusted_lease_path().read_text(encoding='utf-8'))
+    local=json.loads(path.read_text(encoding='utf-8'))
+    if (record.get('status')!='CLAIMED' or record.get('repository')!=policy['repository'] or
+        record.get('issue_number')!=issue['number'] or record.get('body_sha256')!=digest(issue['body']) or
+        not record.get('process_birth') or record.get('host_id')!=host_id() or local.get('owner')!=record.get('owner')):
+        raise Locked('Lease identity is uncertain; never recover legacy/foreign ownership by age.')
+    if process_birth(record['pid'])==record['process_birth']:
+        raise Locked('Original controller process is still alive; no recovery.')
+    marker=object_id(record['remote_marker'])
+    current,version=hub.ledger(issue['number'])
+    if current and (current['body_sha256']!=record['body_sha256'] or current['state']!=state_label(issue)):
+        raise Locked('Partial remote state/label writes require owner reconciliation.')
+    guard='heads/agent-locks/recovery'
+    base=hub.head()
+    tree=hub.api(hub.prefix+'/git/commits/'+base)['tree']['sha']
+    guard_sha=hub.api(hub.prefix+'/git/commits','POST',{'message':'owner recovery '+uuid.uuid4().hex,'tree':tree,'parents':[base]})['sha']
+    hub.api(hub.prefix+'/git/refs','POST',{'ref':'refs/'+guard,'sha':guard_sha})
+    try:
+        refs=['heads/agent-locks/issue-'+str(issue['number']),'heads/agent-locks/executor']
+        for ref in refs:
+            value=hub.api(hub.prefix+'/git/ref/'+ref,missing=True)
+            if value and value['object']['sha']!=marker:
+                raise Locked('Remote lease belongs to a different writer; stop.')
+        for ref in refs:
+            value=hub.api(hub.prefix+'/git/ref/'+ref,missing=True)
+            if value:
+                if value['object']['sha']!=marker:raise Locked('Remote ownership changed during recovery.')
+                hub.api(hub.prefix+'/git/refs/'+ref,'DELETE')
+        if json.loads(path.read_text(encoding='utf-8')).get('owner')!=record['owner']:
+            raise Locked('Local ownership changed during recovery.')
+        path.unlink()
+        record['status']='RECOVERED_NO_STATE_OR_COUNTER_RESET'
+        trusted_lease_path().write_text(json.dumps(record),encoding='utf-8')
+    finally:
+        value=hub.api(hub.prefix+'/git/ref/'+guard,missing=True)
+        if value and value['object']['sha']==guard_sha:
+            hub.api(hub.prefix+'/git/refs/'+guard,'DELETE')
+
+
 class LiveTools:
+    @contextmanager
+    def execution_lease(self):
+        # One controller owns worktree mutations throughout a model/test phase.
+        import agent_transcripts as history
+        lock=ROOT/git('rev-parse','--git-path','agent-transcript-publish.lock')
+        deadline=time.monotonic()+180
+        while lock.exists():
+            if time.monotonic()>=deadline:
+                raise Locked('Another publisher owns the worktree; no model launched.')
+            time.sleep(0.5)
+        with history.lease(lock):
+            yield
+
+    def publication_head(self):
+        return git('rev-parse','HEAD')
+
+    def observation_only(self,base,head):
+        object_id(base);object_id(head)
+        git('merge-base','--is-ancestor',base,head)
+        names=git('diff','--name-only',base,head).splitlines()
+        return all(name in {'automation/policy.json','docs/00_PROJECT_STATUS.md','docs/06_DECISION_LOG.md'} or name.startswith(('collaboration/checkpoints/','collaboration/live-latest/',
+            'collaboration/live-turns/','collaboration/codex-sessions/','collaboration/cc-sessions/',
+            'collaboration/run-ledger/','collaboration/cc-reports/')) for name in names)
+
     def notify(self, status, title, message):
         try:
-            command(['powershell', '-NoProfile', '-File', str(ROOT / 'scripts/notify-codex.ps1'),
+            command(['powershell', '-NoProfile', '-File', str(CONTROL_ROOT / 'scripts/notify-codex.ps1'),
                      '-Status', status, '-Title', title, '-Message', message], timeout=30)
         except Exception:
             print('Notification unavailable; GitHub/terminal status remains authoritative.')
 
     def snapshot(self):
-        names = scanner.git(ROOT, 'ls-files', '--cached', '--others', '--exclude-standard', '-z')
-        result = {}
-        for name in set(x.decode('utf-8') for x in names.split(b'\0') if x):
-            p = ROOT / name
-            if p.is_file() and not p.is_symlink():
-                result[name] = hashlib.sha256(p.read_bytes()).hexdigest()
+        try:
+            result=scope_snapshot(ROOT)
+        except (OSError,ValueError) as exc:
+            raise Gate('Scope inventory could not be verified; no execution/publication.') from exc
         for name in ('.codex/config.toml', '.mcp.json', '.claude/settings.json', '.claude/settings.local.json'):
             path = ROOT / name
             if path.exists():
@@ -400,6 +498,14 @@ class LiveTools:
         return result
 
     def preflight(self, repository):
+        if self.active_policy.get('require_isolated_controller') and CONTROL_ROOT==ROOT:
+            raise Gate('Run the reviewed controller installation, not the agent-writable worktree launcher.')
+        if CONTROL_ROOT!=ROOT and (ROOT/'automation/policy.json').read_bytes()!=(CONTROL_ROOT/'automation/policy.json').read_bytes():
+            raise Gate('Worktree policy differs from the approved installed policy; no adoption of new permissions.')
+        try:
+            verify_control(ROOT,self.active_policy)
+        except (AttributeError,ValueError) as exc:
+            raise Gate('Independently reviewed B/A control-plane approval is missing or changed.') from exc
         if git('status', '--porcelain'):
             raise Gate('Working tree must be clean; preserve local work.')
         urls = git('remote', '-v')
@@ -410,7 +516,11 @@ class LiveTools:
             raise Gate('Secret detected or unsafe files; do not launch an agent.')
         if any((ROOT / p).exists() for p in ('.codex/config.toml', '.mcp.json', '.claude/settings.json', '.claude/settings.local.json')):
             raise Gate('Project runtime configuration requires a separate security review.')
-        return git('rev-parse', 'HEAD')
+        head=git('rev-parse','HEAD')
+        branch=git('branch','--show-current')
+        if not branch or git('ls-remote','origin','refs/heads/'+branch).split()[0]!=head:
+            raise Gate('Local/remote SHA differs; reconcile without force before executing.')
+        return head
 
     def codex(self, prompt, timeout):
         capture_started = datetime.now(timezone.utc).isoformat()
@@ -419,9 +529,9 @@ class LiveTools:
             raise Gate('Native Codex CLI unavailable; no TUI fallback.')
         with tempfile.TemporaryDirectory(prefix='agent-codex-') as folder:
             output = Path(folder) / 'result.json'
-            argv = [native, '--no-daemon', '-a', 'never', '-c', 'sandbox_workspace_write.network_access=false',
+            argv = [native, '--no-daemon', '-a', 'never', '-c', 'sandbox_workspace_write.network_access=false','-c','web_search="disabled"',
                     'exec', '--ignore-user-config', '--sandbox', 'workspace-write', '--json',
-                    '--output-schema', str(ROOT / 'automation/codex-result.schema.json'),
+                    '--output-schema', str(CONTROL_ROOT / 'automation/codex-result.schema.json'),
                     '--output-last-message', str(output), '-']
             try:
                 raw = command(argv, input_text=prompt, timeout=timeout, heartbeat=getattr(self, 'stop_check', None), isolate_env=True)
@@ -452,7 +562,7 @@ class LiveTools:
     def cc(self, prompt, timeout):
         capture_started = datetime.now(timezone.utc).isoformat()
         launcher = claude_launcher()
-        schema = (ROOT / 'automation/cc-review.schema.json').read_text(encoding='utf-8')
+        schema = (CONTROL_ROOT / 'automation/cc-review.schema.json').read_text(encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='agent-review-') as folder:
             argv = launcher + ['--safe-mode', '--restricted', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
                                '--tools', '', '--no-session-persistence', '-p', '--output-format', 'json', '--json-schema', schema]
@@ -495,6 +605,13 @@ class LiveTools:
         from agent_history_sync import publish
         item,path,value=self.capture_artifacts
         result=publish(item,path,value,ROOT)
+        import agent_live_mirror as mirrors
+        from agent_live_sync import publish as mirror_publish
+        bundle=mirrors.prepare(ROOT,item['session'],item['transcript'])
+        if bundle:
+            payload=mirror_publish(ROOT,bundle['paths'],'logs: agent visible-response mirror')
+            names=mirrors.update(bundle,payload,True)
+            result['commit']=mirror_publish(ROOT,names,'logs: verify agent visible-response mirror')
         self.capture_artifacts=None
         return result
 
@@ -505,30 +622,71 @@ class LiveTools:
                 raise Gate('Tests must be owner-pinned argv arrays, never Issue shell text.')
             if Path(argv[0]).stem.lower() in {'git', 'gh', 'cmd', 'powershell', 'pwsh', 'bash', 'sh', 'curl', 'wget'}:
                 raise Gate('Direct shell/network/Git test commands require a separate User safety decision.')
-            text = clean_text(command(argv, timeout=1800, include_stderr=True, heartbeat=getattr(self, 'stop_check', None), isolate_env=True), 65536)
-            results.append({'command': argv, 'exit_code': 0, 'output': text[-4000:]})
+            native=load_module('agent_test_native','codex-usage.py').native_codex()
+            if not native:
+                raise Gate('Codex sandbox unavailable; no host test fallback.')
+            try:
+                pinned=sandbox_command(native,argv,ROOT)
+            except ValueError as exc:
+                raise Gate('Pinned tests cannot safely enter the native sandbox.') from exc
+            text = clean_text(command(pinned, timeout=1800, include_stderr=True, heartbeat=getattr(self, 'stop_check', None), isolate_env=True), 65536)
+            results.append({'command': argv, 'boundary':'native Codex sandbox; network disabled',
+                            'exit_code': 0, 'output': text,'output_sha256':digest(text),'output_bytes':len(text.encode('utf-8'))})
         return results
 
     def finalize(self, task_id):
-        name = 'codex-finalize-' + uuid.uuid4().hex + '.json'
-        path = ROOT / git('rev-parse', '--git-path', name)
-        try:
-            command([shutil.which('python') or 'python', '-X', 'utf8', str(ROOT / 'scripts/finalize-codex-task.py'),
-                     '--task-id', task_id, '--message=feat: agent task ' + task_id, '--result-name', name], timeout=1800, heartbeat=getattr(self, 'stop_check', None), isolate_env=True)
-            value = json.loads(path.read_text(encoding='utf-8'))
-            if not value.get('synced'):
-                raise RemoteError('Finalize did not verify GitHub synchronization.')
-            receipt=self.publish_capture()
-            if receipt:
-                value['commit']=receipt['commit']
-                if receipt['status']!='SYNC_COMPLETE':
-                    raise Gate('Transcript sync is incomplete; do not hand off as complete.')
-            return value
-        finally:
-            if path.exists():
-                path.unlink()
+        # Required tests already ran inside the native sandbox. Never call the
+        # interactive finalizer here: it intentionally runs trusted host tests.
+        names=list(self.changed_paths)
+        if getattr(self,'capture_artifacts',None):
+            item,path,_=self.capture_artifacts
+            names += [item['transcript'].relative_to(ROOT).as_posix(),path.relative_to(ROOT).as_posix()]
+        task_sha=self.publish_paths(names,'feat: agent task '+task_id)
+        report=ROOT/self.report_path
+        text=report.read_text(encoding='utf-8')
+        text=re.sub(r'(?ms)(^# (?:Git Commit|Commit SHA)\s*\n).*?(?=^# |\Z)',lambda m:m[1]+'\n'+task_sha+'\n',text)
+        report.write_text(text,encoding='utf-8',newline='\n')
+        self.publish_paths([self.report_path],'chore: record '+task_id+' task commit')
+        receipt=self.publish_capture()
+        if receipt and receipt['status']!='SYNC_COMPLETE':
+            raise Gate('Transcript sync incomplete; no handoff.')
+        return dict(taskCommit=task_sha,commit=git('rev-parse','HEAD'),synced=True)
+
+    def publish_paths(self,names,message):
+        if git('diff','--cached','--name-only'):
+            raise Gate('Existing staging belongs to another writer; preserve it.')
+        names=sorted(set(relative(n) for n in names))
+        if scanner.scan_repo(ROOT)[1]:
+            raise Gate('Secret detected before checkpoint/task publication.')
+        git('status','--short');git('diff','--',*names)
+        git('add','--',*names)
+        if scanner.scan_repo(ROOT,staged=True)[1]:
+            git('reset','--',*names)
+            raise Gate('Secret detected in exact staged artifacts.')
+        git('diff','--cached')
+        if git('diff','--cached','--name-only'):
+            git('commit','-m',message)
+        branch=git('branch','--show-current')
+        git('push','origin','HEAD:refs/heads/'+branch)
+        head=git('rev-parse','HEAD')
+        if git('ls-remote','origin','refs/heads/'+branch).split()[0]!=head:
+            raise RemoteError('Publication remote SHA mismatch.')
+        return head
+
+    def checkpoint(self,fields,state,phase,summary=''):
+        from agent_checkpoints import value,write
+        state['checkpoint_sequence']=state.get('checkpoint_sequence',0)+1
+        source=state.get('attempt_source_sha') or state.get('handoff',{}).get('base') or git('rev-parse','HEAD')
+        result=None if phase in {'STARTED','IMPLEMENTATION_COMPLETE','FIX_COMPLETE','TEST_COMPLETE'} else state.get('handoff',{}).get('head')
+        record=value(fields['Task ID'],phase,state,source,result,summary,state.get('test_evidence') or state.get('handoff',{}).get('tests',[]))
+        paths=write(ROOT,record,state['checkpoint_sequence'])
+        commit=self.publish_paths(paths,'checkpoint: '+fields['Task ID']+' '+phase)
+        state['checkpoint_commit_sha']=commit
+        state['checkpoint_phase']=phase
+        return commit
 
     def diff(self, base, head):
+        object_id(base);object_id(head)
         git('fetch', '--no-tags', 'origin', head)
         git('merge-base', '--is-ancestor', base, head)
         names = git('diff', '--name-only', base, head).splitlines()
@@ -638,16 +796,66 @@ class Engine:
             state['state'] = transition(state['state'], new, actor, emergency)
         version = self.hub.save(issue['number'], state, version)
         self.hub.labels(self.hub.issue(issue['number']), state['state'])
+        if new and hasattr(self.tools,'checkpoint'):
+            phase={'CODEX_RUNNING':'STARTED','CC_REVIEWING':'CC_REVIEWING','CHANGES_REQUESTED':'CC_CHANGES_REQUESTED'}.get(new,new)
+            task=next((task for task,plan in self.policy['plans'].items() if plan['issue_number']==issue['number']),None)
+            if task:
+                self.tools.checkpoint({'Task ID':task},state,phase,'Trusted state transition: '+state['state'])
+                version=self.hub.save(issue['number'],state,version)
         return version
 
-    def gate(self, issue, state, version, reason, question='How should this task proceed?'):
+    def gate(self, issue, state, version, reason, question=None):
+        specific,options=gate_details(reason)
         state['decision'] = {'reason': reason, 'question': question,
-                             'options': ['Owner clarifies/approves a bounded plan', 'Stop or revise this task'],
+                             'options': options,
                              'recommendation': 'Keep automation stopped until User explicitly decides.'}
+        state['decision']['question']=question or specific
         version = self.save(issue, state, version, 'USER_DECISION_REQUIRED', emergency=True)
         self.hub.comment(issue['number'], '## USER_DECISION_REQUIRED\n```json\n' + json.dumps(state['decision'], ensure_ascii=False) + '\n```')
         self.notification('WARNING', 'User decision required', f'Issue #{issue["number"]} stopped. Check GitHub.')
         return version
+
+    def recover(self,issue):
+        """Resume verified publication only, never repeat an uncertain model call."""
+        fields,state,version=self.context(issue)
+        plan=self.policy['plans'].get(fields['Task ID'],{})
+        if plan.get('issue_number')!=issue['number'] or plan.get('body_sha256')!=digest(issue['body']):
+            raise Gate('Recovery requires the exact approved task digest.')
+        self.tools.active_policy=self.policy
+        head=self.tools.preflight(self.policy['repository'])
+        if state['state']=='CODEX_RUNNING':
+            proof=state.get('handoff',{})
+            if (proof.get('attempt_number')!=state['codex_attempts'] or not proof.get('head') or not proof.get('tests')
+                    or any(t.get('exit_code')!=0 for t in proof['tests'])):
+                raise Gate('Uncertain interrupted Codex run; no automatic rerun or counter reset.')
+            self.hub.artifact(proof['report'],proof['head'])
+            if head!=proof['head'] and not self.tools.observation_only(proof['head'],head):
+                raise Gate('Recovery source changed beyond observation artifacts.')
+            self.save(issue,state,version,'READY_FOR_CC_REVIEW','codex')
+            return 'READY_FOR_CC_REVIEW'
+        if state['state']=='CC_REVIEWING':
+            if (not state.get('review_report') or not state.get('review_commit_sha') or
+                    state.get('review_round_proof')!=state['cc_rounds'] or
+                    state.get('reviewed_head')!=state.get('handoff',{}).get('head')):
+                raise Gate('Uncertain interrupted CC run; independent review will not be repeated.')
+            published=self.hub.artifact(state['review_report'],state['review_commit_sha'])
+            try:
+                payload=json.loads(published[published.index('{'):])
+            except (ValueError,TypeError) as exc:
+                raise Gate('Published CC recovery evidence is malformed.') from exc
+            review=review_json(state.get('review'))
+            if payload.get('issue')!=issue['number'] or payload.get('reviewed_commit')!=state['reviewed_head'] or payload.get('review')!=review:
+                raise Gate('Published CC verdict differs from the durable recovery record.')
+            if review['result']=='USER_DECISION_REQUIRED':
+                self.gate(issue,state,version,review['summary'],review['user_question'])
+                return 'USER_DECISION_REQUIRED'
+            target='DONE' if review['result']=='PASS' else 'CHANGES_REQUESTED'
+            if target=='CHANGES_REQUESTED' and (state['codex_attempts']>=3 or state['cc_rounds']>=3):
+                raise Gate('Review requires changes but the persistent budget is exhausted.')
+            state['required_changes']=review['required_changes']
+            self.save(issue,state,version,target,'cc')
+            return target
+        return state['state']
 
     def step(self, issue):
         fields, state, version = self.context(issue)
@@ -671,9 +879,18 @@ class Engine:
         started = time.monotonic()
         usage = 'UNKNOWN'
         try:
+            self.tools.active_policy=self.policy
             base = self.tools.preflight(self.policy['repository'])
-            before = self.tools.snapshot()
+            expected=state.get('handoff',{}).get('head') or plan.get('source_commit_sha')
+            if expected and expected!=base and (not hasattr(self.tools,'observation_only') or not self.tools.observation_only(expected,base)):
+                raise Gate('Expected source commit differs beyond trusted observation metadata.')
             state['codex_attempts' if actor == 'codex' else 'cc_rounds'] += 1
+            state['attempt_source_sha']=base
+            if actor=='cc':
+                for key in ('review','review_report','review_commit_sha','review_round_proof','reviewed_head'):
+                    state.pop(key,None)
+            else:
+                state.pop('test_evidence',None)
             self.tools.transcript_context={'task_id':task,'round':state['codex_attempts' if actor=='codex' else 'cc_rounds']}
             version = self.save(issue, state, version, 'CODEX_RUNNING' if actor == 'codex' else 'CC_REVIEWING', actor)
             def stop_check():
@@ -687,6 +904,7 @@ class Engine:
             self.tools.stop_check = stop_check
             stop_check()
             self.notification('SUCCESS', 'Agent started', task + ' / ' + actor)
+            before = self.tools.snapshot()
             if actor == 'codex':
                 if not plan.get('sandbox_acknowledged') or not plan.get('required_tests'):
                     raise Gate('Owner must acknowledge sandbox boundaries and pin required tests.')
@@ -717,6 +935,13 @@ class Engine:
                     raise Gate('Unexpected Codex report path.')
                 if report not in changed or 'docs/00_PROJECT_STATUS.md' not in changed:
                     raise Gate('Codex must update report and project status.')
+                if scanner.scan_repo(ROOT)[1]:
+                    raise Gate('Secret or unsafe content detected before sandbox tests.')
+                model_changed=set(changed)
+                state['files_changed']=sorted(model_changed)
+                if hasattr(self.tools,'checkpoint'):
+                    self.tools.checkpoint(fields,state,'FIX_COMPLETE' if current=='CHANGES_REQUESTED' else 'IMPLEMENTATION_COMPLETE',value['summary'])
+                test_before=self.tools.snapshot()
                 try:
                     tests = self.tools.tests(plan['required_tests'])
                 except Gate:
@@ -724,14 +949,20 @@ class Engine:
                 except Exception as exc:
                     raise Gate('Required tests failed. Stop for User rather than repeating failures.') from exc
                 checked = self.tools.snapshot()
-                changed = {p for p in before.keys() | checked.keys() if before.get(p) != checked.get(p)}
-                allowed_changes(changed, plan, task)
-                if set(before) - set(checked):
+                test_changed = {p for p in test_before.keys() | checked.keys() if test_before.get(p) != checked.get(p)}
+                allowed_changes(test_changed, plan, task)
+                if set(test_before) - set(checked):
                     raise Gate('Test execution deleted files; User review is required.')
                 if scanner.scan_repo(ROOT)[1]:
                     raise Gate('Secret or unsafe content detected after implementation/tests.')
                 if self.hub.issue(issue['number'])['body'] != issue['body']:
                     raise Gate('Issue changed while Codex was working.')
+                self.tools.changed_paths=sorted(model_changed|test_changed)
+                self.tools.report_path=report
+                state['files_changed']=self.tools.changed_paths
+                state['test_evidence']=tests
+                if hasattr(self.tools,'checkpoint'):
+                    self.tools.checkpoint(fields,state,'TEST_COMPLETE','Required tests passed inside native Codex sandbox.')
                 if hasattr(self.tools,'flush_capture'):
                     self.tools.flush_capture()
                 try:
@@ -740,7 +971,8 @@ class Engine:
                     raise
                 except Exception as exc:
                     raise Gate('Finalize/test/security synchronization failed. Inspect locally before continuing.') from exc
-                state['handoff'] = {'base': base, 'head': outcome['commit'], 'task_sha': outcome['taskCommit'], 'report': report, 'tests': tests}
+                state['handoff'] = {'base': base, 'head': outcome['commit'], 'task_sha': outcome['taskCommit'], 'report': report, 'tests': tests,'attempt_number':state['codex_attempts']}
+                version=self.hub.save(issue['number'],state,version)  # write-ahead verified handoff for restart recovery
                 self.hub.comment(issue['number'], '## Codex handoff\n```json\n' + json.dumps(state['handoff'], ensure_ascii=False) + '\n```')
                 target = 'READY_FOR_CC_REVIEW'
             else:
@@ -748,7 +980,8 @@ class Engine:
                 if not handoff:
                     raise Gate('Missing published Codex handoff.')
                 if base != handoff['head']:
-                    raise Gate('Branch changed after handoff; review the new evidence before continuing.')
+                    if not hasattr(self.tools,'observation_only') or not self.tools.observation_only(handoff['head'],base):
+                        raise Gate('Branch changed after handoff; review the new evidence before continuing.')
                 prompt = review_prompt(fields, self.hub.artifact(handoff['report'], handoff['head']),
                                        self.tools.diff(handoff['base'], handoff['head']), handoff['tests'], self.policy['max_review_bytes'])
                 stop_check()
@@ -761,7 +994,14 @@ class Engine:
                 if followup and followup not in plan.get('followups', {}):
                     raise Gate('Reviewer proposed an unapproved next scope; User must decide.')
                 state['review'] = review
+                if review['result']=='PASS' and hasattr(self.tools,'checkpoint'):
+                    self.tools.checkpoint(fields,state,'CC_PASS',review['summary'])
                 state['review_report'] = self.tools.review_report(issue, fields, state, review)
+                if hasattr(self.tools,'publication_head'):
+                    state['review_commit_sha']=self.tools.publication_head()
+                state['review_round_proof']=state['cc_rounds']
+                state['reviewed_head']=handoff['head']
+                version=self.hub.save(issue['number'],state,version)  # never rerun an already published independent review
                 self.hub.comment(issue['number'], '## CC review\n```json\n' + json.dumps(review, ensure_ascii=False) + '\n```\nReport: ' + state['review_report'])
                 if review['result'] == 'USER_DECISION_REQUIRED':
                     raise Gate(review['summary'], review['user_question'])

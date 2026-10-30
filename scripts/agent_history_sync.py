@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from agent_security import git_prefix
 from agent_transcripts import (archive, atomic, base, clean, complete, events, now, packed,
                                regular, render, scan, sha, write_json, lease)
 
@@ -18,7 +19,7 @@ class SecurityError(SyncError):
 
 def git(root,*args):
     env = dict(os.environ,GIT_TERMINAL_PROMPT='0',GCM_INTERACTIVE='Never')
-    p = subprocess.run(['git',*args],cwd=root,env=env,capture_output=True,timeout=600)
+    p = subprocess.run(git_prefix(root)+list(args),cwd=root,env=env,capture_output=True,timeout=600)
     if p.returncode:
         raise SyncError('Git operation failed: '+args[0]+'; credentials/output not logged')
     return p.stdout.decode('utf-8').strip()

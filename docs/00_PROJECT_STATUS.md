@@ -1,81 +1,43 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 16:19 +0800
+Last Updated: 2026-10-30 17:52 +08:00
 
 ## Current Phase
 
-Collaboration infrastructure: AUTO-003 live transcript transport verified.
-REG-002 resumed by explicit User request; registration still unsubmitted.
-R01-R06 and product implementation have not started.
-AUTO-001 automation remains paused pending User decisions.
+AUTO-004 PASS and remotely synchronized. AUTO-005 bounded collaboration infrastructure.
+No competition topic/product work or R01-R06 started. REG-002 remains paused.
 
 ## Current Objective
 
-AUTO-004 small latest-response mirrors: live acceptance PASS; formal publication.
-Next, AUTO-005 only after AUTO-004 is synchronized; User selected trust root B and test boundary A.
-REG-002 is blocked/paused; no registration or Round 1 submission performed.
+Implement AUTO-005 with User-selected trust root B and native sandbox test boundary A;
+obtain independent Claude review before enabling one non-destructive acceptance task.
 
 ## Completed
 
-- AUTO-004 real live Codex + Claude response mirrors verified directly from GitHub
-  before either owned CLI exited; durable evidence in run-ledger/AUTO-004_live-acceptance.json.
-- AUTO-004 compact latest pointers, stable per-response files/parts, visible-only filtering,
-  bounded excerpts, OTP redaction and metadata receipts implemented; 99 fast and 12 integration tests passed.
-
-- AUTO-003 Codex live checkpoint is readable from GitHub while Codex remains running;
-  both active agents have verified GitHub payloads and SHA-256 matches.
-
-- Dynamic quota windows and Taipei reset/retrieval timestamps implemented; session tokens retained.
-
-- AUTO-002 global/project sanitized archives, post-exit headless capture and receipts implemented; 78 tests passed.
-
-- Private GitHub repository, project templates and decision log established.
-- Sanitized session export, secret scanner, usage/context guides, finalize and native notifications established.
-- AUTO-001 finite controller, headless runners, owner-pinned Issue protocol, eight state labels, durable counters, exclusive locks and User gates implemented.
-- 45 fast tests passed (30 workflow tests, 15 existing tooling tests); independently re-run by Claude Code: OK.
-- 9 real Git integration tests passed in temporary repositories (unittest result: OK).
-- Real GitHub lock test passed: second acquisition rejected, owned refs released.
-- Independent CC review of AUTO-001: 8/10 acceptance criteria met; criterion 5 (scope fail-closed) not fully met.
-- REG-001 document preparation: official registration OPEN as checked 2026-10-27;
-  solo entry allowed; registration/Round 1 deadline 2026-11-15 23:45 PST
-  (Taipei 2026-11-16 15:45). See `docs/07_REGISTRATION_CHECKLIST.md` for sources.
-- Three REG-001 draft/checklist outputs prepared; all product answers remain TBD.
+- AUTO-004: 99 fast + 12 integration tests; real live Codex/Claude latest mirrors read
+  from GitHub before exit. Task ffda980; final remote ce7634f.
+- AUTO-005 initial controls: isolated reviewed controller, full ignored/control-file
+  scope checks, empty Git hooks, sandbox tests, bounded polling/checkpoints and recovery.
+- AUTO-005: 113 fast tests passed inside native Codex sandbox; 13 Git integration tests passed.
+- Native sandbox probe: workspace writable; external controller write and direct network blocked.
+- AUTO-002/003 sanitized archives/live transport and native quota/footer tooling retained.
 
 ## In Progress
 
-- AUTO-004 final publication and regression integration verification.
-- AUTO-005 dependency gate not yet opened for implementation. B = conditional trust approval
-  after F1/F4-F6 fixes; A = tests in the native Codex sandbox. Execution remains disabled.
-
-- AUTO-003 publication and independent CC review. 90 fast + 12 integration tests passed.
-  Live transport passes; measured latency still exceeds the <=15s target under concurrent load.
-- REG-002 existing logged-in form inspected; Occupation confirmed by User, not yet
-  applied. Browser subsequently closed; waiting for restored control connection.
-  No registration or Round 1 submission sent.
-- AUTO-001 remains USER_DECISION_REQUIRED per manual CC review; it is not DONE.
+- AUTO-005 independent pre-enable security review, then one real bounded Codex/CC roundtrip.
+- Historical AUTO-001 remains disabled pending reconciliation; it is not DONE.
 
 ## Blockers
 
-- AUTO-004 orphan-lock incident recovered with owner/writer absence checks and
-  retained backups; live acceptance and all tests passed. Final publication follows.
-
-- REG-002: loopback browser connection refused; automatic relaunch of its existing
-  profile rejected by environment policy. User must restore existing browser/control.
-
-
-- AUTO-001 acceptance blocked on the User decisions below.
-- Interactive CC review is not recorded in the ledger; Issue #1 label remains READY_FOR_CC_REVIEW until User reconciles it.
-- REG-001 preparation is independent, manually requested work; no autonomous runner invoked.
-  Login-only custom form/upload fields remain UNKNOWN until User checks them.
+- Autonomous execution intentionally disabled until independent review PASS and pinned policy.
+- REG-002 paused; no registration success or Round 1 submission claimed.
 
 ## Pending User Decisions
 
-
-1. Approve `automation/policy.json` and the AUTO-001 control-plane files as the owner-reviewed trust root (A: as-is / B: after fixes F1, F4–F6 / C: redesign). CC recommendation: B.
-2. Test-execution boundary for future Codex-enabled plans (A: run tests in Codex sandbox / B: Codex may not write test-executed paths / C: accept host risk per plan). CC recommendation: A, or B as an interim measure. Keep `codex_enabled=false` until decided.
+None for this infrastructure implementation: B/A was explicitly selected.
+New scope/security/credential/legal gates still require User; no implicit approvals.
 
 ## Next Planned Step
 
-Publish AUTO-004 report and verify remote SHA. Then implement AUTO-005 security fixes,
-obtain independent Claude review and run one bounded non-product acceptance task.
-Do not resume REG-002 or begin UGREEN topic/product development.
+Publish reviewable AUTO-005 code, obtain independent Claude review, then validate the
+owner-scoped non-product smoke task with checkpoints and restart recovery. Stop after AUTO-005.

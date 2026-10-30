@@ -36,5 +36,13 @@
       ],
       "followups": {}
     }
-  }
+  },
+  "require_isolated_controller": true,
+  "approval": {
+    "trust_root": "B",
+    "test_boundary": "A",
+    "review_result": "PENDING",
+    "owner_decision": "User explicitly selected B/A for AUTO-005; execution remains disabled until independent review PASS"
+  },
+  "control_plane_sha256": {}
 }

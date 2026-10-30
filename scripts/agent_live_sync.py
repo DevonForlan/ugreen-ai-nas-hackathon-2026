@@ -13,6 +13,7 @@ from collections import OrderedDict
 import agent_transcripts as h
 import agent_live_mirror as mirror
 from agent_history_sync import SyncError, git
+from agent_security import git_prefix
 
 VERIFIED = {}
 
@@ -163,7 +164,7 @@ def publish(root, names, message):
         env = dict(os.environ, GIT_INDEX_FILE=str(Path(folder)/'index'),
                    GIT_TERMINAL_PROMPT='0', GCM_INTERACTIVE='Never')
         def run(*args):
-            p = subprocess.run(['git', *args], cwd=root, env=env, capture_output=True, timeout=90)
+            p = subprocess.run(git_prefix(root)+list(args), cwd=root, env=env, capture_output=True, timeout=90)
             if p.returncode:
                 raise SyncError('Live Git operation failed: '+args[0]+'; output withheld')
             return p.stdout.decode('utf-8').strip()

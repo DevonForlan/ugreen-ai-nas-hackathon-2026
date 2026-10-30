@@ -39,3 +39,15 @@ Impact:
 - **Options:** N/A (specified by User in the Phase 0 instructions)
 - **Reason:** Keeps the final decision with the Project Owner and prevents premature development on an unvalidated idea.
 - **Impact:** Only POC / Research Only work is permitted until a topic decision is logged here as Approved.
+
+
+## DEC-0003
+
+- **Date:** 2026-10-30
+- **Decision:** AUTO-005 trust root B; test boundary A.
+- **Status:** Approved by User, conditional on F1/F4-F6 fixes and independent review before enabling execution.
+- **Approved By:** User (explicit AUTO-004 -> AUTO-005 execution request and continuation).
+- **Context:** Codex is developer, Claude Code is independent reviewer, GitHub is control plane; one bounded controller.
+- **Options:** B = trust approval after fixes; A = required tests inside native Codex sandbox, never host fallback.
+- **Impact:** At most 3 Codex attempts / 3 CC review rounds. Install only a reviewed controller outside writable worktrees.
+  AUTO-001 historical execution remains disabled; no topic/product or REG-002 approval is implied.

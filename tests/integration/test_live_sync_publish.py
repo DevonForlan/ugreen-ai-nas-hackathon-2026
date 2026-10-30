@@ -49,6 +49,7 @@ class LiveGitTests(unittest.TestCase):
             subprocess.run(['git', 'init', '--bare', str(remote)], capture_output=True, check=True)
             git('remote', 'add', 'origin', str(remote))
             git('push', '-u', 'origin', 'main')
+            git('config','url.'+remote.as_posix()+'.insteadOf','https://github.com/fixture/repo.git')
             (repo/'code.txt').write_text('Unrelated developer edit')
             path = repo/'collaboration/codex-sessions/fixture.md'
             path.parent.mkdir(parents=True)

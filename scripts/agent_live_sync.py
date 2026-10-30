@@ -13,7 +13,7 @@ from collections import OrderedDict
 import agent_transcripts as h
 import agent_live_mirror as mirror
 from agent_history_sync import SyncError, git
-from agent_security import git_prefix
+from agent_security import git_prefix,git_environment
 
 VERIFIED = {}
 
@@ -163,6 +163,7 @@ def publish(root, names, message):
     with tempfile.TemporaryDirectory(prefix='live-index-') as folder:
         env = dict(os.environ, GIT_INDEX_FILE=str(Path(folder)/'index'),
                    GIT_TERMINAL_PROMPT='0', GCM_INTERACTIVE='Never')
+        env.update(git_environment())
         def run(*args):
             p = subprocess.run(git_prefix(root)+list(args), cwd=root, env=env, capture_output=True, timeout=90)
             if p.returncode:
@@ -172,7 +173,7 @@ def publish(root, names, message):
         run('add', '--', *names)
         # Scan the exact staged blobs using the isolated index, not just the worktree.
         for name in names:
-            data = subprocess.run(['git', 'show', ':'+name], cwd=root, env=env,
+            data = subprocess.run(git_prefix(root)+['show', ':'+name], cwd=root, env=env,
                                   capture_output=True, check=True, timeout=30).stdout
             findings = h.scan.scan_blob(name, data)
             if findings:
@@ -188,7 +189,7 @@ def publish(root, names, message):
         run('update-ref', 'refs/heads/'+branch, commit, before)
         # Refresh only our paths in the ordinary index; preserve unrelated staged ownership.
         git(root, 'reset', '-q', commit, '--', *names)
-        run('push', 'origin', commit+':refs/heads/'+branch)
+        run('push', origin, commit+':refs/heads/'+branch)
         if git(root, 'ls-remote', 'origin', 'refs/heads/'+branch).split()[0] != commit:
             raise SyncError('Remote SHA verification failed')
         VERIFIED[cache_key] = commit

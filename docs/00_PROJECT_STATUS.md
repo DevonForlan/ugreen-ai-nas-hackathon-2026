@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 17:52 +08:00
+Last Updated: 2026-10-30 18:23 +08:00
 
 ## Current Phase
 
@@ -18,13 +18,14 @@ obtain independent Claude review before enabling one non-destructive acceptance 
   from GitHub before exit. Task ffda980; final remote ce7634f.
 - AUTO-005 initial controls: isolated reviewed controller, full ignored/control-file
   scope checks, empty Git hooks, sandbox tests, bounded polling/checkpoints and recovery.
-- AUTO-005: 113 fast tests passed inside native Codex sandbox; 13 Git integration tests passed.
+- AUTO-005: 121 fast tests passed inside native Codex sandbox; 15 Git integration tests passed.
 - Native sandbox probe: workspace writable; external controller write and direct network blocked.
 - AUTO-002/003 sanitized archives/live transport and native quota/footer tooling retained.
 
 ## In Progress
 
-- AUTO-005 independent pre-enable security review, then one real bounded Codex/CC roundtrip.
+- AUTO-005 third pre-enable review after two independent CHANGES_REQUESTED rounds and fixes;
+  then one real bounded Codex/CC roundtrip only if PASS.
 - Historical AUTO-001 remains disabled pending reconciliation; it is not DONE.
 
 ## Blockers

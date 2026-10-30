@@ -4,6 +4,8 @@ import argparse
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+import os
+from agent_security import git_prefix,git_environment
 
 RULES = {
     'provider-token': re.compile(r'\b(?:sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|(?:AKIA|ASIA)[A-Z0-9]{16})\b'),
@@ -23,7 +25,7 @@ CACHE = {}
 
 
 def git(root, *args):
-    p = subprocess.run(['git', '-C', str(root), *args], capture_output=True)
+    p = subprocess.run(git_prefix(root)+list(args),env=dict(os.environ,**git_environment()),capture_output=True)
     if p.returncode:
         raise RuntimeError('Git scan input failed; inspect Git configuration locally')
     return p.stdout
@@ -93,7 +95,7 @@ def scan_repo(root, staged=False, revision=None):
         pending = sorted({oid for name, oid, mode in entries if (name, oid, mode) not in CACHE and mode in {'100644', '100755', '120000'}})
         blobs = {}
         if pending:
-            result = subprocess.run(['git', '-C', str(root), 'cat-file', '--batch'], input=('\n'.join(pending) + '\n').encode(), capture_output=True)
+            result = subprocess.run(git_prefix(root)+['cat-file', '--batch'],env=dict(os.environ,**git_environment()), input=('\n'.join(pending) + '\n').encode(), capture_output=True)
             if result.returncode:
                 raise RuntimeError('Cannot read index/commit objects')
             offset = 0

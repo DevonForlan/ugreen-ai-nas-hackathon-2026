@@ -5,6 +5,27 @@ from pathlib import Path
 import subprocess
 import sys
 import platform
+import shutil
+
+
+def trusted_executable(name):
+    if os.name=='nt':
+        program=Path(os.environ.get('ProgramFiles','C:/Program Files'))
+        system=Path(os.environ.get('SYSTEMROOT','C:/Windows'))
+        paths={'git':program/'Git/cmd/git.exe','gh':program/'GitHub CLI/gh.exe',
+            'powershell':system/'System32/WindowsPowerShell/v1.0/powershell.exe',
+            'taskkill':system/'System32/taskkill.exe'}
+        path=paths[name]
+        if not path.is_file():raise ValueError('Pinned native executable missing: '+name)
+        return str(path)
+    search=os.pathsep.join(p for p in os.environ.get('PATH','').split(os.pathsep) if Path(p).is_absolute())
+    value=shutil.which(name,path=search)
+    if not value:raise ValueError('Trusted executable unavailable')
+    return value
+
+
+def git_environment():
+    return dict(GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull,GIT_SSH_COMMAND='exit 1',GIT_PAGER='cat')
 
 
 def scope_snapshot(root):
@@ -34,7 +55,7 @@ def scope_snapshot(root):
                 raise ValueError('Scope inventory exceeds inspection bound')
     # External core.hooksPath is never executed (controller forces an empty path),
     # but track the configured value too, rather than trusting a local config edit.
-    p=subprocess.run(['git','-C',str(root),'-c','core.fsmonitor=false','config','--get','core.hooksPath'],capture_output=True,timeout=30)
+    p=subprocess.run(git_prefix(root)+['config','--get','core.hooksPath'],env=dict(os.environ,**git_environment()),capture_output=True,timeout=30)
     result['__agent_control__/configured-hooks-path']=hashlib.sha256(p.stdout).hexdigest()
     return result
 
@@ -43,7 +64,7 @@ def protected(name):
     name=name.casefold()
     parts=Path(name).as_posix().split('/')
     return (any(x in {'.git','.codex','.claude','.github','.vscode','__pycache__'} for x in parts)
-            or any(x in {'agents.md','claude.md','.gitattributes','.gitmodules'} for x in parts)
+            or any(x in {'agents.md','claude.md','.gitattributes','.gitmodules','.mcp.json'} for x in parts)
             or name.startswith(('scripts/','automation/','__agent_control__/','collaboration/cc-reports/',
                 'collaboration/checkpoints/','collaboration/live-latest/','collaboration/live-turns/',
                 'collaboration/run-ledger/','collaboration/codex-sessions/','collaboration/cc-sessions/'))
@@ -87,7 +108,13 @@ def git_prefix(root):
     directory.mkdir(parents=True,exist_ok=True)
     if directory.is_symlink() or any(directory.iterdir()):
         raise RuntimeError('Trusted empty Git hook directory changed; stop')
-    return ['git','-C',str(root),'-c','core.hooksPath='+str(directory),'-c','core.fsmonitor=false']
+    helper='!"'+trusted_executable('gh').replace('\\','/')+'" auth git-credential'
+    return [trusted_executable('git'),'--no-pager','-C',str(root),'-c','core.hooksPath='+str(directory),'-c','core.fsmonitor=false',
+        '-c','credential.helper=','-c','credential.helper='+helper,
+        '-c','credential.https://github.com.helper=','-c','credential.https://github.com.helper='+helper,
+        '-c','core.sshCommand=','-c','core.gitProxy=','-c','core.askPass=',
+        '-c','protocol.ext.allow=never','-c','core.pager=cat','-c','diff.external=',
+        '-c','user.name=Codex Controller','-c','user.email=codex-controller@example.invalid']
 
 
 def host_id():

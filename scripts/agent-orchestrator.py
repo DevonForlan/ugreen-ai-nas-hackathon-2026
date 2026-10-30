@@ -129,6 +129,8 @@ def main():
     if not 1<=args.poll_seconds<=300 or not 1<=args.max_polls<=120 or not 30<=args.max_runtime<=21600:
         raise Gate('Polling/runtime budget outside approved bounds.')
     policy = json.loads((CONTROL_ROOT / 'automation/policy.json').read_text(encoding='utf-8'))
+    if (CONTROL_ROOT/'runtime/AUTO_STOP.json').exists() and not args.dry_run:
+        raise Gate('Trusted controller emergency stop exists; owner reconciliation required.')
     repo = args.repository or policy['repository']
     if repo != policy['repository']:
         raise Gate('Repository must match the checked-in owner policy.')

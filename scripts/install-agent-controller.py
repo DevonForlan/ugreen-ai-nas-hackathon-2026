@@ -12,7 +12,7 @@ import shutil
 import subprocess
 import hashlib
 
-from agent_security import control_files,verify_control,git_prefix
+from agent_security import control_files,verify_control,git_prefix,git_environment
 
 
 def install(root,target_base=None,expect_policy_sha256=None):
@@ -27,16 +27,17 @@ def install(root,target_base=None,expect_policy_sha256=None):
         raise ValueError('Invalid reviewed commit')
     # The exact reviewed implementation must already exist on GitHub history.
     prefix=git_prefix(root)
-    remote=subprocess.check_output(prefix+['ls-remote','origin','refs/heads/main'],cwd=root).decode().split()[0]
-    subprocess.run(prefix+['fetch','--no-tags','origin',remote],cwd=root,check=True,capture_output=True)
-    subprocess.run(prefix+['merge-base','--is-ancestor',head,remote],cwd=root,check=True,capture_output=True)
+    env=dict(os.environ,**git_environment())
+    remote=subprocess.check_output(prefix+['ls-remote','origin','refs/heads/main'],cwd=root,env=env).decode().split()[0]
+    subprocess.run(prefix+['fetch','--no-tags','origin',remote],cwd=root,env=env,check=True,capture_output=True)
+    subprocess.run(prefix+['merge-base','--is-ancestor',head,remote],cwd=root,env=env,check=True,capture_output=True)
     # The approval commit contains the independent report and the reviewed source.
     # Compare canonical Git text blobs, not just a self-consistent mutable manifest.
     for name in [*policy['control_plane_sha256'],policy['approval']['review_report']]:
         relative=Path(name)
         if relative.is_absolute() or '..' in relative.parts or (root/relative).is_symlink():
             raise ValueError('Unsafe reviewed source path')
-        committed=subprocess.check_output(prefix+['cat-file','blob',head+':'+relative.as_posix()],cwd=root)
+        committed=subprocess.check_output(prefix+['cat-file','blob',head+':'+relative.as_posix()],cwd=root,env=env)
         if (root/relative).read_bytes().replace(b'\r\n',b'\n')!=committed.replace(b'\r\n',b'\n'):
             raise ValueError('Installed source/review differs from the approved Git commit: '+name)
     print(json.dumps({'policy_sha256':actual,'reviewed_head':head,'plans':policy['plans'],

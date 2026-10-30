@@ -27,6 +27,7 @@ class HistoryGitTests(unittest.TestCase):
             git('add','.gitignore');git('commit','-m','test baseline')
             subprocess.run(['git','init','--bare',str(remote)],capture_output=True,check=True)
             git('remote','add','origin',str(remote));git('push','-u','origin','main')
+            git('config','url.'+remote.as_posix()+'.insteadOf','https://github.com/fixture/history.git')
             stamp='2026-10-27T12:00:00Z'
             rows=[dict(type='session_meta',timestamp=stamp,payload=dict(id='integration-session123',cwd=str(repo),timestamp=stamp)),
                   dict(type='response_item',timestamp=stamp,payload=dict(type='message',role='user',content='fixture requirement')),

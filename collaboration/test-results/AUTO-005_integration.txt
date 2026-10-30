@@ -1,7 +1,8 @@
 test_actual_fetch_and_native_capture_do_not_impersonate_model_edits (test_agent_checkpoints.CheckpointGitTests.test_actual_fetch_and_native_capture_do_not_impersonate_model_edits) ... ok
-test_real_checkpoint_push_and_dirty_model_files_are_not_staged (test_agent_checkpoints.CheckpointGitTests.test_real_checkpoint_push_and_dirty_model_files_are_not_staged) ... To C:\Users\devon.tseng\AppData\Local\Temp\tmpr8v3358t\remote.git
+test_real_checkpoint_push_and_dirty_model_files_are_not_staged (test_agent_checkpoints.CheckpointGitTests.test_real_checkpoint_push_and_dirty_model_files_are_not_staged) ... To C:\Users\devon.tseng\AppData\Local\Temp\tmprouu7f_v\remote.git
  * [new branch]      main -> main
 ok
+test_real_git_tamper_gate_and_fatal_path_never_execute_helper_or_push (test_agent_checkpoints.CheckpointGitTests.test_real_git_tamper_gate_and_fatal_path_never_execute_helper_or_push) ... ok
 test_real_payload_receipt_and_push_failure (test_agent_transcript_publish.HistoryGitTests.test_real_payload_receipt_and_push_failure) ... ok
 test_dry_run_preserves_index_head_remote (test_codex_finalize.FinalizeTests.test_dry_run_preserves_index_head_remote) ... ok
 test_failed_tests_stop_before_commit (test_codex_finalize.FinalizeTests.test_failed_tests_stop_before_commit) ... ok
@@ -16,6 +17,6 @@ test_real_companion_exits_after_owner_process (test_live_sync_publish.LiveGitTes
 test_real_push_verify_isolation_divergence_and_failure (test_live_sync_publish.LiveGitTests.test_real_push_verify_isolation_divergence_and_failure) ... ok
 
 ----------------------------------------------------------------------
-Ran 14 tests in 152.854s
+Ran 15 tests in 182.254s
 
 OK

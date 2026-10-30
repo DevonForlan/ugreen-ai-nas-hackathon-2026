@@ -13,10 +13,23 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import agent_workflow as w
 import agent_checkpoints as c
 import agent_security as s
-from test_agent_workflow import Hub,Tools,review
+from test_agent_workflow import Hub,Tools,review,task_body
 
 
 class ReadinessFixTests(unittest.TestCase):
+    def test_followup_partial_write_recovers_existing_issue_without_duplicate(self):
+        hub=Hub();tools=Tools();policy={'agent_timeout_seconds':30,'max_review_bytes':4096}
+        engine=w.Engine(hub,tools,policy);plan={'followups':{'AUTO-T2':{'title':'next','body':task_body('AUTO-T2')}}}
+        state={'state':'CC_REVIEWING','review':dict(review(),recommended_next_task='AUTO-T2')}
+        def partial(title,body):
+            hub.created.append((title,body));raise w.RemoteError('Simulated response lost after creation')
+        hub.create_issue=partial;hub.find_followup=lambda body,policy:None
+        with self.assertRaises(w.RemoteError):engine.followup(hub.issue(1),state,None,plan)
+        self.assertEqual(hub.state['followup_intent']['status'],'CREATE_STARTED')
+        fresh,version=hub.ledger(1);hub.find_followup=lambda body,policy:{'number':2}
+        engine.followup(hub.issue(1),fresh,version,plan,recovery=True)
+        self.assertEqual(len(hub.created),1);self.assertEqual(hub.state['next_issue'],2)
+
     def test_actual_command_preserves_stdout_stderr_and_failure(self):
         result=w.command([sys.executable,'-B','-c','import sys; print("public stdout"); print("public stderr",file=sys.stderr)'],include_stderr=True)
         self.assertIn('public stdout',result);self.assertIn('public stderr',result)
@@ -24,6 +37,8 @@ class ReadinessFixTests(unittest.TestCase):
             w.command([sys.executable,'-B','-c','import sys; print("public failure"); sys.exit(7)'])
         self.assertEqual(caught.exception.code,7);self.assertIn('public failure',caught.exception.stdout)
         self.assertNotIn('public failure',str(caught.exception))
+        isolated=w.command([sys.executable,'-B','-c','import os; print(os.environ["CODEX_NOTIFY_DISABLED"])'],isolate_env=True)
+        self.assertEqual(isolated.strip(),'1')
 
     def test_exact_code_review_is_not_sanitizer_rewritten(self):
         code="secret_scan='PASS'\nreturn stdout + (stderr if include_stderr else '')"

@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
-from agent_security import git_prefix
+from agent_security import git_prefix,git_environment
 from agent_transcripts import (archive, atomic, base, clean, complete, events, now, packed,
                                regular, render, scan, sha, write_json, lease)
 
@@ -18,7 +18,9 @@ class SecurityError(SyncError):
 
 
 def git(root,*args):
+    if args and args[0]=='diff':args=('diff','--no-ext-diff','--no-textconv',*args[1:])
     env = dict(os.environ,GIT_TERMINAL_PROMPT='0',GCM_INTERACTIVE='Never')
+    env.update(git_environment())
     p = subprocess.run(git_prefix(root)+list(args),cwd=root,env=env,capture_output=True,timeout=600)
     if p.returncode:
         raise SyncError('Git operation failed: '+args[0]+'; credentials/output not logged')
@@ -33,6 +35,7 @@ def checked(root,staged=False,revision=None):
 
 
 def verify_push(root,branch):
+    url=git(root,'remote','get-url','origin')
     remote = git(root,'ls-remote','origin','refs/heads/'+branch)
     if remote:
         base_sha = remote.split()[0]
@@ -43,7 +46,7 @@ def verify_push(root,branch):
     else:
         for commit in git(root,'rev-list','HEAD').splitlines():
             checked(root,revision=commit)
-    git(root,'push','--set-upstream','origin','HEAD:refs/heads/'+branch)
+    git(root,'push','--set-upstream',url,'HEAD:refs/heads/'+branch)
     head = git(root,'rev-parse','HEAD')
     if git(root,'ls-remote','origin','refs/heads/'+branch).split()[0] != head:
         raise SyncError('Remote SHA did not verify')

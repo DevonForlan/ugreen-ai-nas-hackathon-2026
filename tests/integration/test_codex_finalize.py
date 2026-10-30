@@ -41,7 +41,7 @@ class FinalizeTests(unittest.TestCase):
         self.git('config', 'commit.gpgSign', 'false')
         self.git('config', 'core.hooksPath', str(self.root / '.git/empty-test-hooks'))
         (self.root / 'scripts').mkdir()
-        for name in ('finalize-codex-task.py', 'finalize-codex-task.ps1', 'finalize.ps1', 'scan-codex-secrets.py', 'export-codex-session.py', 'notify-codex.ps1', 'codex-notification.py'):
+        for name in ('agent_security.py', 'finalize-codex-task.py', 'finalize-codex-task.ps1', 'finalize.ps1', 'scan-codex-secrets.py', 'export-codex-session.py', 'notify-codex.ps1', 'codex-notification.py'):
             shutil.copy(BASE / 'scripts' / name, self.root / 'scripts' / name)
         (self.root / '.gitignore').write_text('__pycache__/\n*.pyc\n.env\n.codex/\n', encoding='utf-8')
         (self.root / 'docs').mkdir()

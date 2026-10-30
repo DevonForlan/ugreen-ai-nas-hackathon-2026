@@ -13,7 +13,7 @@ import subprocess
 import tempfile
 import time
 import uuid
-from agent_security import scope_snapshot, protected, sandbox_command, gate_details, git_prefix, verify_control, process_birth, host_id
+from agent_security import scope_snapshot, protected, sandbox_command, gate_details, git_prefix, verify_control, process_birth, host_id, trusted_executable,git_environment
 
 CONTROL_ROOT = Path(__file__).resolve().parents[1]
 ROOT = Path(os.environ.get('CODEX_AGENT_WORKSPACE') or CONTROL_ROOT).resolve()
@@ -189,12 +189,18 @@ def allowed_changes(names, plan, task_id):
 
 
 def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, heartbeat=None, isolate_env=False):
+    argv=list(argv)
+    if not Path(argv[0]).is_absolute() and Path(argv[0]).stem.lower() in {'git','gh','powershell','taskkill'}:
+        argv[0]=trusted_executable(Path(argv[0]).stem.lower())
     allowed_env = {'SYSTEMROOT', 'WINDIR', 'PATH', 'PATHEXT', 'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH', 'HOME',
                    'APPDATA', 'LOCALAPPDATA', 'TEMP', 'TMP', 'COMSPEC', 'LANG', 'TERM', 'CODEX_HOME'}
     inherited = {k: v for k, v in os.environ.items() if not isolate_env or k.upper() in allowed_env}
     env = dict(inherited, PYTHONIOENCODING='utf-8', GIT_TERMINAL_PROMPT='0', GCM_INTERACTIVE='Never',
-               CODEX_AGENT_WORKFLOW='1', CODEX_USAGE_DISABLED='1', CODEX_NOTIFY_DISABLED='1', CODEX_SOUND_DISABLED='1',
+               CODEX_AGENT_WORKFLOW='1', CODEX_USAGE_DISABLED='1',
+               CODEX_NOTIFY_DISABLED='1' if isolate_env else os.environ.get('CODEX_NOTIFY_DISABLED','0'),
+               CODEX_SOUND_DISABLED='1' if isolate_env else os.environ.get('CODEX_SOUND_DISABLED','0'),
                CLAUDE_CODE_DISABLE_BACKGROUND_TASKS='1',PYTHONDONTWRITEBYTECODE='1',GIT_OPTIONAL_LOCKS='0')
+    env.update(git_environment())
     p = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.PIPE if input_text is not None else subprocess.DEVNULL,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8', errors='replace',
                          env=env, start_new_session=os.name != 'nt',
@@ -219,7 +225,7 @@ def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, 
     except BaseException:
         # Stop only this invocation's child tree, never other agent sessions.
         if os.name == 'nt':
-            subprocess.run(['taskkill', '/PID', str(p.pid), '/T', '/F'], capture_output=True, timeout=15)
+            subprocess.run([trusted_executable('taskkill'), '/PID', str(p.pid), '/T', '/F'], capture_output=True, timeout=15)
         else:
             import signal
             os.killpg(p.pid, signal.SIGTERM)
@@ -233,6 +239,7 @@ def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, 
 
 
 def git(*args):
+    if args and args[0]=='diff':args=('diff','--no-ext-diff','--no-textconv',*args[1:])
     return command(git_prefix(ROOT)+list(args)).strip()
 
 
@@ -266,7 +273,7 @@ class GitHub:
         self.prefix = 'repos/' + repository
 
     def api(self, path, method='GET', payload=None, missing=False):
-        args = ['gh', 'api', path, '--method', method]
+        args = [trusted_executable('gh'), 'api', path, '--method', method]
         if payload is not None:
             args += ['--input', '-']
         p = subprocess.run(args, input=json.dumps(payload) if payload is not None else None,
@@ -328,6 +335,20 @@ class GitHub:
     def create_issue(self, title, body):
         return self.api(self.prefix + '/issues', 'POST', {'title': clean_text(title, 200), 'body': clean_text(body), 'labels': ['READY_FOR_CODEX']})
 
+    def find_followup(self,body,policy):
+        matches=[]
+        for page in range(1,21):
+            rows=self.api(f'{self.prefix}/issues?state=all&per_page=100&page={page}')
+            for row in rows:
+                if 'pull_request' not in row and row.get('body')==body:
+                    item=self.issue(row['number'])
+                    if not trusted(item,policy):raise Gate('Untrusted duplicate follow-up requires owner reconciliation.')
+                    matches.append(item)
+            if len(rows)<100:break
+        else:raise Gate('Follow-up lookup exceeded discovery bound.')
+        if len(matches)>1:raise Gate('Multiple matching follow-ups; owner reconciliation required.')
+        return matches[0] if matches else None
+
     def head(self):
         branch = self.api(self.prefix)['default_branch']
         return self.api(f'{self.prefix}/git/ref/heads/{branch}')['object']['sha']
@@ -382,8 +403,8 @@ class GitHub:
             yield marker
         finally:
             for ref in reversed(held):
-                value = self.api(self.prefix + '/git/ref/' + ref)
-                if value['object']['sha'] != marker:
+                value = self.api(self.prefix + '/git/ref/' + ref,missing=True)
+                if not value or value['object']['sha'] != marker:
                     raise Locked('Lease ownership changed; manual reconciliation required.')
                 self.api(self.prefix + '/git/refs/' + ref, 'DELETE')
 
@@ -462,11 +483,30 @@ def recover_locks(hub,policy,issue,path):
         trusted_lease_path().write_text(json.dumps(record),encoding='utf-8')
     finally:
         value=hub.api(hub.prefix+'/git/ref/'+guard,missing=True)
-        if value and value['object']['sha']==guard_sha:
-            hub.api(hub.prefix+'/git/refs/'+guard,'DELETE')
+        if not value or value['object']['sha']!=guard_sha:
+            raise Locked('Recovery guard ownership changed or disappeared.')
+        hub.api(hub.prefix+'/git/refs/'+guard,'DELETE')
 
 
 class LiveTools:
+    git_frozen=False
+
+    def freeze_git(self,reason):
+        self.git_frozen=True
+        folder=CONTROL_ROOT/'runtime';folder.mkdir(exist_ok=True)
+        target=folder/'AUTO_STOP.json'
+        if not target.exists():
+            with target.open('x',encoding='utf-8') as stream:
+                json.dump({'reason':reason,'status':'USER_DECISION_REQUIRED','workspace':str(ROOT)},stream)
+
+    def assert_git_integrity(self):
+        if self.git_frozen:raise Gate('Parent Git frozen after uncertain/tampered execution; API-only stop.')
+        before=getattr(self,'model_git_before',None)
+        if before is not None:
+            def subset(tree):return {k:v for k,v in tree.items() if k=='.git/config' or k.startswith('.git/info/')}
+            if subset(scope_snapshot(ROOT))!=subset(before):
+                self.freeze_git('Git configuration/info changed after model execution')
+                raise Gate('Git configuration/info changed; parent Git publication is prohibited.')
     @contextmanager
     def execution_lease(self):
         # One controller owns worktree mutations throughout a model/test phase.
@@ -619,6 +659,7 @@ class LiveTools:
             raise Gate('Final visible response capture is not proven; preserve LOCAL_ONLY ledger.')
 
     def publish_capture(self):
+        self.assert_git_integrity()
         if not getattr(self,'capture_artifacts',None):
             return None
         from agent_history_sync import publish
@@ -679,6 +720,7 @@ class LiveTools:
         return dict(taskCommit=task_sha,commit=git('rev-parse','HEAD'),synced=True)
 
     def publish_paths(self,names,message):
+        self.assert_git_integrity()
         if git('diff','--cached','--name-only'):
             raise Gate('Existing staging belongs to another writer; preserve it.')
         names=sorted(set(relative(n) for n in names))
@@ -693,7 +735,8 @@ class LiveTools:
         if git('diff','--cached','--name-only'):
             git('commit','-m',message)
         branch=git('branch','--show-current')
-        git('push','origin','HEAD:refs/heads/'+branch)
+        remote='https://github.com/'+self.active_policy['repository']+'.git' if getattr(self,'active_policy',{}).get('repository') else 'origin'
+        git('push',remote,'HEAD:refs/heads/'+branch)
         head=git('rev-parse','HEAD')
         if git('ls-remote','origin','refs/heads/'+branch).split()[0]!=head:
             raise RemoteError('Publication remote SHA mismatch.')
@@ -722,6 +765,7 @@ class LiveTools:
         return git('diff', '--no-ext-diff', '--no-textconv', base, head, '--', *names) if names else ''
 
     def review_report(self, issue, fields, state, review):
+        self.assert_git_integrity()
         self.flush_capture()
         path = f'collaboration/cc-reports/{datetime.now():%Y-%m-%d_%H%M}_{fields["Task ID"]}_round-{state["cc_rounds"]}.md'
         body = '# CC Review\n\n' + json.dumps({'issue': issue['number'], 'reviewed_commit': state['handoff']['head'],
@@ -755,7 +799,7 @@ class LiveTools:
         git('diff', '--cached')
         git('commit', '-m', f'review: CC {fields["Task ID"]} round {state["cc_rounds"]}')
         branch = git('branch', '--show-current')
-        git('push', 'origin', 'HEAD:refs/heads/' + branch)
+        git('push', 'https://github.com/'+self.active_policy['repository']+'.git', 'HEAD:refs/heads/' + branch)
         sha = git('rev-parse', 'HEAD')
         if git('ls-remote', 'origin', 'refs/heads/' + branch).split()[0] != sha:
             raise RemoteError('Review report remote SHA mismatch.')
@@ -795,6 +839,24 @@ class Engine:
         except Exception:
             print('Notification fallback: check GitHub and terminal.')
 
+    def followup(self,issue,state,version,plan,recovery=False):
+        task=state.get('review',{}).get('recommended_next_task')
+        if not task:return version
+        approved=plan.get('followups',{}).get(task)
+        if not approved or parse_task(approved['body'])['Task ID']!=task:
+            raise Gate('Follow-up is not an owner-approved task.')
+        if state.get('next_issue'):return version
+        existing=self.hub.find_followup(approved['body'],self.policy) if hasattr(self.hub,'find_followup') else None
+        if existing:
+            state['next_issue']=existing['number'];return self.hub.save(issue['number'],state,version)
+        if recovery or state.get('followup_intent'):
+            raise Gate('Follow-up creation outcome uncertain; reconcile without creating a duplicate.')
+        state['followup_intent']={'task_id':task,'body_sha256':digest(approved['body']),'status':'CREATE_STARTED'}
+        version=self.hub.save(issue['number'],state,version)
+        created=self.hub.create_issue(approved['title'],approved['body'])
+        state['next_issue']=created['number'];state['followup_intent']['status']='CREATED'
+        return self.hub.save(issue['number'],state,version)
+
     def context(self, issue):
         if not trusted(issue, self.policy):
             raise Gate('Unauthorized task source; no agent or GitHub mutation.')
@@ -824,7 +886,7 @@ class Engine:
             state['state'] = transition(state['state'], new, actor, emergency)
         version = self.hub.save(issue['number'], state, version)
         self.hub.labels(self.hub.issue(issue['number']), state['state'])
-        if new and hasattr(self.tools,'checkpoint'):
+        if new and hasattr(self.tools,'checkpoint') and not getattr(self.tools,'git_frozen',False):
             phase={'CODEX_RUNNING':'STARTED','CC_REVIEWING':'CC_REVIEWING','CHANGES_REQUESTED':'CC_CHANGES_REQUESTED'}.get(new,new)
             task=next((task for task,plan in self.policy['plans'].items() if plan['issue_number']==issue['number']),None)
             if task:
@@ -838,6 +900,9 @@ class Engine:
         return version
 
     def gate(self, issue, state, version, reason, question=None):
+        # Every stop is API-only. Never run a repository-local publication path
+        # when preflight/model/test integrity might be the reason for the stop.
+        if hasattr(self.tools,'freeze_git'):self.tools.freeze_git(reason)
         specific,options=gate_details(reason)
         state['decision'] = {'reason': reason, 'question': question,
                              'options': options,
@@ -886,6 +951,7 @@ class Engine:
             if target=='CHANGES_REQUESTED' and (state['codex_attempts']>=3 or state['cc_rounds']>=3):
                 raise Gate('Review requires changes but the persistent budget is exhausted.')
             state['required_changes']=review['required_changes']
+            version=self.followup(issue,state,version,plan,recovery=True)
             self.save(issue,state,version,target,'cc')
             return target
         return state['state']
@@ -911,6 +977,7 @@ class Engine:
             return state['state']
         started = time.monotonic()
         usage = 'UNKNOWN'
+        uncertain_model=False
         try:
             self.tools.active_policy=self.policy
             base = self.tools.preflight(self.policy['repository'])
@@ -938,6 +1005,7 @@ class Engine:
             stop_check()
             self.notification('SUCCESS', 'Agent started', task + ' / ' + actor)
             before = self.tools.snapshot()
+            self.tools.model_git_before=before
             if actor == 'codex':
                 if not plan.get('sandbox_acknowledged') or not plan.get('required_tests'):
                     raise Gate('Owner must acknowledge sandbox boundaries and pin required tests.')
@@ -947,6 +1015,7 @@ class Engine:
                           'Return USER_DECISION_REQUIRED on any gate: ' + ', '.join(GATES) + '.\n' +
                           json.dumps({'requirement': fields, 'approved_paths': plan['allowed_write_paths'],
                                       'required_changes': state.get('required_changes', [])}, ensure_ascii=False))
+                uncertain_model=True
                 value, usage = self.tools.codex(prompt, self.policy['agent_timeout_seconds'])
                 stop_check()
                 if not isinstance(value, dict) or set(value) != {'result', 'summary', 'report_path', 'gate_reason', 'user_question'}:
@@ -959,6 +1028,7 @@ class Engine:
                 allowed_changes(changed, plan, task)
                 if set(before) - set(after):
                     raise Gate('File deletion requires explicit User review.')
+                uncertain_model=False
                 if value['result'] != 'HANDOFF':
                     raise Gate(value['gate_reason'] or 'Codex requests a User decision.', value['user_question'] or 'What bounded action should be authorized?')
                 if value['gate_reason'] or value['user_question']:
@@ -975,6 +1045,7 @@ class Engine:
                 if hasattr(self.tools,'checkpoint'):
                     self.tools.checkpoint(fields,state,'FIX_COMPLETE' if current=='CHANGES_REQUESTED' else 'IMPLEMENTATION_COMPLETE',value['summary'])
                 test_before=self.tools.snapshot()
+                uncertain_model=True
                 try:
                     tests = self.tools.tests(plan['required_tests'])
                 except Gate:
@@ -986,6 +1057,7 @@ class Engine:
                 allowed_changes(test_changed, plan, task)
                 if set(test_before) - set(checked):
                     raise Gate('Test execution deleted files; User review is required.')
+                uncertain_model=False
                 if scanner.scan_repo(ROOT)[1]:
                     raise Gate('Secret or unsafe content detected after implementation/tests.')
                 if self.hub.issue(issue['number'])['body'] != issue['body']:
@@ -1019,11 +1091,13 @@ class Engine:
                                        self.tools.diff(handoff['base'], handoff['head']), handoff['tests'], self.policy['max_review_bytes'])
                 before=self.tools.snapshot()  # fetch above is a parent-owned write, never a model exemption
                 stop_check()
+                uncertain_model=True
                 review, usage = self.tools.cc(prompt, self.policy['agent_timeout_seconds'])
                 stop_check()
                 review = review_json(review)
                 if self.tools.snapshot() != before or self.hub.issue(issue['number'])['body'] != issue['body']:
                     raise Gate('Review evidence changed during the review.')
+                uncertain_model=False
                 followup = review['recommended_next_task']
                 if followup and followup not in plan.get('followups', {}):
                     raise Gate('Reviewer proposed an unapproved next scope; User must decide.')
@@ -1044,12 +1118,9 @@ class Engine:
                 if target == 'CHANGES_REQUESTED' and (state['codex_attempts'] >= codex_max or state['cc_rounds'] >= cc_max):
                     raise Gate('Review requests changes but no iteration budget remains.')
                 if followup:
-                    approved = plan['followups'][followup]
-                    following = parse_task(approved['body'])
-                    if following['Task ID'] != followup or not any(followup.startswith(p) for p in self.policy['allowed_task_prefixes']):
+                    if not any(followup.startswith(p) for p in self.policy['allowed_task_prefixes']):
                         raise Gate('Follow-up template is outside the approved task domain.')
-                    next_issue = self.hub.create_issue(approved['title'], approved['body'])
-                    state['next_issue'] = next_issue['number']
+                    version=self.followup(issue,state,version,plan)
                 self.notification('SUCCESS' if target == 'DONE' else 'WARNING', 'Review completed', task + ' / ' + review['result'])
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'],
                                      'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage,
@@ -1057,17 +1128,20 @@ class Engine:
             self.save(issue, state, version, target, actor)
             return target
         except KeyboardInterrupt:
+            if uncertain_model and hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Interrupted model/test; integrity uncertain')
             self.gate(issue, state, version, 'User interrupted execution. No automatic continuation.')
             raise
         except Gate as exc:
+            if uncertain_model and hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Model/test integrity or scope check failed')
             if getattr(self.tools,'last_test_evidence',None):state['test_evidence']=self.tools.last_test_evidence
-            if hasattr(self.tools,'flush_capture'):
+            if hasattr(self.tools,'flush_capture') and not getattr(self.tools,'git_frozen',False):
                 self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'USER_DECISION_REQUIRED'})
             self.gate(issue, state, version, clean_text(str(exc), 8000), clean_text(exc.question, 8000))
             return 'USER_DECISION_REQUIRED'
         except Exception:
-            if hasattr(self.tools,'flush_capture'):
+            if hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Fatal workflow failure; API-only stop')
+            if hasattr(self.tools,'flush_capture') and not getattr(self.tools,'git_frozen',False):
                 self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'FAILED'})
             try:

@@ -1,7 +1,7 @@
 File: collaboration/codex-sessions/test.md | Rule: provider-token | Line: 1 | Finding: REDACTED
 Secret scan: files=1 findings=1 (heuristic)
 Emergency checkpoint not published; inspect local evidence. State/notification remain authoritative.
-{"allowed_task_prefixes": ["AUTO-"], "plans": {}, "policy_sha256": "38ff4d20e72134f3756ceb32ebd1c964705541dc946da65631f5beec3936d3ac", "reviewed_head": "fc8c612c0e0a688e0e974e54a419564a67dec6ae"}
+{"allowed_task_prefixes": ["AUTO-"], "plans": {}, "policy_sha256": "ca10331d03dafe84aee6be4a0aaf41e7cf1f4e92b88db6c70cb2bd9943cff6c9", "reviewed_head": "d6744f8f932b0f73b45af4d9936157dfa6be1a4e"}
 collaboration/codex-sessions/session.md:1: export-owner-mismatch
 collaboration/codex-sessions/raw.jsonl:1: non-markdown-or-nonregular-export
 test_appended_assistant_and_multiday_active_attach (test_agent_live_sync.LiveTests.test_appended_assistant_and_multiday_active_attach) ... ok
@@ -27,6 +27,7 @@ test_emergency_checkpoint_failure_cannot_suppress_comment_or_notification (test_
 test_every_phase_validates_and_attests_only_verified_payload (test_agent_review_fixes.ReadinessFixTests.test_every_phase_validates_and_attests_only_verified_payload) ... ok
 test_exact_code_review_is_not_sanitizer_rewritten (test_agent_review_fixes.ReadinessFixTests.test_exact_code_review_is_not_sanitizer_rewritten) ... ok
 test_failed_tests_retain_actual_exit_and_sanitized_output (test_agent_review_fixes.ReadinessFixTests.test_failed_tests_retain_actual_exit_and_sanitized_output) ... ok
+test_followup_partial_write_recovers_existing_issue_without_duplicate (test_agent_review_fixes.ReadinessFixTests.test_followup_partial_write_recovers_existing_issue_without_duplicate) ... ok
 test_installer_rejects_consistent_mutable_policy_source_and_report_forgery (test_agent_review_fixes.ReadinessFixTests.test_installer_rejects_consistent_mutable_policy_source_and_report_forgery) ... ok
 test_reviewer_user_gate_requires_options_and_recommendation (test_agent_review_fixes.ReadinessFixTests.test_reviewer_user_gate_requires_options_and_recommendation) ... ok
 test_trusted_outside_record_blocks_pid_forgery_and_releases_only_dead_owner (test_agent_security.LeaseRecoveryTests.test_trusted_outside_record_blocks_pid_forgery_and_releases_only_dead_owner) ... ok
@@ -126,6 +127,6 @@ test_secret_otp_mfa_redaction (test_live_mirror.MirrorTests.test_secret_otp_mfa_
 test_unicode_latest_is_byte_bounded (test_live_mirror.MirrorTests.test_unicode_latest_is_byte_bounded) ... ok
 
 ----------------------------------------------------------------------
-Ran 120 tests in 23.555s
+Ran 121 tests in 42.163s
 
 OK

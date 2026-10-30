@@ -9,7 +9,13 @@ No product topic, REG-002 action or competition implementation is authorized her
 
 The controller is the only driver. Models cannot edit policy/control-plane files,
 nested AGENTS.md / CLAUDE.md / .codex / .claude files, reviewer reports, checkpoints,
-Git metadata, ignored editor files or bytecode. Full worktree snapshots include
+Git metadata, ignored editor files or bytecode. All User gates/fatal stops use
+GitHub API-only ledger/labels/comments, never repository Git publication. A trusted
+controller-local AUTO_STOP record prevents uncertain restart; no capture/commit/push
+runs after a tampered/uncertain model or test. Git configuration/info hashes are
+rechecked before parent publication. Native Git/gh/PowerShell paths, empty hooks,
+no global/system Git config, disabled SSH/ext/proxy/diff programs and a pinned
+native gh credential helper constrain parent Git; credentials remain native. Full worktree snapshots include
 ignored data and Git hooks/config; immutable Git objects are excluded from the
 byte inventory. Paths/commit IDs are validated before Git/API calls. Controller Git
 forces an empty hook directory and disables fsmonitor. No model-written host tests
@@ -39,7 +45,9 @@ Tests use absolute trusted Python, -B, the native workspace profile and networki
 No sandbox failure falls back to host execution. A real harmless probe confirmed
 that Python **could write the workspace**, **could not write** the separate
 LocalAppData controller directory, and could not open a direct network connection.
-The full 113-test fast suite also passed inside this native sandbox.
+The current full fast suite also passed inside this native sandbox; actual output,
+counts and SHA-256 digests are versioned in collaboration/test-results/ and
+collaboration/run-ledger/AUTO-005_code-tests.json.
 This is the native sandbox boundary chosen by
 User, not a claim that arbitrary host/OS compromise is impossible.
 
@@ -112,6 +120,8 @@ At a clean READY_FOR_CC_REVIEW boundary, a fresh controller proceeds directly to
 without another Codex attempt. A durable verified handoff saved before label/comment
 writes may be resumed with --resume after identity/SHA/evidence validation. Likewise
 a published independent CC verdict may be finalized without another review call.
+Follow-up creation persists intent before the API call and reuses an exact trusted
+matching Issue on recovery; an uncertain unmatched outcome stops rather than duplicates.
 Unknown running work stops for User; it is never blindly replayed. Partial remote
 writes, changed digests or mismatched labels/ledger stop safely.
 

@@ -10,7 +10,7 @@
     {
       "round": 2,
       "reviewed_head": "edac24bd21fc1ed12c3e99d8b4bf7f222c281137",
-      "status": "STARTED"
+      "status": "USER_DECISION_REQUIRED"
     }
   ]
 }

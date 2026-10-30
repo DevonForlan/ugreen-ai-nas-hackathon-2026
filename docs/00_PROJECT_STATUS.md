@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 10:58 +0800
+Last Updated: 2026-10-30 16:19 +0800
 
 ## Current Phase
 
@@ -11,10 +11,16 @@ AUTO-001 automation remains paused pending User decisions.
 
 ## Current Objective
 
-REG-002: Codex takes over the existing logged-in Devpost browser from Claude Code.
-Complete registration only after actual field/eligibility confirmations; solo team size 1.
+AUTO-004 small latest-response mirrors: live acceptance PASS; formal publication.
+Next, AUTO-005 only after AUTO-004 is synchronized; User selected trust root B and test boundary A.
+REG-002 is blocked/paused; no registration or Round 1 submission performed.
 
 ## Completed
+
+- AUTO-004 real live Codex + Claude response mirrors verified directly from GitHub
+  before either owned CLI exited; durable evidence in run-ledger/AUTO-004_live-acceptance.json.
+- AUTO-004 compact latest pointers, stable per-response files/parts, visible-only filtering,
+  bounded excerpts, OTP redaction and metadata receipts implemented; 99 fast and 12 integration tests passed.
 
 - AUTO-003 Codex live checkpoint is readable from GitHub while Codex remains running;
   both active agents have verified GitHub payloads and SHA-256 matches.
@@ -37,6 +43,10 @@ Complete registration only after actual field/eligibility confirmations; solo te
 
 ## In Progress
 
+- AUTO-004 final publication and regression integration verification.
+- AUTO-005 dependency gate not yet opened for implementation. B = conditional trust approval
+  after F1/F4-F6 fixes; A = tests in the native Codex sandbox. Execution remains disabled.
+
 - AUTO-003 publication and independent CC review. 90 fast + 12 integration tests passed.
   Live transport passes; measured latency still exceeds the <=15s target under concurrent load.
 - REG-002 existing logged-in form inspected; Occupation confirmed by User, not yet
@@ -45,6 +55,9 @@ Complete registration only after actual field/eligibility confirmations; solo te
 - AUTO-001 remains USER_DECISION_REQUIRED per manual CC review; it is not DONE.
 
 ## Blockers
+
+- AUTO-004 orphan-lock incident recovered with owner/writer absence checks and
+  retained backups; live acceptance and all tests passed. Final publication follows.
 
 - REG-002: loopback browser connection refused; automatic relaunch of its existing
   profile rejected by environment policy. User must restore existing browser/control.
@@ -63,7 +76,6 @@ Complete registration only after actual field/eligibility confirmations; solo te
 
 ## Next Planned Step
 
-Review AUTO-003 report and live acceptance receipts; assess the documented latency limitation.
-Continue REG-002 actual form confirmations, then authorized registration and success verification.
-Do not submit Round 1 or start R01-R06. AUTO-001 remains disabled.
-AUTO-002 final-response capture is still unknown for the active multi-day session.
+Publish AUTO-004 report and verify remote SHA. Then implement AUTO-005 security fixes,
+obtain independent Claude review and run one bounded non-product acceptance task.
+Do not resume REG-002 or begin UGREEN topic/product development.

@@ -1,0 +1,24 @@
+{
+  "recovered_at": "2026-10-30T08:14:12.295915+00:00",
+  "previous_owner_pid": 24784,
+  "previous_owner_alive": false,
+  "active_derived_writers": 0,
+  "basis": "Exact derived locks created by this session before server restart; explicit User continuation; no age-based inference",
+  "locks": [
+    {
+      "file": "agent-live-sync-codex-01a17347-a748-7a61-8544-48c906a9373d.lock",
+      "sha256": "fe2d3474f8f243fc9dcb0b50e9059267a2f7a02d92ee35204388335dca99f737",
+      "backup_retained_in_git_directory": true
+    },
+    {
+      "file": "agent-transcript-publish.lock",
+      "sha256": "bbdb887068dddbb05fbe78ba3511bb890653aa6914e29b5c1a659aeae95c4d25",
+      "backup_retained_in_git_directory": true
+    },
+    {
+      "file": "global-derived-codex-session/.archive.lock",
+      "sha256": "6db836ef51e1b2b44f922f6041253415433facb65c6a63af701947b42d760110",
+      "backup_retained_in_git_directory": true
+    }
+  ]
+}

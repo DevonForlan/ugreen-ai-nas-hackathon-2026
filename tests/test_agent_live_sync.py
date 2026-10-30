@@ -39,8 +39,8 @@ class LiveTests(unittest.TestCase):
         with patch.object(live, 'publish', return_value='a'*40) as publish:
             result = self.w.step(10)
             if result:
-                self.assertTrue(all(name.endswith('.md') for name in publish.call_args_list[0].args[1]))
-                self.assertEqual(publish.call_args_list[1].args[1], ['collaboration/live-sync-status.json'])
+                self.assertNotIn('collaboration/live-sync-status.json', publish.call_args_list[0].args[1])
+                self.assertIn('collaboration/live-sync-status.json', publish.call_args_list[1].args[1])
             return result, publish.call_count
 
     def test_appended_assistant_and_multiday_active_attach(self):

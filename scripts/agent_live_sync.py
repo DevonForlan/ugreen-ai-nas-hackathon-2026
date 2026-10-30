@@ -11,6 +11,7 @@ import time
 from collections import OrderedDict
 
 import agent_transcripts as h
+import agent_live_mirror as mirror
 from agent_history_sync import SyncError, git
 
 VERIFIED = {}
@@ -142,8 +143,11 @@ def publish(root, names, message):
     if git(root, 'remote', 'get-url', '--push', 'origin') != origin:
         raise SyncError('Push origin mismatch')
     allowed = ('collaboration/codex-sessions/', 'collaboration/cc-sessions/')
+    def mirror_path(n):
+        return (n in {'collaboration/live-latest/codex.md','collaboration/live-latest/claude.md','collaboration/live-latest/index.json'}
+            or re.fullmatch(r'collaboration/live-turns/(?:codex|claude)/[A-Za-z0-9_-]{8,100}/visible-[a-f0-9]{24}(?:/part-[0-9]{4})?\.md',n))
     if any(n != 'collaboration/live-sync-status.json' and not
-           (n.startswith(allowed) and n.endswith('.md') and '..' not in Path(n).parts) for n in names):
+           ((n.startswith(allowed) and n.endswith('.md') and '..' not in Path(n).parts) or mirror_path(n)) for n in names):
         raise SyncError('Publication path outside transcript allowlist')
     selected_scan(root, names)
     before = git(root, 'rev-parse', 'HEAD')
@@ -260,10 +264,11 @@ class Watcher:
         if not session['visible_event_count']:
             self.last_hash = session['visible_sha256']
             return None
-        if session['visible_sha256'] == self.last_hash:
+        if session['visible_sha256'] == self.last_hash and mirror.available(self.root,self.agent,self.sid):
             return None
         item = h.archive(session, root=self.archive_root, project_path=self.root, allow_stream_growth=True)
         transcript = item['transcript']
+        bundle = mirror.prepare(self.root,session,transcript)
         last = h.events(session)[-1]
         status = dict(schema_version=1, agent=self.agent, session_id=self.sid,
             last_visible_event_at=last['timestamp'], last_visible_turn_id=session['turns'][-1]['turn_id'],
@@ -275,6 +280,8 @@ class Watcher:
             last_visible_response_at=session['last_visible_response_at'],
             final_response_captured='unknown', scope='Exact visible snapshot; not future final response or task acceptance')
         names = [transcript.relative_to(self.root).as_posix(), 'collaboration/live-sync-status.json']
+        if bundle:
+            names += bundle['paths']
         def save():
             # The Git mutation lease also serializes both agents' receipt updates.
             previous = json.loads(self.status_path.read_text(encoding='utf-8')) if self.status_path.exists() else {}
@@ -289,18 +296,23 @@ class Watcher:
             # Keep GitHub's last verified receipt intact while a new payload is
             # in flight. LOCAL_ONLY/PENDING lives locally until verified; never
             # publish a transient downgrade for an ordinary successful update.
-            payload = publish(self.root, [names[0]], 'logs: live '+self.agent+' visible snapshot')
+            payload = publish(self.root, [n for n in names if n!='collaboration/live-sync-status.json'], 'logs: live '+self.agent+' visible snapshot')
             synced = datetime.now(timezone.utc)
             stamp = datetime.fromisoformat(last['timestamp'].replace('Z', '+00:00'))
             status.update(github_sync_status='SYNC_COMPLETE', github_commit_sha=payload,
                 github_remote_verified=True, github_synced_at=synced.isoformat(),
                 lag_seconds=round(max(0, (synced-stamp).total_seconds()), 3), incomplete_reason=None)
             save()
+            receipts = ['collaboration/live-sync-status.json']
+            if bundle:
+                receipts += mirror.update(bundle,payload,True)
             # Bounded receipt pins verified payload SHA, avoiding a self-referential SHA loop.
-            receipt = publish(self.root, ['collaboration/live-sync-status.json'], 'logs: verify live transcript snapshot')
+            receipt = publish(self.root, receipts, 'logs: verify live transcript snapshot')
             self.last_hash = session['visible_sha256']
             return dict(status='SYNC_COMPLETE', payload=payload, receipt=receipt, lag_seconds=status['lag_seconds'])
         except Exception as exc:
+            if bundle:
+                mirror.update(bundle,None,False,type(exc).__name__)
             status.update(github_sync_status='FAILED' if isinstance(exc, h.ArtifactScanError) else 'LOCAL_ONLY',
                           github_remote_verified=False,
                           incomplete_reason=str(exc) if isinstance(exc, SyncError) else type(exc).__name__)

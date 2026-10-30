@@ -1,0 +1,73 @@
+{
+  "agents": {
+    "claude": {
+      "agent": "claude",
+      "content_sha256": "9192a20058ab50d1d4afeb6fee8b99b259283b2660e3c05af69e88c48f9634ca",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "incomplete_reason": "SyncError",
+      "part_count": 1,
+      "response_id": "4cf5ffad-e0ff-4488-b22d-206d8ee8a9d2-0",
+      "response_sha256": "0b6481c6e863e03d340a5820bf7227196b285a546206072933c6675636eb2b90",
+      "secret_scan": "PASS",
+      "session_id": "1e06fad7-bc94-4d75-b9de-f87b491e87be",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_0330_1e06fad7-bc94-4d75-b9de-f87b491e87be.md",
+      "status": "FAILED",
+      "timestamp": "2026-10-30T03:31:00.125Z",
+      "turn_id": "visible-40b4007773d0881c09585e9f",
+      "turn_path": "collaboration/live-turns/claude/1e06fad7-bc94-4d75-b9de-f87b491e87be/visible-40b4007773d0881c09585e9f.md"
+    },
+    "codex": {
+      "agent": "codex",
+      "content_sha256": "194487c755f4cdb930cba08cc697d9786906b68c5552a3033b6d37ccf943e08b",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "part_count": 1,
+      "response_id": "native-4470",
+      "response_sha256": "6be8aa74a99a27fda455317ea4b7a24f88d58c47cc819ddacfe0368185dee099",
+      "secret_scan": "PASS",
+      "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
+      "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T03:33:06.816Z",
+      "turn_id": "visible-c9466a6a7c5d2a6a74d3b591",
+      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-c9466a6a7c5d2a6a74d3b591.md"
+    }
+  },
+  "schema_version": 1,
+  "sessions": {
+    "claude:1e06fad7-bc94-4d75-b9de-f87b491e87be": {
+      "agent": "claude",
+      "content_sha256": "9192a20058ab50d1d4afeb6fee8b99b259283b2660e3c05af69e88c48f9634ca",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "incomplete_reason": "SyncError",
+      "part_count": 1,
+      "response_id": "4cf5ffad-e0ff-4488-b22d-206d8ee8a9d2-0",
+      "response_sha256": "0b6481c6e863e03d340a5820bf7227196b285a546206072933c6675636eb2b90",
+      "secret_scan": "PASS",
+      "session_id": "1e06fad7-bc94-4d75-b9de-f87b491e87be",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_0330_1e06fad7-bc94-4d75-b9de-f87b491e87be.md",
+      "status": "FAILED",
+      "timestamp": "2026-10-30T03:31:00.125Z",
+      "turn_id": "visible-40b4007773d0881c09585e9f",
+      "turn_path": "collaboration/live-turns/claude/1e06fad7-bc94-4d75-b9de-f87b491e87be/visible-40b4007773d0881c09585e9f.md"
+    },
+    "codex:01a17347-a748-7a61-8544-48c906a9373d": {
+      "agent": "codex",
+      "content_sha256": "194487c755f4cdb930cba08cc697d9786906b68c5552a3033b6d37ccf943e08b",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "part_count": 1,
+      "response_id": "native-4470",
+      "response_sha256": "6be8aa74a99a27fda455317ea4b7a24f88d58c47cc819ddacfe0368185dee099",
+      "secret_scan": "PASS",
+      "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
+      "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T03:33:06.816Z",
+      "turn_id": "visible-c9466a6a7c5d2a6a74d3b591",
+      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-c9466a6a7c5d2a6a74d3b591.md"
+    }
+  }
+}

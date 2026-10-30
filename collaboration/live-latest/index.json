@@ -2,21 +2,21 @@
   "agents": {
     "claude": {
       "agent": "claude",
-      "content_sha256": "5bd69d80d803e7e213bef58b3dfee981317d344b7d131d5a045450b6e1edb438",
-      "github_commit_sha": "579c07ff1e9cb33546546f9ff58a06e5cba4e93c",
-      "github_remote_verified": true,
+      "content_sha256": "bb67aa37e52d276a05dd97b580d240d51c3f36eb3f383a386dd503701537763e",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
       "part_count": 1,
       "response_id": "result-1",
       "response_ordinal": 1,
-      "response_sha256": "b566fd59b3896280f702652b728303bd83be24a1e5ca7f7979d4cabcac7e1eb9",
+      "response_sha256": "7f124871b366357d15125191a67574d70260c5c2db0003122b4c59ccf27657e4",
       "secret_scan": "PASS",
-      "session_id": "24c122fa-bf28-4549-aeec-f242a44d591f",
-      "session_started_at": "2026-10-30T11:13:42.084109+00:00",
-      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1113_24c122fa-bf28-4549-aeec-f242a44d591f.md",
-      "status": "SYNC_COMPLETE",
-      "timestamp": "2026-10-30T11:14:20.073274Z",
+      "session_id": "90fa3859-f53a-44dc-a764-da78fbd3adc3",
+      "session_started_at": "2026-10-30T11:28:27.960660+00:00",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1128_90fa3859-f53a-44dc-a764-da78fbd3adc3.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T11:28:54.725829Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
-      "turn_path": "collaboration/live-turns/claude/24c122fa-bf28-4549-aeec-f242a44d591f/visible-84db80aea1c9efdf9780191c.md"
+      "turn_path": "collaboration/live-turns/claude/90fa3859-f53a-44dc-a764-da78fbd3adc3/visible-84db80aea1c9efdf9780191c.md"
     },
     "codex": {
       "agent": "codex",
@@ -89,6 +89,24 @@
       "timestamp": "2026-10-30T11:14:20.073274Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
       "turn_path": "collaboration/live-turns/claude/24c122fa-bf28-4549-aeec-f242a44d591f/visible-84db80aea1c9efdf9780191c.md"
+    },
+    "claude:90fa3859-f53a-44dc-a764-da78fbd3adc3": {
+      "agent": "claude",
+      "content_sha256": "bb67aa37e52d276a05dd97b580d240d51c3f36eb3f383a386dd503701537763e",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "part_count": 1,
+      "response_id": "result-1",
+      "response_ordinal": 1,
+      "response_sha256": "7f124871b366357d15125191a67574d70260c5c2db0003122b4c59ccf27657e4",
+      "secret_scan": "PASS",
+      "session_id": "90fa3859-f53a-44dc-a764-da78fbd3adc3",
+      "session_started_at": "2026-10-30T11:28:27.960660+00:00",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1128_90fa3859-f53a-44dc-a764-da78fbd3adc3.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T11:28:54.725829Z",
+      "turn_id": "visible-84db80aea1c9efdf9780191c",
+      "turn_path": "collaboration/live-turns/claude/90fa3859-f53a-44dc-a764-da78fbd3adc3/visible-84db80aea1c9efdf9780191c.md"
     },
     "claude:c736e6b9-b3a0-4b8e-90c3-66dd41a71e47": {
       "agent": "claude",

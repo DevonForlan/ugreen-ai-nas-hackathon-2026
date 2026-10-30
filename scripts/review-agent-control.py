@@ -47,7 +47,7 @@ def main():
     reports=[name for name in git('ls-tree','--name-only',head+':collaboration/codex-reports').splitlines() if name.endswith('_'+task+'.md')]
     if not reports:raise ValueError('Published Codex report is required')
     context['codex_report']=git('show',head+':collaboration/codex-reports/'+sorted(reports)[-1])
-    context['diff_stat']=git('diff','--stat','e5fe3ad43d17b33f5fdfda5c0b00b26b67527ee4',head)
+    context['diff_stat']=git('diff','--stat','e5fe3ad43d17b33f5fdfda5c0b00b26b67527ee4',head,'--','scripts','tests','automation','docs')
     context['checkpoint.schema.json']=git('show',head+':automation/checkpoint.schema.json')
     prior=[name for name in git('ls-tree','--name-only',head+':collaboration/cc-reports').splitlines() if '_AUTO-006_review-round-' in name]
     if prior:

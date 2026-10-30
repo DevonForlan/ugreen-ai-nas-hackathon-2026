@@ -1,28 +1,27 @@
-<!-- live-mirror-v1 agent=claude session=c736e6b9-b3a0-4b8e-90c3-66dd41a71e47 turn=visible-84db80aea1c9efdf9780191c -->
+<!-- live-mirror-v1 agent=claude session=cf7d8376-e13f-42a7-8786-d8bfb743cd6a turn=visible-84db80aea1c9efdf9780191c -->
 # Latest visible response
 
 - agent: claude
-- session_id: c736e6b9-b3a0-4b8e-90c3-66dd41a71e47
+- session_id: cf7d8376-e13f-42a7-8786-d8bfb743cd6a
 - turn_id: visible-84db80aea1c9efdf9780191c
-- timestamp: 2026-10-30T10:05:36.869567Z
-- status: SYNC_COMPLETE
-- github_commit_sha: 9543804464548f568cba8ec46b1410044ee6d115
-- github_remote_verified: True
+- timestamp: 2026-10-30T10:25:54.591652Z
+- status: LOCAL_ONLY
+- github_commit_sha: None
+- github_remote_verified: False
 - secret_scan: PASS
-- source_transcript_path: collaboration/cc-sessions/2026-10-30_1004_c736e6b9-b3a0-4b8e-90c3-66dd41a71e47.md
+- source_transcript_path: collaboration/cc-sessions/2026-10-30_1024_cf7d8376-e13f-42a7-8786-d8bfb743cd6a.md
 
 ## Visible assistant response
 ```text
 {
   "result": "CHANGES_REQUESTED",
-  "summary": "Pre-enable readiness review, not final acceptance. Most of the design holds up: pinned policy digest, installer binding to Git blobs, snapshot comparison around model runs, empty hooks path, sandboxed tests, persistent counters and the legal-state checks. One blocking hole remains, plus smaller robustness and doc issues. The blocking hole is in the tamper-detection path. When the post-model snapshot shows a protected file changed (for example `__agent_control__/git-config`, hooks, `.git/info/attributes`), `allowed_changes` raises Gate. The `except Gate` handler in `Engine.step` then calls `self.gate(...)`, which calls `save(..., emergency=True)`, which calls `tools.checkpoint(...)`. That path runs `publish_paths`, which runs `git add`, `git commit` and `git push` in the parent process, outside the sandbox, against the tampered `.git/config`. A model-written `credential.helper=[REDACTED], `core.sshCommand`, a `filter.*` driver or `remote.origin.pushurl` would then execute with the owner's credentials. `git_prefix` forces only `core.hooksPath` and `core.fsmonitor`. The `except Exception` FAILED path and `flush_capture(failed=True)` have the same exposure. The control plane detects the tampering but does not stop before running the exploit. I could not verify the test evidence beyond what was supplied. It lists no test for tamper followed by gate with a malicious git config.",
+  "summary": "Pre-enable readiness review only; this is not final task acceptance. I read only the supplied code and evidence and ran no tests. The B/A design is largely sound: isolated installed controller, pinned digests, API-only stops, Git config/info attestation, and native-sandbox tests. I found one failure-path defect and several hardening gaps that I think should be fixed before enabling autonomous execution. The most serious is that the stop path can fail to record a User gate when evidence is large.",
   "required_changes": [
-    "In Engine.step, track a `tampered` flag. Set it whenever a snapshot diff touches a protected path, `__agent_control__/*`, `.git/*`, `.codex`, `.claude` or `.mcp.json`, or when `allowed_changes` or the deletion check raises. When it is set, the Gate and FAILED handlers and `Engine.save(..., emergency=True)` must not call `tools.checkpoint`, `flush_capture` (if it commits or pushes), `publish_paths` or any other parent git mutation or push from that worktree. Record the state through the GitHub API only (ledger, label, comment), and write local AUTO_STOP evidence.",
-    "Harden every parent-owned git invocation in `git_prefix` and `command()`: add `-c credential.helper=[REDACTED] (or a pinned helper), `-c core.sshCommand=`, `-c core.gitProxy=`, `-c core.askPass=`, `-c protocol.ext.allow=never`, `-c core.pager=cat` and `-c diff.external=`. Set `GIT_CONFIG_NOSYSTEM=1`, `GIT_CONFIG_GLOBAL` and `GIT_SSH_COMMAND` to pinned values, and push to the pinned explicit URL instead of the `origin` remote. Before any publication that follows model execution, verify the `.git/config` and `.git/info/*` hashes against the pre-run `before` snapshot.",
-    "Add a real-git integration test: a fake model run writes a malicious `credential.helper` or `core.sshCommand` into `.git/config` and a marker-writing script. Assert that the Gate fires, that no git push or helper executes (the marker is absent), and that the state is still recorded as USER_DECISION_REQUIRED through the API. Add a similar test for the FAILED path.",
-    "`GitHub.lock` `finally`: if a lock ref is already missing, `value['object']` raises TypeError and masks the original error. Use `missing=True` and treat an absent ref as a Locked ownership-changed condition. Do the same for the recovery guard cleanup.",
-    "The follow-up issue is created after the review verdict is saved, but `state['next_issue']` is persisted only by the final save. If that save fails, a retry or recovery cannot see the created issue (and `recover()` ignores follow-ups entirely). Persist an intent record before `create_issue`, and check for an existing issue by title or Task ID before creating, so no duplicate follow-up is made.",
-    "Fix the doc inconsistency: BOUNDED_AGENT_WORKFLOW_GUIDE says the full 113-test suite passed in the native sandbox, but the test evidence shows 120 fast tests plus 14 integration tests. Update the guide to match, and cite the evidence paths."
+    "Fix emergency-stop reliability against the size cap. GitHub.save() runs clean_text(content) with the default 65536-byte limit on the whole ledger JSON. state['test_evidence'] and state['handoff']['tests'] hold full test output, up to 64KB per command, and the success path stores it twice. A failing or verbose run can therefore make Engine.gate() -> save() raise Gate inside the gate handler. The label and USER_DECISION comment are then never written, the main() except-Gate path fails the same way, and the issue stays CODEX_RUNNING with no stop recorded. The Codex handoff comment has the same exposure, since it also goes through clean_text(body) at 65536 bytes. Keep only command, exit_code, output_sha256, output_bytes and a bounded tail in the ledger, comments and checkpoint tests_summary. Put the full sanitized output in a separate published artifact such as collaboration/test-results/. Make Engine.gate()/save(emergency=True) unable to fail on size or sanitizer errors: truncate the decision payload and fall back to a minimal fixed-size ledger and comment. Add a test where a failing test run produces more than 64KB of output and the issue still ends as USER_DECISION_REQUIRED with a comment.",
+    "Harden executable resolution in claude_launcher(). shutil.which('claude'), shutil.which('claude.exe') and shutil.which('node') use the controller process's PATH and, on Windows, its current directory. If the controller is started from the agent-writable worktree, an ignored or planted claude.exe, claude.cmd or node.exe could be launched by the parent, outside any Gate. Resolve these like trusted_executable(): search absolute PATH entries only, and reject any resolved path under ROOT or under a user-writable project directory. Apply the same check to native_codex() in codex-usage.py, which was not supplied. Add a regression test with a planted claude.exe in the cwd.",
+    "Set GIT_LITERAL_PATHSPECS=1 in git_environment(). publish_paths(), diff and add pass model-influenced file names as pathspecs. Names containing glob characters such as * or [ pass relative() and would be expanded by Git rather than treated literally. Add a test with a file named like 'src/*.py'.",
+    "Extend the native sandbox boundary probe to cover credential reads. The packet shows workspace write allowed, external write blocked and network blocked. It shows nothing on whether a workspace-write model can read CODEX_HOME auth files, gh hosts.yml or other native credential files, because the model env keeps USERPROFILE, APPDATA, LOCALAPPDATA and CODEX_HOME. Add a probe for those reads and record the result. If reads are possible, either deny them with the sandbox profile or have the plan's sandbox_acknowledged explicitly name this residual risk. The secret scanner covers only known token formats, so do not rely on it as the mitigation.",
+    "Resolve the checkpoint gap against the requirement. Engine.gate() calls freeze_git() first, so save() skips checkpoint publication. USER_DECISION_REQUIRED and FAILED checkpoints (phases that exist in the schema, with needs_user) are therefore never published, though the requirement lists them and acceptance item 7 expects checkpoints after each phase. Either write an API-only checkpoint to the agent-state branch for these two phases, or document the deviation in the guide and have the later real acceptance run state it explicitly. Do not use repository Git publication for this."
   ],
   "recommended_next_task": "",
   "user_question": ""
@@ -31,13 +30,13 @@
 
 
 ## Full sanitized response and visible tools
-- [Content part 1](/collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c/part-0001.md)
+- [Content part 1](/collaboration/live-turns/claude/cf7d8376-e13f-42a7-8786-d8bfb743cd6a/visible-84db80aea1c9efdf9780191c/part-0001.md)
 
-Source: /collaboration/cc-sessions/2026-10-30_1004_c736e6b9-b3a0-4b8e-90c3-66dd41a71e47.md
+Source: /collaboration/cc-sessions/2026-10-30_1024_cf7d8376-e13f-42a7-8786-d8bfb743cd6a.md
 Visible records: 1; content parts: 1. Parts are numbered consecutively from part-0001.md in the turn directory.
 Latest includes the assistant response and up to eight tool/error excerpts; all content remains in parts.
 This is a completed visible record/quiescent snapshot, not process-exit proof.
 
 
-Full turn index: /collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c.md
+Full turn index: /collaboration/live-turns/claude/cf7d8376-e13f-42a7-8786-d8bfb743cd6a/visible-84db80aea1c9efdf9780191c.md
 

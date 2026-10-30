@@ -2,19 +2,19 @@
   "agents": {
     "claude": {
       "agent": "claude",
-      "content_sha256": "bdbbd011e5130c5538c7749908352fbbd3a757d9250bb03819641b6c6a2ba36d",
-      "github_commit_sha": "9543804464548f568cba8ec46b1410044ee6d115",
-      "github_remote_verified": true,
+      "content_sha256": "e4d6c68e872ebe53d6c39bb374960e34bf0993a7eaa41794179fc3b308a10063",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
       "part_count": 1,
       "response_id": "result-1",
-      "response_sha256": "c65aa82d44838210904474bfdb4a7dbc534a67455ddc7fb3316676fd2e89bf12",
+      "response_sha256": "3eff69ef5094c16a4897bdde15e7a20d4277bcae7e7b65bcdf080a0d40bfbd36",
       "secret_scan": "PASS",
-      "session_id": "c736e6b9-b3a0-4b8e-90c3-66dd41a71e47",
-      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1004_c736e6b9-b3a0-4b8e-90c3-66dd41a71e47.md",
-      "status": "SYNC_COMPLETE",
-      "timestamp": "2026-10-30T10:05:36.869567Z",
+      "session_id": "cf7d8376-e13f-42a7-8786-d8bfb743cd6a",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1024_cf7d8376-e13f-42a7-8786-d8bfb743cd6a.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T10:25:54.591652Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
-      "turn_path": "collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c.md"
+      "turn_path": "collaboration/live-turns/claude/cf7d8376-e13f-42a7-8786-d8bfb743cd6a/visible-84db80aea1c9efdf9780191c.md"
     },
     "codex": {
       "agent": "codex",
@@ -83,6 +83,22 @@
       "timestamp": "2026-10-30T10:05:36.869567Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
       "turn_path": "collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c.md"
+    },
+    "claude:cf7d8376-e13f-42a7-8786-d8bfb743cd6a": {
+      "agent": "claude",
+      "content_sha256": "e4d6c68e872ebe53d6c39bb374960e34bf0993a7eaa41794179fc3b308a10063",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "part_count": 1,
+      "response_id": "result-1",
+      "response_sha256": "3eff69ef5094c16a4897bdde15e7a20d4277bcae7e7b65bcdf080a0d40bfbd36",
+      "secret_scan": "PASS",
+      "session_id": "cf7d8376-e13f-42a7-8786-d8bfb743cd6a",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1024_cf7d8376-e13f-42a7-8786-d8bfb743cd6a.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T10:25:54.591652Z",
+      "turn_id": "visible-84db80aea1c9efdf9780191c",
+      "turn_path": "collaboration/live-turns/claude/cf7d8376-e13f-42a7-8786-d8bfb743cd6a/visible-84db80aea1c9efdf9780191c.md"
     },
     "codex:01a17347-a748-7a61-8544-48c906a9373d": {
       "agent": "codex",

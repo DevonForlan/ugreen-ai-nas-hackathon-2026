@@ -1,17 +1,18 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-29 09:56 +0800
+Last Updated: 2026-10-30 10:58 +0800
 
 ## Current Phase
 
 Collaboration infrastructure: AUTO-003 live transcript transport verified.
-REG-002 registration is paused; R01-R06 and product implementation have not started.
+REG-002 resumed by explicit User request; registration still unsubmitted.
+R01-R06 and product implementation have not started.
 AUTO-001 automation remains paused pending User decisions.
 
 ## Current Objective
 
-AUTO-003: near-real-time sanitized transcript publication for active Codex and Claude.
-REG-002 is PAUSED_BY_USER; no registration was submitted or verified. Do not resume.
+REG-002: Codex takes over the existing logged-in Devpost browser from Claude Code.
+Complete registration only after actual field/eligibility confirmations; solo team size 1.
 
 ## Completed
 
@@ -38,10 +39,15 @@ REG-002 is PAUSED_BY_USER; no registration was submitted or verified. Do not res
 
 - AUTO-003 publication and independent CC review. 90 fast + 12 integration tests passed.
   Live transport passes; measured latency still exceeds the <=15s target under concurrent load.
-- REG-002 paused before login/registration; User has authorized later submission only after required confirmations.
+- REG-002 existing logged-in form inspected; Occupation confirmed by User, not yet
+  applied. Browser subsequently closed; waiting for restored control connection.
+  No registration or Round 1 submission sent.
 - AUTO-001 remains USER_DECISION_REQUIRED per manual CC review; it is not DONE.
 
 ## Blockers
+
+- REG-002: loopback browser connection refused; automatic relaunch of its existing
+  profile rejected by environment policy. User must restore existing browser/control.
 
 
 - AUTO-001 acceptance blocked on the User decisions below.
@@ -58,6 +64,6 @@ REG-002 is PAUSED_BY_USER; no registration was submitted or verified. Do not res
 ## Next Planned Step
 
 Review AUTO-003 report and live acceptance receipts; assess the documented latency limitation.
-Stop after publication; Codex does not approve its own task DONE.
-Do not resume REG-002 or start R01-R06. AUTO-001 remains disabled.
+Continue REG-002 actual form confirmations, then authorized registration and success verification.
+Do not submit Round 1 or start R01-R06. AUTO-001 remains disabled.
 AUTO-002 final-response capture is still unknown for the active multi-day session.

@@ -90,3 +90,17 @@ UGREEN 報名一定要求電話／住址／證件。若 User 遇到這些欄位�
 官方支援：[Resources](https://ugreenhackathon.devpost.com/resources)、
 [Starter Kit](https://ai.ugreen.com/pages/hackathon-starter-kit)。
 Devpost Help Center 是一般平台流程來源，不能替代 UGREEN 特定規則。
+
+## REG-002 execution checkpoint (2026-10-30)
+
+Codex read the latest GitHub CC transcript and attached read-only to CC's existing
+logged-in Edge session at the actual recommendations/eligibility page. No new login
+or registration submission was performed. Observed field names include Specialty,
+Skills, hackathon interests, Location, Timezone, Occupation, software/tech employment,
+internal hackathons, and conditional student/school/graduation/birth controls.
+Only Occupation has since been confirmed by User; it has not been applied because
+the browser/control endpoint closed before interaction. Relaunch was rejected by
+environment policy; User was asked to restore the existing connection.
+See [execution log](08_REGISTRATION_EXECUTION_LOG.md). All personal values stay in
+the official browser; no guesses based on environment/timezone.
+Registration: NOT SUBMITTED / NOT VERIFIED. Round 1 project submission: NOT SUBMITTED.

@@ -2,6 +2,9 @@
   "attempt_source_sha": "edac24bd21fc1ed12c3e99d8b4bf7f222c281137",
   "body_sha256": "fd8259edd31aa80f854386fab57f2dbd9754c327848d72a9cc03ab3f2cf9306d",
   "cc_rounds": 2,
+  "checkpoint_branch": "agent-state/issue-3",
+  "checkpoint_commit_sha": "553b8aeaabf0656c098003e6e43fdd6257246d78",
+  "checkpoint_sequence": 1,
   "codex_attempts": 0,
   "decision": {
     "options": [
@@ -32,5 +35,6 @@
     "user_question": "The native Codex sandbox cannot currently deny reads of external credential-like locations. Probes showed all four external synthetic sentinel classes readable in :workspace, in the synthetic-deny profile, and under managed CLI 0.166.0. How should AUTO-006 proceed?\nOptions:\n1. Keep autonomous enablement blocked and stop. Accept the code remediation as reviewed, close AUTO-006 as USER_DECISION_REQUIRED, and wait for a Codex release or backend that enforces deny-read. Re-run the synthetic probe then and re-review.\n2. Authorize a bounded environment change, such as a dedicated low-privilege OS user or a container/VM with no access to the real USERPROFILE, APPDATA, CODEX_HOME or gh config. Then re-run the synthetic probe and require external_sentinels_denied=true with an independent re-review before the smoke.\n3. Explicitly accept the residual risk in writing and enable the smoke anyway. This is not recommended, because the requirement forbids silent waiver and the exposure is native credentials.\nRecommendation: Option 2 if you want autonomous operation soon; otherwise Option 1. Do not choose Option 3. Run no smoke roundtrip until fresh synthetic evidence shows external reads denied."
   },
   "review_report": "collaboration/cc-reports/2026-10-30_1928_AUTO-006_review-round-2.md",
+  "started_at": "2026-10-30T11:32:30.854610+00:00",
   "state": "USER_DECISION_REQUIRED"
 }

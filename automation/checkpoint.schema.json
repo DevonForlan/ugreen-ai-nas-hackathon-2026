@@ -2,17 +2,153 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Bounded agent phase checkpoint",
   "type": "object",
-  "required": ["schema_version", "task_id", "phase", "state", "actor", "started_at", "updated_at", "source_commit_sha", "result_commit_sha", "tests_summary", "files_changed_summary", "progress_summary", "blocker", "next_action", "needs_user", "attempt_number", "review_round", "live_response_pointer", "secret_scan", "remote_verified"],
+  "required": [
+    "schema_version",
+    "task_id",
+    "phase",
+    "state",
+    "actor",
+    "started_at",
+    "updated_at",
+    "source_commit_sha",
+    "result_commit_sha",
+    "tests_summary",
+    "files_changed_summary",
+    "progress_summary",
+    "blocker",
+    "next_action",
+    "needs_user",
+    "attempt_number",
+    "review_round",
+    "live_response_pointer",
+    "secret_scan",
+    "remote_verified"
+  ],
   "properties": {
-    "schema_version": {"const": 1},
-    "task_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"},
-    "phase": {"enum": ["STARTED", "IMPLEMENTATION_COMPLETE", "TEST_COMPLETE", "READY_FOR_CC_REVIEW", "CC_REVIEWING", "CC_CHANGES_REQUESTED", "FIX_COMPLETE", "CC_PASS", "DONE", "USER_DECISION_REQUIRED", "FAILED"]},
-    "state": {"enum": ["READY_FOR_CODEX", "CODEX_RUNNING", "READY_FOR_CC_REVIEW", "CC_REVIEWING", "CHANGES_REQUESTED", "USER_DECISION_REQUIRED", "DONE", "FAILED"]},
-    "actor": {"enum": ["codex", "cc", "controller"]},
-    "attempt_number": {"type": "integer", "minimum": 0, "maximum": 3},
-    "review_round": {"type": "integer", "minimum": 0, "maximum": 3},
-    "remote_verified": {"type": "boolean"},
-    "needs_user": {"type": "boolean"},
-    "secret_scan": {"enum": ["PASS", "FAILED"]}
-  }
+    "schema_version": {
+      "const": 1
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+    },
+    "phase": {
+      "enum": [
+        "STARTED",
+        "IMPLEMENTATION_COMPLETE",
+        "TEST_COMPLETE",
+        "READY_FOR_CC_REVIEW",
+        "CC_REVIEWING",
+        "CC_CHANGES_REQUESTED",
+        "FIX_COMPLETE",
+        "CC_PASS",
+        "DONE",
+        "USER_DECISION_REQUIRED",
+        "FAILED"
+      ]
+    },
+    "state": {
+      "enum": [
+        "READY_FOR_CODEX",
+        "CODEX_RUNNING",
+        "READY_FOR_CC_REVIEW",
+        "CC_REVIEWING",
+        "CHANGES_REQUESTED",
+        "USER_DECISION_REQUIRED",
+        "DONE",
+        "FAILED"
+      ]
+    },
+    "actor": {
+      "enum": [
+        "codex",
+        "cc",
+        "controller"
+      ]
+    },
+    "attempt_number": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "review_round": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "remote_verified": {
+      "type": "boolean"
+    },
+    "needs_user": {
+      "type": "boolean"
+    },
+    "secret_scan": {
+      "enum": [
+        "PASS",
+        "FAILED"
+      ]
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "progress_summary": {
+      "type": "string"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "live_response_pointer": {
+      "type": "string"
+    },
+    "verification_scope": {
+      "type": "string"
+    },
+    "source_commit_sha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$"
+    },
+    "result_commit_sha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$"
+    },
+    "verified_payload_commit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$"
+    },
+    "tests_summary": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "files_changed_summary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocker": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
 }

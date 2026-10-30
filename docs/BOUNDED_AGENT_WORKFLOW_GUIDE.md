@@ -26,7 +26,8 @@ installation. Never auto-adopt changed policy/source permissions.
 
 The installer is an operator-only step from a reviewed checkout, never a model tool.
 It verifies review/control hashes and the reviewed commit's GitHub ancestry, copies
-only controller files/policy, refuses to overwrite a different installation and
+only controller files/policy, verifies canonical source/review blobs against the approval
+commit and an operator-supplied out-of-band policy digest, refuses to overwrite a different installation and
 does not modify PATH, services, Registry, Firewall or scheduling.
 
 For Codex 0.165.0 the verified Windows syntax is
@@ -47,7 +48,7 @@ User, not a claim that arbitrary host/OS compromise is impossible.
 After independent code review PASS and policy pinning, install with:
 
 ```powershell
-python -B scripts/install-agent-controller.py
+python -E -B scripts/install-agent-controller.py --expect-policy-sha256 <published-reviewed-policy-digest>
 ```
 
 Then, from the intended clean worktree, set the workspace for this PowerShell
@@ -78,9 +79,11 @@ Each meaningful phase publishes numbered JSON plus latest.json / latest.md under
 collaboration/checkpoints/<task_id>/. STARTED, IMPLEMENTATION_COMPLETE, TEST_COMPLETE,
 READY_FOR_CC_REVIEW, CC_REVIEWING, CC_CHANGES_REQUESTED, FIX_COMPLETE, CC_PASS, DONE,
 USER_DECISION_REQUIRED and FAILED are explicit. Full bounded test evidence includes
-its head, tail, byte count and digest; oversized evidence gates instead of silently
+the entire sanitized output (including head and tail), actual exit code, UTF-8 byte count
+and SHA-256 of that sanitized text; oversized evidence gates instead of silently
 dropping the head. Source/result SHA fields identify already verified payloads;
-the checkpoint publication SHA is stored in the durable GitHub agent ledger after
+a separate receipt binds remote_verified to the verified payload commit; the receipt
+publication SHA is stored in the durable GitHub agent ledger after
 the push, avoiding self-referential commits.
 
 AUTO-004 mirrors remain part of every parent-owned agent capture. Reviewer input

@@ -60,6 +60,12 @@ class RemoteError(RuntimeError):
     pass
 
 
+class CommandFailure(RuntimeError):
+    def __init__(self,code,stdout,stderr):
+        super().__init__('Command failed; private raw output is not printed.')
+        self.code,self.stdout,self.stderr=code,stdout,stderr
+
+
 class Locked(RuntimeError):
     pass
 
@@ -80,6 +86,15 @@ def clean_text(text, limit=65536):
     if scanner.scan_text(text):
         raise Gate('Secret detected. Do not publish it; User must remediate securely.')
     return exporter.sanitize(text)
+
+
+def exact_text(text,limit=65536):
+    """Scan evidence without silently rewriting code or JSON before review."""
+    if not isinstance(text,str) or len(text.encode('utf-8'))>limit:
+        raise Gate('Context exceeds the approved size; split the task.')
+    if scanner.scan_text(text):
+        raise Gate('Secret detected in exact evidence; publication/review stopped.')
+    return text
 
 
 def transition(old, new, actor, emergency=False):
@@ -143,8 +158,10 @@ def review_json(value):
         clean_text(item, 2000)
     if not value['summary'] or (value['result'] == 'PASS' and changes) or (value['result'] == 'CHANGES_REQUESTED' and not changes):
         raise Gate('Reviewer result contradicts its evidence.')
-    if value['result'] == 'USER_DECISION_REQUIRED' and not value['user_question']:
-        raise Gate('Reviewer must provide a User question.')
+    if value['result'] == 'USER_DECISION_REQUIRED' and (not value['user_question'] or
+            not re.search(r'options?\s*:',value['user_question'],re.I) or
+            not re.search(r'recommendation\s*:',value['user_question'],re.I)):
+        raise Gate('Reviewer must provide a User question with Options: and Recommendation:.')
     if value['result'] == 'PASS' and value['user_question']:
         raise Gate('PASS cannot contain an unresolved User question.')
     if value['result'] != 'PASS' and value['recommended_next_task']:
@@ -211,7 +228,7 @@ def command(argv, cwd=ROOT, input_text=None, timeout=120, include_stderr=False, 
         p.communicate()
         raise
     if p.returncode:
-        raise RuntimeError('Command failed; inspect locally without sharing credentials: ' + Path(argv[0]).name)
+        raise CommandFailure(p.returncode,stdout,stderr)
     return stdout + (stderr if include_stderr else '')
 
 
@@ -504,6 +521,8 @@ class LiveTools:
             raise Gate('Worktree policy differs from the approved installed policy; no adoption of new permissions.')
         try:
             verify_control(ROOT,self.active_policy)
+            if CONTROL_ROOT!=ROOT and load_module('installed_security','agent_security.py').control_files(CONTROL_ROOT)!=self.active_policy['control_plane_sha256']:
+                raise ValueError('Installed controller integrity changed')
         except (AttributeError,ValueError) as exc:
             raise Gate('Independently reviewed B/A control-plane approval is missing or changed.') from exc
         if git('status', '--porcelain'):
@@ -617,6 +636,7 @@ class LiveTools:
 
     def tests(self, commands):
         results = []
+        self.last_test_evidence=results
         for argv in commands:
             if not isinstance(argv, list) or not argv or any(not isinstance(x, str) for x in argv):
                 raise Gate('Tests must be owner-pinned argv arrays, never Issue shell text.')
@@ -629,9 +649,15 @@ class LiveTools:
                 pinned=sandbox_command(native,argv,ROOT)
             except ValueError as exc:
                 raise Gate('Pinned tests cannot safely enter the native sandbox.') from exc
-            text = clean_text(command(pinned, timeout=1800, include_stderr=True, heartbeat=getattr(self, 'stop_check', None), isolate_env=True), 65536)
+            code=0
+            try:
+                raw=command(pinned, timeout=1800, include_stderr=True, heartbeat=getattr(self, 'stop_check', None), isolate_env=True)
+            except CommandFailure as exc:
+                code=exc.code;raw=exc.stdout+exc.stderr
+            text=clean_text(raw,65536)
             results.append({'command': argv, 'boundary':'native Codex sandbox; network disabled',
-                            'exit_code': 0, 'output': text,'output_sha256':digest(text),'output_bytes':len(text.encode('utf-8'))})
+                            'exit_code': code, 'output': text,'output_sha256':digest(text),'output_bytes':len(text.encode('utf-8'))})
+            if code:raise Gate('Required sandbox tests failed; full sanitized failure evidence retained. No automatic retry.')
         return results
 
     def finalize(self, task_id):
@@ -674,13 +700,15 @@ class LiveTools:
         return head
 
     def checkpoint(self,fields,state,phase,summary=''):
-        from agent_checkpoints import value,write
+        from agent_checkpoints import value,write,attest
         state['checkpoint_sequence']=state.get('checkpoint_sequence',0)+1
         source=state.get('attempt_source_sha') or state.get('handoff',{}).get('base') or git('rev-parse','HEAD')
         result=None if phase in {'STARTED','IMPLEMENTATION_COMPLETE','FIX_COMPLETE','TEST_COMPLETE'} else state.get('handoff',{}).get('head')
         record=value(fields['Task ID'],phase,state,source,result,summary,state.get('test_evidence') or state.get('handoff',{}).get('tests',[]))
         paths=write(ROOT,record,state['checkpoint_sequence'])
         commit=self.publish_paths(paths,'checkpoint: '+fields['Task ID']+' '+phase)
+        receipts=attest(ROOT,record,state['checkpoint_sequence'],commit)
+        commit=self.publish_paths(receipts,'checkpoint: verify '+fields['Task ID']+' '+phase)
         state['checkpoint_commit_sha']=commit
         state['checkpoint_phase']=phase
         return commit
@@ -752,7 +780,7 @@ def review_prompt(fields, report, diff, tests, limit):
               'Return the exact review JSON schema. recommended_next_task must be empty or an owner-approved key. '
               'When User must decide, include concrete options and a recommendation in user_question.\n' +
               json.dumps(packet, ensure_ascii=False))
-    return clean_text(prompt, limit)
+    return exact_text(prompt, limit)
 
 
 class Engine:
@@ -800,7 +828,12 @@ class Engine:
             phase={'CODEX_RUNNING':'STARTED','CC_REVIEWING':'CC_REVIEWING','CHANGES_REQUESTED':'CC_CHANGES_REQUESTED'}.get(new,new)
             task=next((task for task,plan in self.policy['plans'].items() if plan['issue_number']==issue['number']),None)
             if task:
-                self.tools.checkpoint({'Task ID':task},state,phase,'Trusted state transition: '+state['state'])
+                try:
+                    self.tools.checkpoint({'Task ID':task},state,phase,'Trusted state transition: '+state['state'])
+                except Exception:
+                    if not emergency:raise
+                    state['checkpoint_error']='Emergency checkpoint not published; inspect local evidence. State/notification remain authoritative.'
+                    print(state['checkpoint_error'])
                 version=self.hub.save(issue['number'],state,version)
         return version
 
@@ -984,6 +1017,7 @@ class Engine:
                         raise Gate('Branch changed after handoff; review the new evidence before continuing.')
                 prompt = review_prompt(fields, self.hub.artifact(handoff['report'], handoff['head']),
                                        self.tools.diff(handoff['base'], handoff['head']), handoff['tests'], self.policy['max_review_bytes'])
+                before=self.tools.snapshot()  # fetch above is a parent-owned write, never a model exemption
                 stop_check()
                 review, usage = self.tools.cc(prompt, self.policy['agent_timeout_seconds'])
                 stop_check()
@@ -1026,6 +1060,7 @@ class Engine:
             self.gate(issue, state, version, 'User interrupted execution. No automatic continuation.')
             raise
         except Gate as exc:
+            if getattr(self.tools,'last_test_evidence',None):state['test_evidence']=self.tools.last_test_evidence
             if hasattr(self.tools,'flush_capture'):
                 self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'USER_DECISION_REQUIRED'})

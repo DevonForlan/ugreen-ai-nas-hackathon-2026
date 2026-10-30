@@ -1,0 +1,44 @@
+{
+  "native_codex_version": "0.165.0",
+  "test_boundary": "A",
+  "sandbox_argv": [
+    "sandbox",
+    "--permission-profile",
+    ":workspace",
+    "--sandbox-state-disable-network",
+    "--",
+    "<absolute Python>",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "fast": {
+    "count": 120,
+    "exit_code": 0,
+    "output_sha256": "9c127e5e47dbf4bd1d46e98f8bae61cff6c6fc784fd2630bf2d0e4b5dd111b24",
+    "output_tail": "otifications.UsageTests.test_multiple_buckets_do_not_guess_entitlement) ... ok\ntest_native_unavailable_and_footer_updated_time (test_codex_usage_notifications.UsageTests.test_native_unavailable_and_footer_updated_time) ... ok\ntest_remaining_and_used_semantics (test_codex_usage_notifications.UsageTests.test_remaining_and_used_semantics) ... ok\ntest_rpc_is_bounded_and_child_is_closed (test_codex_usage_notifications.UsageTests.test_rpc_is_bounded_and_child_is_closed) ... ok\ntest_session_is_not_global_totals (test_codex_usage_notifications.UsageTests.test_session_is_not_global_totals) ... ok\ntest_timezone_and_weekly_reset (test_codex_usage_notifications.UsageTests.test_timezone_and_weekly_reset) ... ok\ntest_unknown_duration_does_not_hide_actual_percentage (test_codex_usage_notifications.UsageTests.test_unknown_duration_does_not_hide_actual_percentage) ... ok\ntest_baseline_and_verified_metadata_idempotence (test_live_mirror.MirrorTests.test_baseline_and_verified_metadata_idempotence) ... ok\ntest_burst_every_new_response_gets_a_turn (test_live_mirror.MirrorTests.test_burst_every_new_response_gets_a_turn) ... ok\ntest_claude_separate_pointer (test_live_mirror.MirrorTests.test_claude_separate_pointer) ... ok\ntest_failed_publication_not_certified (test_live_mirror.MirrorTests.test_failed_publication_not_certified) ... ok\ntest_large_tools_bounded_latest_complete_parts (test_live_mirror.MirrorTests.test_large_tools_bounded_latest_complete_parts) ... ok\ntest_no_turn_for_tool_only (test_live_mirror.MirrorTests.test_no_turn_for_tool_only) ... ok\ntest_older_session_cannot_replace_newer_pointer (test_live_mirror.MirrorTests.test_older_session_cannot_replace_newer_pointer) ... ok\ntest_secret_otp_mfa_redaction (test_live_mirror.MirrorTests.test_secret_otp_mfa_redaction) ... ok\ntest_unicode_latest_is_byte_bounded (test_live_mirror.MirrorTests.test_unicode_latest_is_byte_bounded) ... ok\n\n----------------------------------------------------------------------\nRan 120 tests in 23.555s\n\nOK\n",
+    "evidence_path": "collaboration/test-results/AUTO-005_native-fast.txt"
+  },
+  "integration": {
+    "count": 14,
+    "exit_code": 0,
+    "output_sha256": "743da22f8f9d00633b707d89d1e9e2e7fc9da8384cdf381d639c08d977e68975",
+    "output_tail": "model_edits) ... ok\ntest_real_checkpoint_push_and_dirty_model_files_are_not_staged (test_agent_checkpoints.CheckpointGitTests.test_real_checkpoint_push_and_dirty_model_files_are_not_staged) ... To C:\\Users\\devon.tseng\\AppData\\Local\\Temp\\tmpr8v3358t\\remote.git\n * [new branch]      main -> main\nok\ntest_real_payload_receipt_and_push_failure (test_agent_transcript_publish.HistoryGitTests.test_real_payload_receipt_and_push_failure) ... ok\ntest_dry_run_preserves_index_head_remote (test_codex_finalize.FinalizeTests.test_dry_run_preserves_index_head_remote) ... ok\ntest_failed_tests_stop_before_commit (test_codex_finalize.FinalizeTests.test_failed_tests_stop_before_commit) ... ok\ntest_forbidden_paths_and_credential_rules (test_codex_finalize.FinalizeTests.test_forbidden_paths_and_credential_rules) ... ok\ntest_index_secret_is_detected_when_worktree_is_clean (test_codex_finalize.FinalizeTests.test_index_secret_is_detected_when_worktree_is_clean) ... ok\ntest_modified_commit_push_metadata_and_no_change (test_codex_finalize.FinalizeTests.test_modified_commit_push_metadata_and_no_change) ... ok\ntest_outgoing_ancestor_secret_cannot_be_hidden_by_deletion (test_codex_finalize.FinalizeTests.test_outgoing_ancestor_secret_cannot_be_hidden_by_deletion) ... ok\ntest_push_failure_and_retry (test_codex_finalize.FinalizeTests.test_push_failure_and_retry) ... ok\ntest_secret_inserted_after_add_resets_index (test_codex_finalize.FinalizeTests.test_secret_inserted_after_add_resets_index) ... ok\ntest_worktree_secret_stops_before_add (test_codex_finalize.FinalizeTests.test_worktree_secret_stops_before_add) ... ok\ntest_real_companion_exits_after_owner_process (test_live_sync_publish.LiveGitTests.test_real_companion_exits_after_owner_process) ... ok\ntest_real_push_verify_isolation_divergence_and_failure (test_live_sync_publish.LiveGitTests.test_real_push_verify_isolation_divergence_and_failure) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 152.854s\n\nOK\n",
+    "evidence_path": "collaboration/test-results/AUTO-005_integration.txt"
+  },
+  "native_boundary_probe": {
+    "workspace_write": "ALLOWED",
+    "external_controller_write": "BLOCKED",
+    "direct_network": "BLOCKED"
+  },
+  "initial_readonly_profile_failure": "113 tests attempted, 61 temp-file errors; corrected explicit native workspace profile before enabling.",
+  "readiness_review_1": {
+    "result": "CHANGES_REQUESTED",
+    "report": "collaboration/cc-reports/2026-10-30_1755_AUTO-005_security-review-round-1.md",
+    "resolution": "Pinned policy digest + Git blob installation binding, schema/attestation, emergency notification, exact scanned reviewer context, pre-fetch baseline, actual failure evidence and installed integrity checks added. Sanitizer-induced source corruption corrected; command return and global-only capture verified by real integration tests."
+  }
+}

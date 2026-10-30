@@ -27,7 +27,7 @@ def task_body(task='AUTO-T1'):
 def review(result='PASS'):
     return {'result': result, 'summary': 'Checked supplied criteria and evidence.',
             'required_changes': ['Fix the failing assertion.'] if result == 'CHANGES_REQUESTED' else [],
-            'recommended_next_task': '', 'user_question': 'Which bounded option should be approved?' if result == 'USER_DECISION_REQUIRED' else ''}
+            'recommended_next_task': '', 'user_question': 'Which bounded option? Options: stop, revise. Recommendation: stop.' if result == 'USER_DECISION_REQUIRED' else ''}
 
 
 class Hub:

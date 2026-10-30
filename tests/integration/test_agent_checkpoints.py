@@ -9,9 +9,35 @@ from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
 import agent_workflow as w
+import agent_transcripts as h
 
 
 class CheckpointGitTests(unittest.TestCase):
+    def test_actual_fetch_and_native_capture_do_not_impersonate_model_edits(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder).resolve();root=base/'repo';root.mkdir();remote=base/'remote.git'
+            def git(*args):return subprocess.check_output(['git','-C',str(root),*args],stderr=subprocess.DEVNULL).decode().strip()
+            git('init','-b','main');git('config','user.name','Test');git('config','user.email','test@example.invalid')
+            (root/'fixture.py').write_text('PUBLIC = True\n');git('add','.');git('commit','-m','baseline')
+            subprocess.run(['git','init','--bare',str(remote)],capture_output=True,check=True)
+            git('remote','add','origin',str(remote));git('push','origin','main');head=git('rev-parse','HEAD')
+            tools=w.LiveTools()
+            with patch.object(w,'ROOT',root),patch.object(h,'archive_root',return_value=base/'global-visible'):
+                self.assertEqual(tools.diff(head,head),'')
+                before=tools.snapshot()  # controller fetch precedes the model boundary
+                for agent in ('codex','claude'):
+                    native=base/(agent+'.jsonl')
+                    if agent=='codex':
+                        rows=[{'timestamp':'2026-10-30T01:00:00Z','type':'session_meta','payload':{'id':'public-session-1234','cwd':str(root),'timestamp':'2026-10-30T01:00:00Z'}},
+                            {'timestamp':'2026-10-30T01:00:01Z','type':'response_item','payload':{'type':'message','role':'assistant','phase':'final_answer','content':[{'type':'output_text','text':'Public final'}]}}]
+                        native.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+                        session=h.read_native(native,'codex');proof=h.prove_exit(session,'Public final',0,'2026-10-30T01:00:02Z')
+                    else:
+                        session,proof=h.claude_result({'session_id':'public-claude-1234','result':'Public final','is_error':False},'Public prompt',root,'2026-10-30T01:00:00Z','2026-10-30T01:00:02Z')
+                    tools._retain_capture(session,proof)
+                    self.assertEqual(tools.snapshot(),before)
+                    self.assertTrue((base/'global-visible'/agent/session['session_id']/'manifest.json').exists())
+
     def test_real_checkpoint_push_and_dirty_model_files_are_not_staged(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder).resolve()/'repo';root.mkdir()

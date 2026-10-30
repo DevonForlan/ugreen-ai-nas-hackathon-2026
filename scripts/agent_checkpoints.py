@@ -22,11 +22,35 @@ def value(task,phase,state,source,result,summary='',tests=None):
         needs_user=phase in {'USER_DECISION_REQUIRED','FAILED'},
         attempt_number=state['codex_attempts'],review_round=state['cc_rounds'],
         live_response_pointer='collaboration/live-latest/'+('claude.md' if phase.startswith('CC_') or phase=='DONE' else 'codex.md'),
-        secret_scan='PASS',remote_verified=True,
-        verification_scope='source/result payload is verified; checkpoint publication SHA is recorded in durable agent ledger after push')
+        secret_scan='PASS',remote_verified=False,verified_payload_commit=None,
+        verification_scope='After push, verified_payload_commit identifies the remotely verified payload; receipt publication SHA is stored in the GitHub agent ledger')
+
+
+def validate(record):
+    schema=json.loads((Path(__file__).resolve().parents[1]/'automation/checkpoint.schema.json').read_text(encoding='utf-8'))
+    def check(data,spec):
+        kinds={'string':str,'integer':int,'boolean':bool,'array':list,'object':dict,'null':type(None)}
+        types=spec.get('type');types=[types] if isinstance(types,str) else types
+        if types and not any(type(data) is kinds[k] for k in types):raise ValueError('Checkpoint field type mismatch')
+        if 'enum' in spec and data not in spec['enum']:raise ValueError('Unknown checkpoint enum')
+        if 'const' in spec and data!=spec['const']:raise ValueError('Checkpoint constant mismatch')
+        if isinstance(data,str) and 'pattern' in spec and not re.fullmatch(spec['pattern'],data):raise ValueError('Malformed checkpoint identifier')
+        if type(data) is int and (data<spec.get('minimum',data) or data>spec.get('maximum',data)):raise ValueError('Checkpoint counter out of bounds')
+        if isinstance(data,list):
+            for item in data:check(item,spec.get('items',{}))
+        if isinstance(data,dict):
+            if set(spec.get('required',[]))-set(data):raise ValueError('Missing checkpoint fields')
+            props=spec.get('properties',{})
+            if spec.get('additionalProperties') is False and set(data)-set(props):raise ValueError('Unknown checkpoint fields')
+            for name,item in data.items():
+                if name in props:check(item,props[name])
+    check(record,schema)
+    if record['secret_scan']!='PASS':raise ValueError('Unsafe checkpoint cannot publish')
+    if record['remote_verified'] and not record.get('verified_payload_commit'):raise ValueError('Missing verified checkpoint payload')
 
 
 def write(root,record,sequence):
+    validate(dict(record,sequence=sequence))
     folder=Path(root)/'collaboration/checkpoints'/record['task_id']
     folder.mkdir(parents=True,exist_ok=True)
     raw=json.dumps(dict(record,sequence=sequence),ensure_ascii=False,sort_keys=True,indent=2)+'\n'
@@ -38,3 +62,16 @@ def write(root,record,sequence):
     md.write_text('# '+record['task_id']+' / '+record['phase']+'\n\n'+
         '\n'.join('- '+key+': '+str(record[key]) for key in ('state','actor','updated_at','source_commit_sha','result_commit_sha','attempt_number','review_round','needs_user','progress_summary','live_response_pointer'))+'\n',encoding='utf-8',newline='\n')
     return [p.relative_to(root).as_posix() for p in (entry,latest,md)]
+
+
+def attest(root,record,sequence,payload_sha):
+    folder=Path(root)/'collaboration/checkpoints'/record['task_id']
+    entry=folder/f'{sequence:06d}.json'
+    old=json.loads(entry.read_text(encoding='utf-8'))
+    if old!=dict(record,sequence=sequence) or old['remote_verified']:
+        raise ValueError('Only the exact just-published checkpoint may be attested')
+    updated=dict(old,remote_verified=True,verified_payload_commit=payload_sha)
+    validate(updated)
+    raw=json.dumps(updated,ensure_ascii=False,sort_keys=True,indent=2)+'\n'
+    for path in (entry,folder/'latest.json'):path.write_text(raw,encoding='utf-8',newline='\n')
+    return [entry.relative_to(root).as_posix(),(folder/'latest.json').relative_to(root).as_posix()]

@@ -1,11 +1,16 @@
 {
   "task_id": "AUTO-006",
-  "rounds_used": 1,
+  "rounds_used": 2,
   "history": [
     {
       "round": 1,
       "reviewed_head": "0828b203c878f545413fee8074dd53f90304a80a",
       "status": "CHANGES_REQUESTED"
+    },
+    {
+      "round": 2,
+      "reviewed_head": "edac24bd21fc1ed12c3e99d8b4bf7f222c281137",
+      "status": "STARTED"
     }
   ]
 }

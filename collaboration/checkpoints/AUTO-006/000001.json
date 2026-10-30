@@ -1,0 +1,34 @@
+{
+  "actor": "controller",
+  "attempt_number": 0,
+  "blocker": {
+    "options": [
+      "Authorize a separately scoped isolated-runtime plan",
+      "Keep disabled and wait for a supported backend"
+    ],
+    "question": "Choose a supported isolated runtime plan or keep automation disabled.",
+    "reason": "R4: native external synthetic sentinel reads were not denied. No blocking code defect found by CC round 2, but enablement is not approved.",
+    "recommendation": "Keep disabled until fresh synthetic deny-read evidence and independent review."
+  },
+  "files_changed_summary": [],
+  "live_response_pointer": "collaboration/live-latest/codex.md",
+  "needs_user": true,
+  "next_action": "Follow the pinned legal state transition",
+  "phase": "USER_DECISION_REQUIRED",
+  "progress_summary": "API-only emergency stop",
+  "publication_transport": "GitHub API state branch",
+  "remote_verified": false,
+  "result_commit_sha": null,
+  "review_round": 2,
+  "schema_version": 1,
+  "secret_scan": "NOT_RUN",
+  "sequence": 1,
+  "source_commit_sha": "edac24bd21fc1ed12c3e99d8b4bf7f222c281137",
+  "started_at": "2026-10-30T11:32:30.854610+00:00",
+  "state": "USER_DECISION_REQUIRED",
+  "task_id": "AUTO-006",
+  "tests_summary": [],
+  "updated_at": "2026-10-30T11:32:30.854610+00:00",
+  "verification_scope": "After push, verified_payload_commit identifies the remotely verified payload; receipt publication SHA is stored in the GitHub agent ledger",
+  "verified_payload_commit": null
+}

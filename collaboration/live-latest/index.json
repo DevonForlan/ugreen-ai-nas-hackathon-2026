@@ -18,19 +18,19 @@
     },
     "codex": {
       "agent": "codex",
-      "content_sha256": "044bed4f560076c46115611b06c024955e86d11479514449a0544afdf6a99d0c",
-      "github_commit_sha": "3c9cf1794b9e7a776bbe2d944d0e1200dbb602d3",
-      "github_remote_verified": true,
+      "content_sha256": "c3d7580ecec0fa40aa2b7629e0f65466e7c2dc421bed074fc691be0b3af74779",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
       "part_count": 1,
-      "response_id": "native-4491",
-      "response_sha256": "bc834c307e86d0c96bab5059e6c5a662dbf771637851e78462cdf73d368cef95",
+      "response_id": "native-4529",
+      "response_sha256": "c2a1761ab395950d8a5d05de26961fa362e142f1ddb352c2fb0fba0ecfa2b210",
       "secret_scan": "PASS",
       "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
       "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
-      "status": "SYNC_COMPLETE",
-      "timestamp": "2026-10-30T03:35:41.766Z",
-      "turn_id": "visible-4daae8d2d643a7827bc31565",
-      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-4daae8d2d643a7827bc31565.md"
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T03:39:30.524Z",
+      "turn_id": "visible-f98a4282d5f3e6467ce4cfab",
+      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-f98a4282d5f3e6467ce4cfab.md"
     }
   },
   "schema_version": 1,
@@ -70,19 +70,19 @@
     },
     "codex:01a17347-a748-7a61-8544-48c906a9373d": {
       "agent": "codex",
-      "content_sha256": "044bed4f560076c46115611b06c024955e86d11479514449a0544afdf6a99d0c",
-      "github_commit_sha": "3c9cf1794b9e7a776bbe2d944d0e1200dbb602d3",
-      "github_remote_verified": true,
+      "content_sha256": "c3d7580ecec0fa40aa2b7629e0f65466e7c2dc421bed074fc691be0b3af74779",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
       "part_count": 1,
-      "response_id": "native-4491",
-      "response_sha256": "bc834c307e86d0c96bab5059e6c5a662dbf771637851e78462cdf73d368cef95",
+      "response_id": "native-4529",
+      "response_sha256": "c2a1761ab395950d8a5d05de26961fa362e142f1ddb352c2fb0fba0ecfa2b210",
       "secret_scan": "PASS",
       "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
       "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
-      "status": "SYNC_COMPLETE",
-      "timestamp": "2026-10-30T03:35:41.766Z",
-      "turn_id": "visible-4daae8d2d643a7827bc31565",
-      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-4daae8d2d643a7827bc31565.md"
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-30T03:39:30.524Z",
+      "turn_id": "visible-f98a4282d5f3e6467ce4cfab",
+      "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-f98a4282d5f3e6467ce4cfab.md"
     }
   }
 }

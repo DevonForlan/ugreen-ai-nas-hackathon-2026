@@ -41,8 +41,14 @@
   "approval": {
     "trust_root": "B",
     "test_boundary": "A",
-    "review_result": "PENDING",
-    "owner_decision": "User explicitly selected B/A for AUTO-005; execution remains disabled until independent review PASS"
+    "review_result": "CHANGES_REQUESTED",
+    "owner_decision": "User explicitly selected B/A for AUTO-005; execution remains disabled until independent review PASS",
+    "status": "USER_DECISION_REQUIRED",
+    "review_rounds": 3,
+    "reviewed_head": "52cc9c13353e6200146005f11709dd025b408466",
+    "review_report": "collaboration/cc-reports/2026-10-30_1825_AUTO-005_security-review-round-3.md",
+    "review_report_sha256": "580ab8aec23cddc69a5639587e22169d3437a075e9a81a0d5dc9be8a65f4afa6",
+    "decision_issue": 2
   },
   "control_plane_sha256": {}
 }

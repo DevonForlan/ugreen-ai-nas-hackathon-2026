@@ -1,0 +1,57 @@
+{
+  "task_id": "AUTO-005",
+  "status": "USER_DECISION_REQUIRED",
+  "issue_number": 2,
+  "issue_url": "https://github.com/DevonForlan/ugreen-ai-nas-hackathon-2026/issues/2",
+  "updated_at": "2026-10-30T10:29:09.986075+00:00",
+  "trust_root": "B",
+  "test_boundary": "A",
+  "max_codex_attempts": 3,
+  "max_cc_review_rounds": 3,
+  "independent_readiness_review_rounds": 3,
+  "review_result": "CHANGES_REQUESTED",
+  "reviewed_source_commit": "52cc9c13353e6200146005f11709dd025b408466",
+  "codex_enabled": false,
+  "controller_installed": false,
+  "real_roundtrip": "NOT_RUN: independent pre-enable review did not PASS",
+  "acceptance": {
+    "automatic_codex_start": "NOT_RUN",
+    "implementation_test_checkpoint": "MOCK_AND_DISPOSABLE_GIT_ONLY",
+    "automatic_cc_handoff": "NOT_RUN",
+    "real_roundtrip": "NOT_RUN",
+    "github_phase_checkpoint_readback": "NOT_RUN",
+    "restart_recovery": "MOCK_TESTS_PASS; real controller restart NOT_RUN",
+    "unrelated_activity": "MOCK_TESTS_PASS; live task NOT_RUN",
+    "user_gate_simulation": "PASS: real disposable Git tamper gate/fatal tests; malicious helper marker absent; API-only stop recorded",
+    "secret_scan": "PASS: worktree/staged heuristic scans, no values printed",
+    "non_destructive_test_boundary": "PASS"
+  },
+  "tests": {
+    "native_fast": 121,
+    "git_integration": 15,
+    "failed_current_regression_tests": 0,
+    "evidence": "collaboration/run-ledger/AUTO-005_code-tests.json"
+  },
+  "review_reports": [
+    "collaboration/cc-reports/2026-10-30_1755_AUTO-005_security-review-round-1.md",
+    "collaboration/cc-reports/2026-10-30_1805_AUTO-005_security-review-round-2.md",
+    "collaboration/cc-reports/2026-10-30_1825_AUTO-005_security-review-round-3.md"
+  ],
+  "remaining_findings": [
+    "Bound full test artifacts separately; keep ledger/comments/checkpoints and emergency-stop fallback size-safe",
+    "Resolve Claude/node/Codex executables outside writable project/cwd",
+    "Literal Git pathspecs and regression",
+    "Use synthetic fixtures for credential-read boundary evidence; never inspect actual auth/hosts files; owner must decide any residual risk",
+    "Publish API-only USER_DECISION_REQUIRED/FAILED checkpoints on the agent-state branch"
+  ],
+  "user_decision": {
+    "options": [
+      "Authorize a new scoped remediation/review task without resetting this task counters",
+      "Stop and retain disabled implementation/evidence"
+    ],
+    "recommendation": "New scoped remediation plus independent review; do not waive unresolved safety findings"
+  },
+  "auto004_status": "PASS",
+  "registration_resumed": false,
+  "competition_work_started": false
+}

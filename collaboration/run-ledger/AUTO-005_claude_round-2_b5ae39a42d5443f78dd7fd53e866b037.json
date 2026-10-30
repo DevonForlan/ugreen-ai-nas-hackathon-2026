@@ -11,7 +11,7 @@
   "round": 2,
   "run_id": "b5ae39a42d5443f78dd7fd53e866b037",
   "schema_version": 1,
-  "secret_scan": "PENDING",
+  "secret_scan": "PASS",
   "session_id": "c736e6b9-b3a0-4b8e-90c3-66dd41a71e47",
   "snapshot_marker": "d7b1904a01eca4e5801c586c8775815111753d7641b45f7de3c97f904be0a7c8",
   "source_event_count": 2,

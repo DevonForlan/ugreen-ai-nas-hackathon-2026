@@ -8,6 +8,33 @@ import platform
 import shutil
 
 
+def executable_allowed(path,root=None):
+    path=Path(path)
+    if not path.is_absolute():return False
+    resolved=path.resolve()
+    roots=[Path.cwd(),Path(root or os.environ.get('CODEX_AGENT_WORKSPACE') or Path(__file__).resolve().parents[1])]
+    for blocked in roots:
+        if path.is_relative_to(blocked.resolve()) or resolved.is_relative_to(blocked.resolve()):return False
+    if any((parent/'.git').exists() for parent in (path.parent,*path.parents,resolved.parent,*resolved.parents)):
+        return False
+    if os.name=='nt':
+        allowed=[Path(os.environ.get(k,'C:/__missing__')) for k in ('ProgramFiles','ProgramFiles(x86)','SYSTEMROOT')]
+        allowed += [Path(os.environ.get('APPDATA','C:/__missing__'))/'npm',Path(os.environ.get('LOCALAPPDATA','C:/__missing__'))/'Programs',Path.home()/'.local/bin']
+    else:allowed=[Path('/usr/bin'),Path('/bin'),Path('/usr/local/bin'),Path.home()/'.local/bin']
+    return any(resolved.is_relative_to(prefix.resolve()) for prefix in allowed)
+
+
+def resolve_agent_executable(name,root=None):
+    suffixes=[''] if Path(name).suffix else (['.exe','.cmd',''] if os.name=='nt' else [''])
+    for entry in os.environ.get('PATH','').split(os.pathsep):
+        directory=Path(entry.strip('"'))
+        if not directory.is_absolute():continue
+        for suffix in suffixes:
+            candidate=directory/(name+suffix)
+            if executable_allowed(candidate,root) and candidate.is_file():return str(candidate.resolve())
+    return None
+
+
 def trusted_executable(name):
     if os.name=='nt':
         program=Path(os.environ.get('ProgramFiles','C:/Program Files'))
@@ -25,7 +52,7 @@ def trusted_executable(name):
 
 
 def git_environment():
-    return dict(GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull,GIT_SSH_COMMAND='exit 1',GIT_PAGER='cat')
+    return dict(GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull,GIT_SSH_COMMAND='exit 1',GIT_PAGER='cat',GIT_LITERAL_PATHSPECS='1')
 
 
 def scope_snapshot(root):
@@ -114,6 +141,7 @@ def git_prefix(root):
         '-c','credential.https://github.com.helper=','-c','credential.https://github.com.helper='+helper,
         '-c','core.sshCommand=','-c','core.gitProxy=','-c','core.askPass=',
         '-c','protocol.ext.allow=never','-c','core.pager=cat','-c','diff.external=',
+        '-c','core.autocrlf='+('true' if os.name=='nt' else 'input'),
         '-c','user.name=Codex Controller','-c','user.email=codex-controller@example.invalid']
 
 

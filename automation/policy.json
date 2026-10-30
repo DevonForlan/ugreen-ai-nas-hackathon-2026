@@ -35,6 +35,28 @@
         ]
       ],
       "followups": {}
+    },
+    "AUTO-006": {
+      "issue_number": 3,
+      "body_sha256": "fd8259edd31aa80f854386fab57f2dbd9754c327848d72a9cc03ab3f2cf9306d",
+      "codex_enabled": false,
+      "cc_enabled": false,
+      "manual_handoff": true,
+      "sandbox_acknowledged": false,
+      "allowed_write_paths": [],
+      "required_tests": [
+        [
+          "python",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ]
+      ],
+      "followups": {}
     }
   },
   "require_isolated_controller": true,
@@ -50,5 +72,12 @@
     "review_report_sha256": "580ab8aec23cddc69a5639587e22169d3437a075e9a81a0d5dc9be8a65f4afa6",
     "decision_issue": 2
   },
-  "control_plane_sha256": {}
+  "control_plane_sha256": {},
+  "require_verified_read_boundary": true,
+  "sandbox_boundary": {
+    "external_sentinels_denied": false,
+    "probe_report": "collaboration/run-ledger/AUTO-006_boundary.json",
+    "status": "USER_DECISION_REQUIRED",
+    "reason": "Native workspace and explicit synthetic deny profile both permit external sentinel reads. Enablement remains blocked."
+  }
 }

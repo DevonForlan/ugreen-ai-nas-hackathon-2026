@@ -85,7 +85,8 @@
     "secret_scan": {
       "enum": [
         "PASS",
-        "FAILED"
+        "FAILED",
+        "NOT_RUN"
       ]
     },
     "started_at": {
@@ -148,6 +149,11 @@
     "sequence": {
       "type": "integer",
       "minimum": 1
+    },
+    "publication_transport": {
+      "enum": [
+        "GitHub API state branch"
+      ]
     }
   },
   "additionalProperties": false

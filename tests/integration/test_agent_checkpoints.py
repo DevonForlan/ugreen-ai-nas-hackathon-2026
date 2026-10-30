@@ -15,6 +15,20 @@ from test_agent_workflow import Hub
 
 
 class CheckpointGitTests(unittest.TestCase):
+    def test_literal_bracket_filename_publishes_only_exact_file(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder).resolve()/'repo';root.mkdir();remote=root.parent/'remote.git'
+            def git(*args):return subprocess.check_output(['git','-C',str(root),*args],stderr=subprocess.DEVNULL).decode().strip()
+            git('init','-b','main');git('config','user.name','Test');git('config','user.email','test@example.invalid')
+            (root/'baseline').write_text('public');git('add','.');git('commit','-m','baseline')
+            subprocess.run(['git','init','--bare',str(remote)],capture_output=True,check=True)
+            git('remote','add','origin',str(remote));git('push','origin','main')
+            (root/'src').mkdir();(root/'src/[x].py').write_text('EXACT = True\n');(root/'src/x.py').write_text('UNRELATED = True\n')
+            with patch.object(w,'ROOT',root):sha=w.LiveTools().publish_paths(['src/[x].py'],'test literal path')
+            self.assertIn('src/[x].py',git('ls-tree','-r','--name-only',sha))
+            self.assertNotIn('src/x.py',git('ls-tree','-r','--name-only',sha))
+            self.assertIn('src/x.py',git('status','--short'));self.assertEqual(git('diff','--cached','--name-only'),'')
+
     def test_real_git_tamper_gate_and_fatal_path_never_execute_helper_or_push(self):
         for fatal in (False,True):
             with self.subTest(fatal=fatal),tempfile.TemporaryDirectory() as folder:

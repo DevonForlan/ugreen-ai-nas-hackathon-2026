@@ -74,7 +74,9 @@ class ReadinessFixTests(unittest.TestCase):
         with patch.object(w,'load_module',return_value=native),patch.object(w,'command',side_effect=w.CommandFailure(2,'HEAD\n','TAIL\n')):
             with self.assertRaises(w.Gate):tools.tests([['python','-m','unittest']])
         self.assertEqual(tools.last_test_evidence[0]['exit_code'],2)
-        self.assertEqual(tools.last_test_evidence[0]['output'],'HEAD\nTAIL\n')
+        self.assertNotIn('output',tools.last_test_evidence[0])
+        artifact=w.ROOT/tools.last_test_evidence[0]['artifact_path']
+        self.assertEqual(artifact.read_text(),'HEAD\nTAIL\n');artifact.unlink()
 
     def test_reviewer_user_gate_requires_options_and_recommendation(self):
         data=review('USER_DECISION_REQUIRED');data['user_question']='Which one?'

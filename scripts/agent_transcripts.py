@@ -466,6 +466,9 @@ def refresh(agents=('codex','claude'), root=None, project_path=None, roots=None)
                 if not session:
                     continue
                 item = archive(session,root,project_path)
+                if item['transcript']:
+                    import agent_live_mirror
+                    agent_live_mirror.prepare(project_path,session,item['transcript'])
                 stats['archived'] += 1
                 stats['project_exported'] += bool(item['transcript'])
                 stats['unchanged'] += not item['changed']

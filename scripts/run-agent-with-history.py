@@ -97,7 +97,7 @@ def main():
                         path,sid=candidates[0]
                         command=[sys.executable,'-X','utf8',str(Path(__file__).with_name('agent_live_sync.py')),
                             '--agent',args.agent,'--source',str(path),'--session-id',sid,
-                            '--project',str(gitroot),'--owner-pid',str(process.pid)]
+                            '--project',str(gitroot),'--owner-pid',str(process.pid),'--follow-project']
                         companion=subprocess.Popen(command,cwd=cwd,
                             creationflags=subprocess.CREATE_NO_WINDOW if sys.platform=='win32' else 0)
                         print('Live sanitized transcript sync attached: '+sid,flush=True)

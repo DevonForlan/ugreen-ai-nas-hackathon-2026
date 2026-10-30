@@ -144,3 +144,46 @@ plan, independent Claude must review the fixes. Then one real, non-product task 
 show automatic Codex -> GitHub checkpoint -> CC -> DONE/changes, a restarted controller
 without duplicate model work, ignored unrelated activity and a stopping User-gate
 simulation. Evidence belongs in the Codex report, CC report and run ledger.
+
+
+## AUTO-006 remediation and the native read-boundary Gate
+
+AUTO-005's three exhausted reviews remain immutable. AUTO-006 has its own durable
+review budget. R1 stores full sanitized output under collaboration/test-results/;
+ledger/comments/checkpoints contain only command, exit code, digest, byte count,
+artifact path and a bounded tail. Oversized/unsafe emergency details fall back to a
+small fixed payload without resetting counters. Network/API failure is still a real
+external failure; local stop evidence is retained and no success is claimed.
+
+R2 resolves Codex/Claude/node only in absolute known installation PATH directories,
+rejecting cwd/worktree/Git project paths and symlink targets. R3 pins literal Git
+pathspecs; Windows integration uses src/[x].py since * is not a valid Win32 filename.
+R5 publishes USER_DECISION_REQUIRED/FAILED checkpoints through GitHub API on
+agent-state/issue-<number>, at collaboration/checkpoints/<task_id>/{latest.json,
+<sequence>.json,latest.md}. Read that branch explicitly with the GitHub connector.
+These API-only records have needs_user=true and secret_scan=NOT_RUN; they do not
+claim worktree scans occurred. The state branch also receives safely scanned full
+failure-output artifacts from controller memory. No stop uses local Git publication.
+
+Latest mirrors are refreshed on project session export, with response timestamps,
+session start and monotonic response ordinals. A bounded companion may add
+--follow-project to discover newer project sessions without pinning an old source.
+New interactive wrappers enable this mode; attach manually with:
+./scripts/attach-agent-live-sync.ps1 -OwnerPid <verified-owner> -FollowProject
+The companion remains tied to its owner and bounded runtime; no daemon is installed.
+
+R4 synthetic-only evidence: collaboration/run-ledger/AUTO-006_boundary.json.
+Both :workspace and an explicit synthetic-deny profile on the installed Windows
+backend allowed all four external sentinel classes. The existing managed 0.166.0
+binary also allowed the narrow external sentinel. A deny-root profile was rejected
+because the legacy backend requires effective root read access. No real auth,
+hosts.yml or other credential content was opened/copied/printed/hashed. A broad
+home-deny experiment did not establish a safe boundary and left an owned capture
+wrapper; it was stopped, without stopping Codex sessions or the existing service.
+
+Autonomous enablement therefore remains BLOCKED. LiveTools.preflight refuses to
+execute unless the pinned sandbox_boundary.external_sentinels_denied is true.
+Code review PASS alone cannot override this environment Gate. User must choose a
+supported deny-read backend/environment and new synthetic evidence before any real
+smoke. Do not install/configure a service, WSL/MXC, Registry, Firewall or auth setup
+as an implicit workaround. No credential-read risk has been waived.

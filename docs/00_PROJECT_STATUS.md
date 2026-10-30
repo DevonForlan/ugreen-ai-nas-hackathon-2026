@@ -1,46 +1,41 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 18:30 +0800
+Last Updated: 2026-10-30 19:05 +08:00
 
 ## Current Phase
 
-AUTO-004 PASS and synchronized. AUTO-005 USER_DECISION_REQUIRED; execution disabled.
-REG-002 paused. R01-R06 and product/topic development have not started.
+AUTO-006 remediation and independent review preparation. AUTO-004 remains PASS.
+AUTO-005 immutable review history remains 3/3 CHANGES_REQUESTED. Automation disabled.
 
 ## Current Objective
 
-Preserve AUTO-005 implementation/evidence and obtain User decision after the
-3 / 3 independent readiness review budget was exhausted. No autonomous loop is running.
+Complete R1-R5/freshness regressions and independent Claude review. Preserve the
+real R4 environment Gate; never enable smoke based only on code review.
 
 ## Completed
 
-- AUTO-004: 99 fast + 12 integration tests; live Codex/Claude mirrors read from
-  GitHub before CLI exit. Task ffda980; final remote ce7634f.
-- AUTO-005 implementation: bounded orchestrator, isolated controller installer,
-  sandbox tests, checkpoint receipts, durable recovery and strengthened Git guards.
-- Current regression: 121 fast tests PASS in native sandbox; 15 integration tests PASS.
-- Real disposable-Git tamper tests: malicious helper did not execute; gate/fatal
-  state recorded through API-only stop. No real credential files read.
-- Three independent Claude readiness reviews and visible transcript receipts published.
+- R1 bounded ledger/test artifact handling and emergency fallback; R2 trusted CLI lookup.
+- R3 literal pathspecs; R5 API-only stop checkpoint support; freshness/project-follow fixes.
+- 129 native-sandbox fast tests passed. 15/16 integration tests initially passed;
+  the CRLF false positive was fixed and its targeted rerun passed.
+- Synthetic probe: all four external classes remain readable, including explicit deny.
+  No actual credential content accessed. Existing managed 0.166.0 also allowed the narrow sentinel.
 
 ## In Progress
 
-None executing. AUTO-005 real smoke roundtrip is NOT RUN because readiness did not PASS.
+Publish exact remediation/evidence and request independent Claude review (AUTO-006 budget 3).
 
 ## Blockers
 
-AUTO-005 latest CC review is CHANGES_REQUESTED after 3 / 3 rounds. Remaining findings:
-size-safe stop/ledger output; trusted CLI lookup; literal Git pathspecs; synthetic
-credential-read boundary / residual risk; API-only stop checkpoint artifacts.
-See collaboration/cc-reports/2026-10-30_1825_AUTO-005_security-review-round-3.md.
+Native Windows backend has not enforced the required external sentinel deny-read boundary.
+Preflight/policy keep autonomous execution disabled. Real smoke NOT RUN.
 
 ## Pending User Decisions
 
-Issue #2: authorize a new scoped remediation/review task (recommended), or retain
-this disabled implementation. Do not reset AUTO-005 counters or waive safety findings.
-B/A remains selected conditionally; no new credential/architecture approval is inferred.
+A supported deny-read environment/backend is required before enablement; no residual
+credential-read risk was waived. AUTO-005 counters are not reset by this new task.
 
 ## Next Planned Step
 
-Wait for User decision at GitHub Issue #2. Evidence: collaboration/run-ledger/AUTO-005_acceptance.json.
-Do not enable automation, resume REG-002 or start competition research/product work.
+Independent review of AUTO-006 remediation. Publish API-only User-gate checkpoint if
+R4 remains blocked. REG-002/R01-R06/product work remain paused/unstarted.

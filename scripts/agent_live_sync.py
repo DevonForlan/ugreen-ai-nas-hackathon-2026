@@ -324,10 +324,42 @@ class Watcher:
             raise
 
 
+class ProjectWatcher:
+    """Bounded companion follows new project sessions, not a pinned old filename."""
+    def __init__(self,agent,root,archive_root=None,debounce=3):
+        self.agent,self.root,self.archive_root,self.debounce=agent,Path(root).resolve(),archive_root,debounce
+        self.watchers={};self.last_discovery=None
+
+    def step(self,clock=None):
+        clock=time.monotonic() if clock is None else clock
+        if self.last_discovery is None or clock-self.last_discovery>=5:
+            for source in h.discover(self.agent):
+                if str(source) in self.watchers:continue
+                # Read only bounded identity metadata before accepting a project source.
+                identity=None
+                with source.open('rb') as stream:
+                    for _ in range(8):
+                        line=stream.readline(1024*1024)
+                        if not line:break
+                        try:row=json.loads(line)
+                        except ValueError:continue
+                        payload=row.get('payload',{}) if self.agent=='codex' else row
+                        cwd=payload.get('cwd') if isinstance(payload,dict) else None
+                        if cwd:
+                            if h.base.project_for(cwd)==h.base.canonical(self.root):
+                                identity=payload.get('id') if self.agent=='codex' else row.get('sessionId')
+                            break
+                if identity and h.ID.fullmatch(identity):
+                    self.watchers[str(source)]=Watcher(source,self.agent,self.root,identity,self.archive_root,self.debounce)
+            self.last_discovery=clock
+        return [value for watcher in self.watchers.values() if (value:=watcher.step(clock))]
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--agent', choices=['codex', 'claude'], required=True)
     p.add_argument('--session-id', required=True)
+    p.add_argument('--follow-project',action='store_true',help='Follow newly created matching project sources within this bounded process')
     p.add_argument('--source', type=Path)
     p.add_argument('--project', type=Path, default=Path.cwd())
     p.add_argument('--owner-pid', type=int, required=True)
@@ -354,7 +386,8 @@ def main():
             if len(matches) != 1:
                 raise ValueError('No unique native source; pass --source explicitly')
             source = matches[0]
-        watcher = Watcher(source, args.agent, root, args.session_id, args.archive_root, args.debounce)
+        watcher = (ProjectWatcher(args.agent,root,args.archive_root,args.debounce) if args.follow_project else
+            Watcher(source, args.agent, root, args.session_id, args.archive_root, args.debounce))
         started = time.monotonic()
         while alive(args.owner_pid) and not stop.exists() and time.monotonic()-started < args.max_runtime:
             watcher.step()

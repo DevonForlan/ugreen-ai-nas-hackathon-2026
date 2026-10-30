@@ -1,0 +1,6 @@
+test_real_payload_receipt_and_push_failure (test_agent_transcript_publish.HistoryGitTests.test_real_payload_receipt_and_push_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 26.663s
+
+OK

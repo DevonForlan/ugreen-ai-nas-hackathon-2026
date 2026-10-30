@@ -1,0 +1,35 @@
+test_actual_fetch_and_native_capture_do_not_impersonate_model_edits (test_agent_checkpoints.CheckpointGitTests.test_actual_fetch_and_native_capture_do_not_impersonate_model_edits) ... ok
+test_literal_bracket_filename_publishes_only_exact_file (test_agent_checkpoints.CheckpointGitTests.test_literal_bracket_filename_publishes_only_exact_file) ... ok
+test_real_checkpoint_push_and_dirty_model_files_are_not_staged (test_agent_checkpoints.CheckpointGitTests.test_real_checkpoint_push_and_dirty_model_files_are_not_staged) ... To C:\Users\devon.tseng\AppData\Local\Temp\tmpsftprmoi\remote.git
+ * [new branch]      main -> main
+ok
+test_real_git_tamper_gate_and_fatal_path_never_execute_helper_or_push (test_agent_checkpoints.CheckpointGitTests.test_real_git_tamper_gate_and_fatal_path_never_execute_helper_or_push) ... ok
+test_real_payload_receipt_and_push_failure (test_agent_transcript_publish.HistoryGitTests.test_real_payload_receipt_and_push_failure) ... ERROR
+test_dry_run_preserves_index_head_remote (test_codex_finalize.FinalizeTests.test_dry_run_preserves_index_head_remote) ... ok
+test_failed_tests_stop_before_commit (test_codex_finalize.FinalizeTests.test_failed_tests_stop_before_commit) ... ok
+test_forbidden_paths_and_credential_rules (test_codex_finalize.FinalizeTests.test_forbidden_paths_and_credential_rules) ... ok
+test_index_secret_is_detected_when_worktree_is_clean (test_codex_finalize.FinalizeTests.test_index_secret_is_detected_when_worktree_is_clean) ... ok
+test_modified_commit_push_metadata_and_no_change (test_codex_finalize.FinalizeTests.test_modified_commit_push_metadata_and_no_change) ... ok
+test_outgoing_ancestor_secret_cannot_be_hidden_by_deletion (test_codex_finalize.FinalizeTests.test_outgoing_ancestor_secret_cannot_be_hidden_by_deletion) ... ok
+test_push_failure_and_retry (test_codex_finalize.FinalizeTests.test_push_failure_and_retry) ... ok
+test_secret_inserted_after_add_resets_index (test_codex_finalize.FinalizeTests.test_secret_inserted_after_add_resets_index) ... ok
+test_worktree_secret_stops_before_add (test_codex_finalize.FinalizeTests.test_worktree_secret_stops_before_add) ... ok
+test_real_companion_exits_after_owner_process (test_live_sync_publish.LiveGitTests.test_real_companion_exits_after_owner_process) ... ok
+test_real_push_verify_isolation_divergence_and_failure (test_live_sync_publish.LiveGitTests.test_real_push_verify_isolation_divergence_and_failure) ... ok
+
+======================================================================
+ERROR: test_real_payload_receipt_and_push_failure (test_agent_transcript_publish.HistoryGitTests.test_real_payload_receipt_and_push_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\devon.tseng\Desktop\actinspace\UGREEN Hackathon 2026\tests\integration\test_agent_transcript_publish.py", line 44, in test_real_payload_receipt_and_push_failure
+    result=sync.publish(item,path,value,repo)
+  File "C:\Users\devon.tseng\Desktop\actinspace\UGREEN Hackathon 2026\scripts\agent_history_sync.py", line 58, in publish
+    return _publish(item,ledger_path,value,project_path,extra_paths)
+  File "C:\Users\devon.tseng\Desktop\actinspace\UGREEN Hackathon 2026\scripts\agent_history_sync.py", line 91, in _publish
+    raise SyncError('Unrelated local work must be finalized first')
+agent_history_sync.SyncError: Unrelated local work must be finalized first
+
+----------------------------------------------------------------------
+Ran 16 tests in 177.689s
+
+FAILED (errors=1)

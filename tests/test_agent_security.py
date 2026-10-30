@@ -68,7 +68,9 @@ class SecurityTests(unittest.TestCase):
         fake=type('Native',(),{'native_codex':lambda self:'native.exe'})()
         with patch.object(w,'load_module',return_value=fake),patch.object(w,'command',return_value=output) as run:
             tests=w.LiveTools().tests([['python','-m','unittest']])
-        self.assertEqual(tests[0]['output'],output)
+        self.assertNotIn('output',tests[0])
+        self.assertEqual((w.ROOT/tests[0]['artifact_path']).read_text(encoding='utf-8'),output)
+        (w.ROOT/tests[0]['artifact_path']).unlink()
         self.assertIn('sandbox',run.call_args.args[0])
         self.assertNotIn('finalize-codex-task.py',str(run.call_args))
 

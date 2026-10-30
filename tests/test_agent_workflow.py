@@ -317,7 +317,7 @@ class WorkflowTests(unittest.TestCase):
             (package / 'bin').mkdir(parents=True)
             (package / 'bin/claude.exe').write_text('not executed', encoding='utf-8')
             (package / 'package.json').write_text(json.dumps({'bin': {'claude': 'bin/claude.exe'}}), encoding='utf-8')
-            with patch.object(w.shutil, 'which', return_value=str(root / 'claude.cmd')):
+            with patch.object(w, 'resolve_agent_executable', return_value=str(root / 'claude.cmd')), patch.object(w, 'executable_allowed', return_value=True):
                 self.assertEqual(w.claude_launcher(), [str(package / 'bin/claude.exe')])
 
     def test_review_packet_is_bounded_without_truncating_evidence(self):

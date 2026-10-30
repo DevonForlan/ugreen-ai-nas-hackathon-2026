@@ -1,0 +1,59 @@
+{
+  "task_id": "AUTO-006",
+  "synthetic_only": true,
+  "results": [
+    {
+      "path_class": "workspace-readable",
+      "readable": true,
+      "sandbox_mode": ":workspace"
+    },
+    {
+      "path_class": "USERPROFILE-like",
+      "readable": true,
+      "sandbox_mode": ":workspace"
+    },
+    {
+      "path_class": "APPDATA-like",
+      "readable": true,
+      "sandbox_mode": ":workspace"
+    },
+    {
+      "path_class": "CODEX_HOME-like",
+      "readable": true,
+      "sandbox_mode": ":workspace"
+    },
+    {
+      "path_class": "gh-config-like",
+      "readable": true,
+      "sandbox_mode": ":workspace"
+    },
+    {
+      "path_class": "workspace-readable",
+      "readable": true,
+      "sandbox_mode": "synthetic-deny"
+    },
+    {
+      "path_class": "USERPROFILE-like",
+      "readable": true,
+      "sandbox_mode": "synthetic-deny"
+    },
+    {
+      "path_class": "APPDATA-like",
+      "readable": true,
+      "sandbox_mode": "synthetic-deny"
+    },
+    {
+      "path_class": "CODEX_HOME-like",
+      "readable": true,
+      "sandbox_mode": "synthetic-deny"
+    },
+    {
+      "path_class": "gh-config-like",
+      "readable": true,
+      "sandbox_mode": "synthetic-deny"
+    }
+  ],
+  "external_sentinels_denied": false,
+  "autonomous_enablement": "BLOCKED",
+  "real_credential_contents_accessed": false
+}

@@ -76,7 +76,7 @@ def prepare(root, session, transcript):
             raise ValueError('Mirror source lost its previously published response')
         start = matches[0]
     records, names = [], []
-    for response in responses[start:]:
+    for ordinal,response in enumerate(responses[start:],start+1):
         fingerprint = h.sha(response['events'])
         if old and old.get('status')=='SYNC_COMPLETE' and old['response_id']==response['response_id'] and old['response_sha256']==fingerprint:
             continue
@@ -84,6 +84,7 @@ def prepare(root, session, transcript):
         folder = Path('collaboration/live-turns')/agent/sid
         turn_path = (folder/(turn_id+'.md')).as_posix()
         record = dict(agent=agent,session_id=sid,turn_id=turn_id,response_id=response['response_id'],
+            response_ordinal=ordinal,session_started_at=session['started_at'],
             timestamp=response['timestamp'],response_sha256=fingerprint,turn_path=turn_path,
             source_transcript_path=Path(transcript).relative_to(root).as_posix(),
             status='LOCAL_ONLY',github_commit_sha=None,github_remote_verified=False,secret_scan='PASS')
@@ -121,7 +122,14 @@ def prepare(root, session, transcript):
         return None
     newest = records[-1][0]
     current = index.get('agents',{}).get(agent)
-    promote = current is None or datetime.fromisoformat(newest['timestamp'].replace('Z','+00:00')) >= datetime.fromisoformat(current['timestamp'].replace('Z','+00:00'))
+    def rank(record):
+        return (datetime.fromisoformat(record['timestamp'].replace('Z','+00:00')),
+            datetime.fromisoformat(record.get('session_started_at',record['timestamp']).replace('Z','+00:00')),
+            record.get('response_ordinal',0))
+    promote = (current is None or
+        (current.get('session_id')==sid and newest['response_ordinal']>current.get('response_ordinal',0)) or
+        (current.get('session_id')!=sid and rank(newest)>rank(current)) or
+        (current.get('session_id')==sid and newest['response_id']==current.get('response_id')))
     bundle = dict(root=root,index=index,key=key,records=records,promote=promote,names=names)
     update(bundle,None,False)
     return bundle

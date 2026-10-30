@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import threading
 import time
+from agent_security import resolve_agent_executable,executable_allowed
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('session_export', ROOT / 'scripts/export-codex-session.py')
@@ -21,14 +22,14 @@ spec.loader.exec_module(exporter)
 
 
 def native_codex():
-    direct = shutil.which('codex.exe')
+    direct = resolve_agent_executable('codex.exe',ROOT)
     if direct:
         return direct
-    shim = shutil.which('codex.cmd') or shutil.which('codex')
+    shim = resolve_agent_executable('codex.cmd',ROOT) or resolve_agent_executable('codex',ROOT)
     if shim:
         # Read-only discovery of the existing npm package's native executable.
         candidates = list(Path(shim).parent.glob('node_modules/@openai/codex/node_modules/@openai/codex-win32-*/vendor/*/bin/codex.exe'))
-        if len(candidates) == 1:
+        if len(candidates) == 1 and executable_allowed(candidates[0],ROOT):
             return str(candidates[0])
     return None
 

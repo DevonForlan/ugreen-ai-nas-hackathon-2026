@@ -13,7 +13,8 @@ import subprocess
 import tempfile
 import time
 import uuid
-from agent_security import scope_snapshot, protected, sandbox_command, gate_details, git_prefix, verify_control, process_birth, host_id, trusted_executable,git_environment
+from agent_evidence import compact,summary,minimal_stop
+from agent_security import scope_snapshot, protected, sandbox_command, gate_details, git_prefix, verify_control, process_birth, host_id, trusted_executable,git_environment,resolve_agent_executable,executable_allowed
 
 CONTROL_ROOT = Path(__file__).resolve().parents[1]
 ROOT = Path(os.environ.get('CODEX_AGENT_WORKSPACE') or CONTROL_ROOT).resolve()
@@ -244,7 +245,7 @@ def git(*args):
 
 
 def claude_launcher():
-    executable = shutil.which('claude') or shutil.which('claude.exe')
+    executable = resolve_agent_executable('claude',ROOT) or resolve_agent_executable('claude.exe',ROOT)
     if not executable:
         raise Gate('Claude CLI unavailable; existing native login is required.')
     if Path(executable).suffix.lower() != '.cmd':
@@ -254,12 +255,12 @@ def claude_launcher():
         metadata = json.loads((package / 'package.json').read_text(encoding='utf-8'))
         entry = metadata['bin']['claude'] if isinstance(metadata['bin'], dict) else metadata['bin']
         target = package / relative(entry)
-        if not target.is_file():
+        if not target.is_file() or not executable_allowed(target,ROOT):
             raise Gate('Installed Claude package entry is missing.')
         if target.suffix.lower() == '.exe':
             return [str(target)]
-        if target.suffix.lower() in {'.js', '.cjs'} and shutil.which('node'):
-            return [shutil.which('node'), str(target)]
+        if target.suffix.lower() in {'.js', '.cjs'} and resolve_agent_executable('node',ROOT):
+            return [resolve_agent_executable('node',ROOT), str(target)]
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise Gate('Cannot safely resolve the installed Claude CLI.') from exc
     raise Gate('Unsupported Claude package launcher; no shell/TUI fallback.')
@@ -365,10 +366,11 @@ class GitHub:
 
     def save(self, number, state, expected):
         branch = 'agent-state/issue-' + str(number)
-        if expected is None:
-            self.api(self.prefix + '/git/refs', 'POST', {'ref': 'refs/heads/' + branch, 'sha': self.head()})
+        state=compact(state)
         content = json.dumps(state, ensure_ascii=True, sort_keys=True, indent=2)
         clean_text(content)
+        if expected is None:
+            self.api(self.prefix + '/git/refs', 'POST', {'ref': 'refs/heads/' + branch, 'sha': self.head()})
         payload = {'message': f'agent state: issue {number} {state["state"]}', 'branch': branch,
                    'content': base64.b64encode(content.encode()).decode()}
         if expected:
@@ -380,6 +382,34 @@ class GitHub:
         object_id(sha)
         item = self.api(f'{self.prefix}/contents/{relative(path)}?ref={sha}')
         return clean_text(base64.b64decode(item['content']).decode('utf-8'))
+
+    def stop_checkpoint(self,number,task,state,artifacts=None):
+        """Atomic API-only commit; never consult a possibly tampered worktree."""
+        from agent_checkpoints import value,validate
+        branch='agent-state/issue-'+str(number)
+        parent=self.api(self.prefix+'/git/ref/heads/'+branch)['object']['sha']
+        tree=self.api(self.prefix+'/git/commits/'+parent)['tree']['sha']
+        sequence=state.get('checkpoint_sequence',0)+1
+        record=value(task,state['state'],state,state.get('attempt_source_sha'),None,'API-only emergency stop',state.get('test_evidence',[]))
+        record.update(sequence=sequence,publication_transport='GitHub API state branch',needs_user=True,secret_scan='NOT_RUN')
+        validate(record,require_scan=False)
+        data=json.dumps(record,ensure_ascii=True,sort_keys=True,indent=2)
+        exact_text(data,32000)
+        prefix='collaboration/checkpoints/'+task+'/'
+        entries=[{'path':prefix+name,'mode':'100644','type':'blob','content':content} for name,content in
+            [(f'{sequence:06d}.json',data),('latest.json',data),('latest.md','# '+task+' / '+state['state']+'\n\nneeds_user: true\nTransport: GitHub API state branch\n')]]
+        for path,text in (artifacts or {}).items():
+            if relative(path).startswith('collaboration/test-results/'+task+'_'):
+                try:exact_text(text,2*1024*1024)
+                except Exception:continue  # never suppress the minimal stop for an unsafe artifact
+                entries.append({'path':path,'mode':'100644','type':'blob','content':text})
+        created=self.api(self.prefix+'/git/trees','POST',{'base_tree':tree,'tree':entries})['sha']
+        commit=self.api(self.prefix+'/git/commits','POST',{'tree':created,'parents':[parent],'message':'checkpoint: API-only '+task+' '+state['state']})['sha']
+        self.api(self.prefix+'/git/refs/heads/'+branch,'PATCH',{'sha':commit,'force':False})
+        if self.api(self.prefix+'/git/ref/heads/'+branch)['object']['sha']!=commit:
+            raise RemoteError('API checkpoint remote SHA did not verify')
+        state.update(checkpoint_sequence=sequence,checkpoint_commit_sha=commit,checkpoint_branch=branch)
+        return commit
 
     @contextmanager
     def lock(self, number):
@@ -555,6 +585,8 @@ class LiveTools:
         return result
 
     def preflight(self, repository):
+        if not self.active_policy.get('sandbox_boundary',{}).get('external_sentinels_denied'):
+            raise Gate('Synthetic credential-read boundary is not verified; autonomous enablement prohibited.')
         if self.active_policy.get('require_isolated_controller') and CONTROL_ROOT==ROOT:
             raise Gate('Run the reviewed controller installation, not the agent-writable worktree launcher.')
         if CONTROL_ROOT!=ROOT and (ROOT/'automation/policy.json').read_bytes()!=(CONTROL_ROOT/'automation/policy.json').read_bytes():
@@ -677,6 +709,7 @@ class LiveTools:
 
     def tests(self, commands):
         results = []
+        self.test_artifacts={}
         self.last_test_evidence=results
         for argv in commands:
             if not isinstance(argv, list) or not argv or any(not isinstance(x, str) for x in argv):
@@ -695,9 +728,13 @@ class LiveTools:
                 raw=command(pinned, timeout=1800, include_stderr=True, heartbeat=getattr(self, 'stop_check', None), isolate_env=True)
             except CommandFailure as exc:
                 code=exc.code;raw=exc.stdout+exc.stderr
-            text=clean_text(raw,65536)
-            results.append({'command': argv, 'boundary':'native Codex sandbox; network disabled',
-                            'exit_code': code, 'output': text,'output_sha256':digest(text),'output_bytes':len(text.encode('utf-8'))})
+            text=clean_text(raw,2*1024*1024)
+            task=getattr(self,'transcript_context',{}).get('task_id','unscoped')
+            artifact=f'collaboration/test-results/{task}_{digest(text)[:24]}.txt'
+            path=ROOT/artifact;path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text(text,encoding='utf-8',newline='\n')
+            self.test_artifacts[artifact]=text
+            results.append(summary({'command': argv,'exit_code': code,'output': text,'artifact_path':artifact}))
             if code:raise Gate('Required sandbox tests failed; full sanitized failure evidence retained. No automatic retry.')
         return results
 
@@ -705,6 +742,7 @@ class LiveTools:
         # Required tests already ran inside the native sandbox. Never call the
         # interactive finalizer here: it intentionally runs trusted host tests.
         names=list(self.changed_paths)
+        names+=list(getattr(self,'test_artifacts',{}))
         if getattr(self,'capture_artifacts',None):
             item,path,_=self.capture_artifacts
             names += [item['transcript'].relative_to(ROOT).as_posix(),path.relative_to(ROOT).as_posix()]
@@ -749,6 +787,7 @@ class LiveTools:
         result=None if phase in {'STARTED','IMPLEMENTATION_COMPLETE','FIX_COMPLETE','TEST_COMPLETE'} else state.get('handoff',{}).get('head')
         record=value(fields['Task ID'],phase,state,source,result,summary,state.get('test_evidence') or state.get('handoff',{}).get('tests',[]))
         paths=write(ROOT,record,state['checkpoint_sequence'])
+        if phase=='TEST_COMPLETE':paths+=list(getattr(self,'test_artifacts',{}))
         commit=self.publish_paths(paths,'checkpoint: '+fields['Task ID']+' '+phase)
         receipts=attest(ROOT,record,state['checkpoint_sequence'],commit)
         commit=self.publish_paths(receipts,'checkpoint: verify '+fields['Task ID']+' '+phase)
@@ -884,8 +923,22 @@ class Engine:
             if not emergency and (not fresh.get('open') or not trusted(fresh, self.policy) or state_label(fresh) != state['state'] or digest(fresh['body']) != state['body_sha256']):
                 raise Gate('User state/requirement changed before transition; never overwrite a stop.')
             state['state'] = transition(state['state'], new, actor, emergency)
-        version = self.hub.save(issue['number'], state, version)
+        try:
+            outgoing=compact(state)
+            exact_text(json.dumps(outgoing,ensure_ascii=True),48000)
+        except Exception:
+            if not emergency:raise Gate('Ledger metadata exceeds safe bounds; stop without inline output.')
+            outgoing=minimal_stop(state)
+            state.clear();state.update(outgoing)
+        version = self.hub.save(issue['number'], outgoing, version)
         self.hub.labels(self.hub.issue(issue['number']), state['state'])
+        if emergency and hasattr(self.hub,'stop_checkpoint'):
+            task=next((task for task,plan in self.policy['plans'].items() if plan['issue_number']==issue['number']),None)
+            if task:
+                try:
+                    self.hub.stop_checkpoint(issue['number'],task,state,getattr(self.tools,'test_artifacts',{}))
+                    version=self.hub.save(issue['number'],compact(state),version)
+                except Exception:state['checkpoint_error']='API stop checkpoint unavailable; ledger/label retained; owner must reconcile.'
         if new and hasattr(self.tools,'checkpoint') and not getattr(self.tools,'git_frozen',False):
             phase={'CODEX_RUNNING':'STARTED','CC_REVIEWING':'CC_REVIEWING','CHANGES_REQUESTED':'CC_CHANGES_REQUESTED'}.get(new,new)
             task=next((task for task,plan in self.policy['plans'].items() if plan['issue_number']==issue['number']),None)
@@ -900,6 +953,11 @@ class Engine:
         return version
 
     def gate(self, issue, state, version, reason, question=None):
+        try:
+            reason=exact_text(str(reason),2048)
+            if question:question=exact_text(str(question),2048)
+        except Exception:
+            reason='Emergency stop: unsafe/oversized decision details omitted.';question=None
         # Every stop is API-only. Never run a repository-local publication path
         # when preflight/model/test integrity might be the reason for the stop.
         if hasattr(self.tools,'freeze_git'):self.tools.freeze_git(reason)
@@ -909,7 +967,11 @@ class Engine:
                              'recommendation': 'Keep automation stopped until User explicitly decides.'}
         state['decision']['question']=question or specific
         version = self.save(issue, state, version, 'USER_DECISION_REQUIRED', emergency=True)
-        self.hub.comment(issue['number'], '## USER_DECISION_REQUIRED\n```json\n' + json.dumps(state['decision'], ensure_ascii=False) + '\n```')
+        try:
+            comment=exact_text('## USER_DECISION_REQUIRED\n```json\n'+json.dumps(state['decision'],ensure_ascii=False)+'\n```',8000)
+        except Exception:
+            comment='## USER_DECISION_REQUIRED\nEmergency stop. Options: reconcile pinned evidence or cancel. Recommendation: keep stopped. Details omitted safely.'
+        self.hub.comment(issue['number'],comment)
         self.notification('WARNING', 'User decision required', f'Issue #{issue["number"]} stopped. Check GitHub.')
         return version
 

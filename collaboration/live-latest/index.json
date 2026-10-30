@@ -21,8 +21,8 @@
     "codex": {
       "agent": "codex",
       "content_sha256": "33da6e27de805920d0e8bb010b9a97cda8359788ac9e84fc35182616b92dffe9",
-      "github_commit_sha": null,
-      "github_remote_verified": false,
+      "github_commit_sha": "23e1789008cce37bd88d4b3b7a8e5ac6464b7774",
+      "github_remote_verified": true,
       "part_count": 2,
       "response_id": "native-6393",
       "response_ordinal": 151,
@@ -31,7 +31,7 @@
       "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
       "session_started_at": "2026-10-25T13:37:20.179Z",
       "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
-      "status": "LOCAL_ONLY",
+      "status": "SYNC_COMPLETE",
       "timestamp": "2026-10-30T11:15:44.060Z",
       "turn_id": "visible-2342922c73552f9a3e2475eb",
       "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-2342922c73552f9a3e2475eb.md"
@@ -125,8 +125,8 @@
     "codex:01a17347-a748-7a61-8544-48c906a9373d": {
       "agent": "codex",
       "content_sha256": "33da6e27de805920d0e8bb010b9a97cda8359788ac9e84fc35182616b92dffe9",
-      "github_commit_sha": null,
-      "github_remote_verified": false,
+      "github_commit_sha": "23e1789008cce37bd88d4b3b7a8e5ac6464b7774",
+      "github_remote_verified": true,
       "part_count": 2,
       "response_id": "native-6393",
       "response_ordinal": 151,
@@ -135,7 +135,7 @@
       "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
       "session_started_at": "2026-10-25T13:37:20.179Z",
       "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
-      "status": "LOCAL_ONLY",
+      "status": "SYNC_COMPLETE",
       "timestamp": "2026-10-30T11:15:44.060Z",
       "turn_id": "visible-2342922c73552f9a3e2475eb",
       "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-2342922c73552f9a3e2475eb.md"

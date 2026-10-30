@@ -1194,12 +1194,12 @@ class Engine:
             self.gate(issue, state, version, 'User interrupted execution. No automatic continuation.')
             raise
         except Gate as exc:
-            if uncertain_model and hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Model/test integrity or scope check failed')
+            if hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Workflow Gate; record API-only stop before further capture/publication')
             if getattr(self.tools,'last_test_evidence',None):state['test_evidence']=self.tools.last_test_evidence
             if hasattr(self.tools,'flush_capture') and not getattr(self.tools,'git_frozen',False):
                 self.tools.flush_capture(failed=True)
             state['history'].append({'agent': actor, 'task_id': task, 'iteration': state['codex_attempts' if actor == 'codex' else 'cc_rounds'], 'duration_seconds': round(time.monotonic() - started, 3), 'usage': usage, 'outcome': 'USER_DECISION_REQUIRED'})
-            self.gate(issue, state, version, clean_text(str(exc), 8000), clean_text(exc.question, 8000))
+            self.gate(issue, state, version, str(exc), exc.question)
             return 'USER_DECISION_REQUIRED'
         except Exception:
             if hasattr(self.tools,'freeze_git'):self.tools.freeze_git('Fatal workflow failure; API-only stop')

@@ -3,7 +3,7 @@ from datetime import datetime,timezone
 import json
 from pathlib import Path
 import re
-from agent_evidence import summary
+from agent_evidence import summary as test_summary
 
 
 PHASES={'STARTED','IMPLEMENTATION_COMPLETE','TEST_COMPLETE','READY_FOR_CC_REVIEW',
@@ -17,7 +17,7 @@ def value(task,phase,state,source,result,summary='',tests=None):
     return dict(schema_version=1,task_id=task,phase=phase,state=state['state'],
         actor='cc' if phase.startswith('CC_') or phase=='DONE' else 'codex' if phase in {'STARTED','IMPLEMENTATION_COMPLETE','TEST_COMPLETE','FIX_COMPLETE','READY_FOR_CC_REVIEW'} else 'controller',
         started_at=state.setdefault('started_at',stamp),updated_at=stamp,
-        source_commit_sha=source,result_commit_sha=result,tests_summary=[summary(x) for x in (tests or [])[:16]],
+        source_commit_sha=source,result_commit_sha=result,tests_summary=[test_summary(x) for x in (tests or [])[:16]],
         files_changed_summary=state.get('files_changed',[]),progress_summary=summary,
         blocker=state.get('decision'),next_action='Independent CC review' if phase=='READY_FOR_CC_REVIEW' else 'Follow the pinned legal state transition',
         needs_user=phase in {'USER_DECISION_REQUIRED','FAILED'},

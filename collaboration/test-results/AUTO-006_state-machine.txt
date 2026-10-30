@@ -1,0 +1,35 @@
+test_local_lock_is_exclusive_without_time_guessing (test_agent_workflow.LockTests.test_local_lock_is_exclusive_without_time_guessing) ... ok
+test_remote_ref_lock_second_acquisition_cannot_steal (test_agent_workflow.LockTests.test_remote_ref_lock_second_acquisition_cannot_steal) ... ok
+test_cc_user_question_is_preserved (test_agent_workflow.WorkflowTests.test_cc_user_question_is_preserved) ... ok
+test_cc_uses_toolless_isolated_json_print_mode (test_agent_workflow.WorkflowTests.test_cc_uses_toolless_isolated_json_print_mode) ... ok
+test_changes_requested_reenters_codex_with_fixed_scope (test_agent_workflow.WorkflowTests.test_changes_requested_reenters_codex_with_fixed_scope) ... ok
+test_codex_handoff_then_independent_cc_pass (test_agent_workflow.WorkflowTests.test_codex_handoff_then_independent_cc_pass) ... ok
+test_codex_uses_exec_schema_sandbox_and_does_not_export_raw_events (test_agent_workflow.WorkflowTests.test_codex_uses_exec_schema_sandbox_and_does_not_export_raw_events) ... ok
+test_contradictory_pass_rejected (test_agent_workflow.WorkflowTests.test_contradictory_pass_rejected) ... ok
+test_controlplane_and_out_of_scope_changes_gate (test_agent_workflow.WorkflowTests.test_controlplane_and_out_of_scope_changes_gate) ... ok
+test_dry_run_never_calls_agent_or_mutates (test_agent_workflow.WorkflowTests.test_dry_run_never_calls_agent_or_mutates) ... ok
+test_dry_run_respects_other_issue_global_stop (test_agent_workflow.WorkflowTests.test_dry_run_respects_other_issue_global_stop) ... ok
+test_every_legal_transition_and_codex_cannot_done (test_agent_workflow.WorkflowTests.test_every_legal_transition_and_codex_cannot_done) ... ok
+test_fatal_error_failed_no_false_handoff (test_agent_workflow.WorkflowTests.test_fatal_error_failed_no_false_handoff) ... ok
+test_github_failure_stops_before_agent (test_agent_workflow.WorkflowTests.test_github_failure_stops_before_agent) ... ok
+test_illegal_transitions (test_agent_workflow.WorkflowTests.test_illegal_transitions) ... ok
+test_malformed_reviewer_json_is_user_gate (test_agent_workflow.WorkflowTests.test_malformed_reviewer_json_is_user_gate) ... ok
+test_mandatory_gate_overrides_ordinary_edges (test_agent_workflow.WorkflowTests.test_mandatory_gate_overrides_ordinary_edges) ... ok
+test_max_attempts_survive_new_engine (test_agent_workflow.WorkflowTests.test_max_attempts_survive_new_engine) ... ok
+test_missing_owner_plan_gates_without_model (test_agent_workflow.WorkflowTests.test_missing_owner_plan_gates_without_model) ... ok
+test_model_subprocess_does_not_inherit_gh_credential_environment (test_agent_workflow.WorkflowTests.test_model_subprocess_does_not_inherit_gh_credential_environment) ... ok
+test_notification_fallback_does_not_change_result (test_agent_workflow.WorkflowTests.test_notification_fallback_does_not_change_result) ... ok
+test_npm_native_claude_entry_is_resolved_from_manifest (test_agent_workflow.WorkflowTests.test_npm_native_claude_entry_is_resolved_from_manifest) ... ok
+test_only_preapproved_followup_is_created_and_not_executed (test_agent_workflow.WorkflowTests.test_only_preapproved_followup_is_created_and_not_executed) ... ok
+test_requirement_mutation_and_dual_labels_rejected (test_agent_workflow.WorkflowTests.test_requirement_mutation_and_dual_labels_rejected) ... ok
+test_review_packet_is_bounded_without_truncating_evidence (test_agent_workflow.WorkflowTests.test_review_packet_is_bounded_without_truncating_evidence) ... ok
+test_scope_prefix_blocks_competition_tasks (test_agent_workflow.WorkflowTests.test_scope_prefix_blocks_competition_tasks) ... ok
+test_third_unsuccessful_review_requires_user (test_agent_workflow.WorkflowTests.test_third_unsuccessful_review_requires_user) ... ok
+test_unapproved_followup_cannot_expand_scope (test_agent_workflow.WorkflowTests.test_unapproved_followup_cannot_expand_scope) ... ok
+test_unauthorized_author_and_editor_rejected (test_agent_workflow.WorkflowTests.test_unauthorized_author_and_editor_rejected) ... ok
+test_user_stop_during_codex_cannot_be_overwritten_by_handoff (test_agent_workflow.WorkflowTests.test_user_stop_during_codex_cannot_be_overwritten_by_handoff) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 1.043s
+
+OK

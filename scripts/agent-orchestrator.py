@@ -238,7 +238,7 @@ def main():
             state, version = hub.ledger(issue['number'])
             if state is None:
                 state = {'state': state_label(issue), 'body_sha256': digest(issue['body']), 'codex_attempts': 0, 'cc_rounds': 0, 'history': []}
-            Engine(hub, tools, policy).gate(issue, state, version, clean_text(str(exc), 8000))
+            Engine(hub, tools, policy).gate(issue, state, version, str(exc))
             return 2
         except BaseException as exc:
             stop.write_text(json.dumps({'issue': issue['number'], 'status': 'LOCAL ONLY — NOT SYNCED',

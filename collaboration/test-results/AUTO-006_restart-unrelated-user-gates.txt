@@ -1,0 +1,19 @@
+test_trusted_outside_record_blocks_pid_forgery_and_releases_only_dead_owner (test_agent_security.LeaseRecoveryTests.test_trusted_outside_record_blocks_pid_forgery_and_releases_only_dead_owner) ... ok
+test_all_phase_checkpoints_and_no_duplicate_done_work (test_agent_security.RecoveryTests.test_all_phase_checkpoints_and_no_duplicate_done_work) ... ok
+test_recovery_rejects_old_review_round (test_agent_security.RecoveryTests.test_recovery_rejects_old_review_round) ... ok
+test_uncertain_running_state_never_replays (test_agent_security.RecoveryTests.test_uncertain_running_state_never_replays) ... ok
+test_verified_cc_recovery_keeps_independent_authority (test_agent_security.RecoveryTests.test_verified_cc_recovery_keeps_independent_authority) ... ok
+test_verified_handoff_recovery_does_not_call_model (test_agent_security.RecoveryTests.test_verified_handoff_recovery_does_not_call_model) ... ok
+test_checkpoint_schema_fields_and_sequence_no_overwrite (test_agent_security.SecurityTests.test_checkpoint_schema_fields_and_sequence_no_overwrite) ... ok
+test_control_hash_changes_rejected (test_agent_security.SecurityTests.test_control_hash_changes_rejected) ... ok
+test_git_hooks_fsmonitor_never_executed (test_agent_security.SecurityTests.test_git_hooks_fsmonitor_never_executed) ... ok
+test_native_sandbox_argv_has_no_host_fallback (test_agent_security.SecurityTests.test_native_sandbox_argv_has_no_host_fallback) ... ok
+test_nested_instructions_and_controller_artifacts_protected (test_agent_security.SecurityTests.test_nested_instructions_and_controller_artifacts_protected) ... ok
+test_snapshot_includes_ignored_hooks_and_bytecode (test_agent_security.SecurityTests.test_snapshot_includes_ignored_hooks_and_bytecode) ... ok
+test_specific_user_gate_options (test_agent_security.SecurityTests.test_specific_user_gate_options) ... ok
+test_test_evidence_preserves_head_and_tail (test_agent_security.SecurityTests.test_test_evidence_preserves_head_and_tail) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.779s
+
+OK

@@ -1,0 +1,84 @@
+{
+  "task_id": "AUTO-006",
+  "transport": "ChatGPT GitHub connector",
+  "active_codex_owner_pid": 21120,
+  "snapshots": [
+    {
+      "path": "codex.md",
+      "blob_sha": "822803c8d1a81f8c9a6abdee586e178504327510",
+      "connector_read": true,
+      "metadata": [
+        "- agent: codex",
+        "- session_id: 01a17347-a748-7a61-8544-48c906a9373d",
+        "- turn_id: visible-ea35253a7d312c332af915d0",
+        "- timestamp: 2026-10-30T11:17:53.480Z",
+        "- status: SYNC_COMPLETE",
+        "- github_commit_sha: c0f69e1de2e25d5e45d55cb41d95bf183d108da4",
+        "- github_remote_verified: True",
+        "- secret_scan: PASS",
+        "- source_transcript_path: collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md"
+      ],
+      "freshness_marker_found": true
+    },
+    {
+      "path": "claude.md",
+      "blob_sha": "f6546097eaed840c041b51bf89f4087bc56e412d",
+      "connector_read": true,
+      "metadata": [
+        "- agent: claude",
+        "- session_id: 24c122fa-bf28-4549-aeec-f242a44d591f",
+        "- turn_id: visible-84db80aea1c9efdf9780191c",
+        "- timestamp: 2026-10-30T11:14:20.073274Z",
+        "- status: SYNC_COMPLETE",
+        "- github_commit_sha: 579c07ff1e9cb33546546f9ff58a06e5cba4e93c",
+        "- github_remote_verified: True",
+        "- secret_scan: PASS",
+        "- source_transcript_path: collaboration/cc-sessions/2026-10-30_1113_24c122fa-bf28-4549-aeec-f242a44d591f.md",
+        "- [Content part 1](/collaboration/live-turns/claude/24c122fa-bf28-4549-aeec-f242a44d591f/visible-84db80aea1c9efdf9780191c/part-0001.md)"
+      ]
+    },
+    {
+      "path": "index.json",
+      "blob_sha": "b42224cc97f5dc21a57b29a9dd367977401e5b41",
+      "connector_read": true,
+      "metadata": {
+        "claude": {
+          "agent": "claude",
+          "content_sha256": "5bd69d80d803e7e213bef58b3dfee981317d344b7d131d5a045450b6e1edb438",
+          "github_commit_sha": "579c07ff1e9cb33546546f9ff58a06e5cba4e93c",
+          "github_remote_verified": true,
+          "part_count": 1,
+          "response_id": "result-1",
+          "response_ordinal": 1,
+          "response_sha256": "b566fd59b3896280f702652b728303bd83be24a1e5ca7f7979d4cabcac7e1eb9",
+          "secret_scan": "PASS",
+          "session_id": "24c122fa-bf28-4549-aeec-f242a44d591f",
+          "session_started_at": "2026-10-30T11:13:42.084109+00:00",
+          "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1113_24c122fa-bf28-4549-aeec-f242a44d591f.md",
+          "status": "SYNC_COMPLETE",
+          "timestamp": "2026-10-30T11:14:20.073274Z",
+          "turn_id": "visible-84db80aea1c9efdf9780191c",
+          "turn_path": "collaboration/live-turns/claude/24c122fa-bf28-4549-aeec-f242a44d591f/visible-84db80aea1c9efdf9780191c.md"
+        },
+        "codex": {
+          "agent": "codex",
+          "content_sha256": "938bacfe30a08ed663f7ac2d8252f2fa1f7b2b4a1ed172f0b7bdbf2ded6e5fc4",
+          "github_commit_sha": "c0f69e1de2e25d5e45d55cb41d95bf183d108da4",
+          "github_remote_verified": true,
+          "part_count": 1,
+          "response_id": "native-6423",
+          "response_ordinal": 152,
+          "response_sha256": "057ed4bc579f4d09cd731001d444569e1a4b1b66feae24ec8012cc965846f5a0",
+          "secret_scan": "PASS",
+          "session_id": "01a17347-a748-7a61-8544-48c906a9373d",
+          "session_started_at": "2026-10-25T13:37:20.179Z",
+          "source_transcript_path": "collaboration/codex-sessions/2026-10-25_1337_01a17347-a748-7a61-8544-48c906a9373d.md",
+          "status": "SYNC_COMPLETE",
+          "timestamp": "2026-10-30T11:17:53.480Z",
+          "turn_id": "visible-ea35253a7d312c332af915d0",
+          "turn_path": "collaboration/live-turns/codex/01a17347-a748-7a61-8544-48c906a9373d/visible-ea35253a7d312c332af915d0.md"
+        }
+      }
+    }
+  ]
+}

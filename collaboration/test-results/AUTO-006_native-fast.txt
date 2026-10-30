@@ -1,7 +1,7 @@
 File: collaboration/codex-sessions/test.md | Rule: provider-token | Line: 1 | Finding: REDACTED
 Secret scan: files=1 findings=1 (heuristic)
 Emergency checkpoint not published; inspect local evidence. State/notification remain authoritative.
-{"allowed_task_prefixes": ["AUTO-"], "plans": {}, "policy_sha256": "2451767cc5360057963e9a1c7a16757e1e49e3105ec076b11611c69284136faf", "reviewed_head": "e59ff5e9e13149460cadd4fef180717734b7b225"}
+{"allowed_task_prefixes": ["AUTO-"], "plans": {}, "policy_sha256": "583651a50c54b32c9637e67c63d7e0905f0a77e4a1ba641cf730bbaa52e666c9", "reviewed_head": "82c44abc16430b74c6f5850cf0be44b0894aa7c9"}
 collaboration/codex-sessions/session.md:1: export-owner-mismatch
 collaboration/codex-sessions/raw.jsonl:1: non-markdown-or-nonregular-export
 test_appended_assistant_and_multiday_active_attach (test_agent_live_sync.LiveTests.test_appended_assistant_and_multiday_active_attach) ... ok
@@ -103,6 +103,7 @@ test_large_failing_output_keeps_stop_ledger_and_comment_small (test_auto006.Reme
 test_literal_path_environment_is_pinned (test_auto006.RemediationTests.test_literal_path_environment_is_pinned) ... ok
 test_long_lived_old_session_and_new_session_latest_moves_forward (test_auto006.RemediationTests.test_long_lived_old_session_and_new_session_latest_moves_forward) ... ok
 test_project_companion_discovers_newer_session_without_pinning_old (test_auto006.RemediationTests.test_project_companion_discovers_newer_session_without_pinning_old) ... ok
+test_step_records_oversized_or_secret_codex_gate_and_cc_summary (test_auto006.RemediationTests.test_step_records_oversized_or_secret_codex_gate_and_cc_summary) ... ok
 test_unsanitizable_oversize_decision_uses_fixed_emergency_payload (test_auto006.RemediationTests.test_unsanitizable_oversize_decision_uses_fixed_emergency_payload) ... ok
 test_unverified_boundary_blocks_even_if_code_review_passes (test_auto006.RemediationTests.test_unverified_boundary_blocks_even_if_code_review_passes) ... ok
 test_export_isolation_idempotence_and_ownership (test_codex_export.ExportTests.test_export_isolation_idempotence_and_ownership) ... ok
@@ -135,6 +136,6 @@ test_secret_otp_mfa_redaction (test_live_mirror.MirrorTests.test_secret_otp_mfa_
 test_unicode_latest_is_byte_bounded (test_live_mirror.MirrorTests.test_unicode_latest_is_byte_bounded) ... ok
 
 ----------------------------------------------------------------------
-Ran 129 tests in 29.777s
+Ran 130 tests in 36.178s
 
 OK

@@ -19,6 +19,25 @@ from test_agent_workflow import Hub,Tools
 
 
 class RemediationTests(unittest.TestCase):
+    def test_step_records_oversized_or_secret_codex_gate_and_cc_summary(self):
+        policy={'repository':'owner/repo','trusted_authors':['owner'],'allowed_task_prefixes':['AUTO-'],
+            'max_codex_attempts':3,'max_cc_review_rounds':3,'agent_timeout_seconds':30,'max_review_bytes':65536,'plans':{}}
+        for text in ('x'*100000,'sk-'+'s'*30):
+            for actor in ('codex','cc'):
+                with self.subTest(actor=actor,large=len(text)>65536):
+                    hub=Hub();tools=Tools();policy['plans']={'AUTO-T1':{'issue_number':1,'body_sha256':w.digest(hub.item['body']),
+                        'codex_enabled':True,'cc_enabled':True,'sandbox_acknowledged':True,'allowed_write_paths':['src/'],
+                        'required_tests':[['python','-m','unittest']],'followups':{}}}
+                    engine=w.Engine(hub,tools,policy)
+                    if actor=='codex':tools.codex_error=w.Gate(text,text)
+                    else:
+                        with patch.object(w.scanner,'scan_repo',return_value=(1,[])):
+                            self.assertEqual(engine.step(hub.issue(1)),'READY_FOR_CC_REVIEW')
+                        tools.review.update(result='CHANGES_REQUESTED',summary=text,required_changes=['Fix public issue'])
+                    self.assertEqual(engine.step(hub.issue(1)),'USER_DECISION_REQUIRED')
+                    self.assertEqual(hub.state['state'],'USER_DECISION_REQUIRED');self.assertTrue(hub.comments)
+                    self.assertNotIn(text,hub.comments[-1])
+
     def test_project_companion_discovers_newer_session_without_pinning_old(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);(root/'.git').mkdir();sources=[];seen=[]
@@ -88,11 +107,14 @@ class RemediationTests(unittest.TestCase):
                 if method=='PATCH':self.head_sha=payload['sha'];return {}
                 raise AssertionError('Unexpected API call')
         for phase in ('USER_DECISION_REQUIRED','FAILED'):
-            api=API();state={'state':phase,'codex_attempts':1,'cc_rounds':0}
+            api=API();state={'state':phase,'codex_attempts':1,'cc_rounds':0,
+                'test_evidence':[{'command':['python','-m','unittest'],'exit_code':7,'output':'PUBLIC FAILED\n'*6000}]}
             with patch.object(w,'git',side_effect=AssertionError('No local Git')):
                 self.assertEqual(api.stop_checkpoint(9,'AUTO-006',state),'c'*40)
             record=json.loads(api.entries[0]['content'])
             self.assertTrue(record['needs_user']);self.assertEqual(record['state'],phase)
+            self.assertGreater(record['tests_summary'][0]['output_bytes'],65536)
+            self.assertNotIn('output',record['tests_summary'][0]);self.assertNotIn('checkpoint_error',state)
             self.assertEqual(record['publication_transport'],'GitHub API state branch')
             self.assertEqual(len(api.entries),3)
 

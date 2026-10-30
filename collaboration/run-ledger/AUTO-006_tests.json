@@ -1,13 +1,13 @@
 {
   "task_id": "AUTO-006",
   "native_fast": {
-    "tests": 129,
+    "tests": 130,
     "exit_code": 0,
     "output": "collaboration/test-results/AUTO-006_native-fast.txt",
     "output_sha256": {
-      "collaboration/test-results/AUTO-006_native-fast.txt": "d9fed4bed7ef147bc5766eb13aa15c589f581f1f104b76d402341ed8531bf94e"
+      "collaboration/test-results/AUTO-006_native-fast.txt": "43c9839458ab897ba06e16106dfdc9692fb4ad07517f94a0d497426bc3478819"
     },
-    "duration_seconds": 29.777
+    "duration_seconds": 36.178
   },
   "integration": {
     "tests": 16,
@@ -21,12 +21,28 @@
       "collaboration/test-results/AUTO-006_integration-retest.txt"
     ],
     "output_sha256": {
-      "collaboration/test-results/AUTO-006_integration.txt": "db7bcfe1667371423a9a7c97c9f04c7ba02d0cbfad407b5593e54d4db0529793",
+      "collaboration/test-results/AUTO-006_integration.txt": "d57807d1c38f9a62d6268fd30fee1996f6fb5b88d3a10c082ac70c70802762fa",
       "collaboration/test-results/AUTO-006_integration-retest.txt": "f3395a27302ae1f8c49958f88a4aeb723eb5af215ce16fae5cb3ce9c426512b8"
-    }
+    },
+    "exit_code": 0,
+    "duration_seconds": 238.545,
+    "complete_rerun_passed": true
   },
   "synthetic_boundary": "collaboration/run-ledger/AUTO-006_boundary.json",
   "native_managed_0_166_0_probe": "external synthetic sentinel remained readable with deny rule; no real credential content accessed",
   "enablement": "BLOCKED",
-  "AUTO005_review_rounds_unchanged": 3
+  "AUTO005_review_rounds_unchanged": 3,
+  "distinct_outputs": [
+    "collaboration/test-results/AUTO-006_regressions.txt",
+    "collaboration/test-results/AUTO-006_restart-unrelated-user-gates.txt",
+    "collaboration/test-results/AUTO-006_state-machine.txt",
+    "collaboration/test-results/AUTO-006_secret-scan.txt"
+  ],
+  "connector_confirmation": "collaboration/run-ledger/AUTO-006_connector-read.json",
+  "review_round_1_fixes": [
+    "Alias test_summary to avoid summary parameter shadowing, with nonempty large failure evidence regression",
+    "Remove exception-handler sanitization before fail-safe gate; test oversized/secret-bearing Codex Gate and CC summary",
+    "Provide actual real Git literal bracket test source and complete rerun output",
+    "Provide distinct recovery/state/user-gate/secret outputs and connector readback"
+  ]
 }

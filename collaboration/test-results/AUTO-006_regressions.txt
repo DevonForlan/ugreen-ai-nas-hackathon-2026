@@ -1,0 +1,14 @@
+test_api_stop_checkpoint_both_states_never_call_git (test_auto006.RemediationTests.test_api_stop_checkpoint_both_states_never_call_git) ... ok
+test_cwd_and_project_path_shims_never_resolve_or_execute (test_auto006.RemediationTests.test_cwd_and_project_path_shims_never_resolve_or_execute) ... ok
+test_large_failing_output_keeps_stop_ledger_and_comment_small (test_auto006.RemediationTests.test_large_failing_output_keeps_stop_ledger_and_comment_small) ... ok
+test_literal_path_environment_is_pinned (test_auto006.RemediationTests.test_literal_path_environment_is_pinned) ... ok
+test_long_lived_old_session_and_new_session_latest_moves_forward (test_auto006.RemediationTests.test_long_lived_old_session_and_new_session_latest_moves_forward) ... ok
+test_project_companion_discovers_newer_session_without_pinning_old (test_auto006.RemediationTests.test_project_companion_discovers_newer_session_without_pinning_old) ... ok
+test_step_records_oversized_or_secret_codex_gate_and_cc_summary (test_auto006.RemediationTests.test_step_records_oversized_or_secret_codex_gate_and_cc_summary) ... ok
+test_unsanitizable_oversize_decision_uses_fixed_emergency_payload (test_auto006.RemediationTests.test_unsanitizable_oversize_decision_uses_fixed_emergency_payload) ... ok
+test_unverified_boundary_blocks_even_if_code_review_passes (test_auto006.RemediationTests.test_unverified_boundary_blocks_even_if_code_review_passes) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.763s
+
+OK

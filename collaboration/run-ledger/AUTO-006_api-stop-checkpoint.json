@@ -1,0 +1,13 @@
+{
+  "task_id": "AUTO-006",
+  "status": "USER_DECISION_REQUIRED",
+  "issue_number": 3,
+  "state_branch": "agent-state/issue-3",
+  "checkpoint_path": "collaboration/checkpoints/AUTO-006/latest.json",
+  "checkpoint_commit_sha": "553b8aeaabf0656c098003e6e43fdd6257246d78",
+  "api_remote_verified": true,
+  "cc_review_rounds": 2,
+  "AUTO005_review_rounds": 3,
+  "autonomous_enabled": false,
+  "real_smoke": "NOT_RUN: explicit R4 User Gate"
+}

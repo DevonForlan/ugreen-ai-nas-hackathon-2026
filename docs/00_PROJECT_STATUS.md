@@ -1,41 +1,44 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 19:05 +08:00
+Last Updated: 2026-10-30 19:37 +0800
 
 ## Current Phase
 
-AUTO-006 remediation and independent review preparation. AUTO-004 remains PASS.
-AUTO-005 immutable review history remains 3/3 CHANGES_REQUESTED. Automation disabled.
+AUTO-006 USER_DECISION_REQUIRED: remediation reviewed; R4 environment isolation blocked.
+AUTO-004 remains PASS. AUTO-005 original 3/3 review history preserved. Automation disabled.
 
 ## Current Objective
 
-Complete R1-R5/freshness regressions and independent Claude review. Preserve the
-real R4 environment Gate; never enable smoke based only on code review.
+Await User choice of a supported read-isolating runtime/backend. No smoke or product work.
 
 ## Completed
 
-- R1 bounded ledger/test artifact handling and emergency fallback; R2 trusted CLI lookup.
-- R3 literal pathspecs; R5 API-only stop checkpoint support; freshness/project-follow fixes.
-- 129 native-sandbox fast tests passed. 15/16 integration tests initially passed;
-  the CRLF false positive was fixed and its targeted rerun passed.
-- Synthetic probe: all four external classes remain readable, including explicit deny.
-  No actual credential content accessed. Existing managed 0.166.0 also allowed the narrow sentinel.
+- R1/R2/R3/R5 and freshness code remediations; independent CC round 2 found no blocking code defect.
+- Complete final native sandbox fast suite: 130 PASS. Complete integration suite: 16 PASS.
+- Large failure metadata, secret/oversize Gate, shim planting, literal [x].py publication,
+  API-only checkpoints, restart/unrelated/user-gate and freshness regressions recorded.
+- Current Codex harmless visible response and both latest pointers/index verified through
+  ChatGPT GitHub connector; exact snapshot SYNC_COMPLETE, not future final capture.
+- Real API-only stop checkpoint: ref agent-state/issue-3,
+  collaboration/checkpoints/AUTO-006/latest.json. See AUTO-006_api-stop-checkpoint.json.
 
 ## In Progress
 
-Publish exact remediation/evidence and request independent Claude review (AUTO-006 budget 3).
+None. AUTO-006 smoke NOT RUN. Review budget used 2/3; no budget reset or further review needed for unchanged environment.
 
 ## Blockers
 
-Native Windows backend has not enforced the required external sentinel deny-read boundary.
-Preflight/policy keep autonomous execution disabled. Real smoke NOT RUN.
+R4 synthetic external reads remain allowed in :workspace and explicit synthetic-deny;
+existing managed 0.166.0 also allowed narrow synthetic external read. No real credential
+contents inspected. CC result USER_DECISION_REQUIRED; autonomous enablement is NO.
 
 ## Pending User Decisions
 
-A supported deny-read environment/backend is required before enablement; no residual
-credential-read risk was waived. AUTO-005 counters are not reset by this new task.
+Issue #3: separately scope a supported isolated runtime/backend plan (recommended),
+or keep automation disabled. No credential-risk waiver, OS/service/Registry/PATH change authorized.
 
 ## Next Planned Step
 
-Independent review of AUTO-006 remediation. Publish API-only User-gate checkpoint if
-R4 remains blocked. REG-002/R01-R06/product work remain paused/unstarted.
+Wait for User decision. Final report: collaboration/codex-reports/2026-10-30_1907_AUTO-006.md.
+Independent review: collaboration/cc-reports/2026-10-30_1928_AUTO-006_review-round-2.md.
+Do not resume REG-002, R01-R06, topic selection or product implementation.

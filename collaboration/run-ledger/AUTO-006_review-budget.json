@@ -1,0 +1,11 @@
+{
+  "task_id": "AUTO-006",
+  "rounds_used": 1,
+  "history": [
+    {
+      "round": 1,
+      "reviewed_head": "0828b203c878f545413fee8074dd53f90304a80a",
+      "status": "STARTED"
+    }
+  ]
+}

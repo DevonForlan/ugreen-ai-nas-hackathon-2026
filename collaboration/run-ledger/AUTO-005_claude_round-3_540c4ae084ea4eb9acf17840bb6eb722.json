@@ -1,9 +1,9 @@
 {
   "agent": "claude",
-  "commit_sha": null,
+  "commit_sha": "b5ba059104ceadb1642e35a107fb8f12097a1f92",
   "ended_at": "2026-10-30T10:25:54.591652Z",
   "final_response_captured": true,
-  "github_synced": false,
+  "github_synced": true,
   "last_visible_response_at": "2026-10-30T10:25:54.591652Z",
   "local_archive_updated": true,
   "malformed_events": 0,
@@ -14,11 +14,13 @@
   "secret_scan": "PASS",
   "session_id": "cf7d8376-e13f-42a7-8786-d8bfb743cd6a",
   "snapshot_marker": "3416d68f75290115ace8ccf80088b8a7e934687a81c9a6e00046b679f7e18c79",
+  "snapshot_uploaded": true,
   "source_event_count": 2,
   "started_at": "2026-10-30T10:24:03.130324+00:00",
-  "status": "LOCAL_ONLY",
+  "status": "SYNC_COMPLETE",
   "task_id": "AUTO-005",
   "transcript_path": "collaboration/cc-sessions/2026-10-30_1024_cf7d8376-e13f-42a7-8786-d8bfb743cd6a.md",
   "transcript_sha256": "7cb643324c74b18d156b6726d39041d720e448204c9016d7d1b3260f0cfb9582",
+  "verified_at": "2026-10-30T10:26:29.452798Z",
   "visible_event_count": 2
 }

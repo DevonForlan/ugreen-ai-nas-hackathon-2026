@@ -1,30 +1,43 @@
-<!-- live-mirror-v1 agent=claude session=0bee2fc5-6d3d-4164-96a2-32769d1fe603 turn=visible-f7db3f0fd91855728cbd55c2 -->
+<!-- live-mirror-v1 agent=claude session=c736e6b9-b3a0-4b8e-90c3-66dd41a71e47 turn=visible-84db80aea1c9efdf9780191c -->
 # Latest visible response
 
 - agent: claude
-- session_id: 0bee2fc5-6d3d-4164-96a2-32769d1fe603
-- turn_id: visible-f7db3f0fd91855728cbd55c2
-- timestamp: 2026-10-30T03:34:54.307Z
-- status: SYNC_COMPLETE
-- github_commit_sha: 251ab3174a85316c5c620b61e3f900c7d8d2f6b8
-- github_remote_verified: True
+- session_id: c736e6b9-b3a0-4b8e-90c3-66dd41a71e47
+- turn_id: visible-84db80aea1c9efdf9780191c
+- timestamp: 2026-10-30T10:05:36.869567Z
+- status: LOCAL_ONLY
+- github_commit_sha: None
+- github_remote_verified: False
 - secret_scan: PASS
-- source_transcript_path: collaboration/cc-sessions/2026-10-30_0334_0bee2fc5-6d3d-4164-96a2-32769d1fe603.md
+- source_transcript_path: collaboration/cc-sessions/2026-10-30_1004_c736e6b9-b3a0-4b8e-90c3-66dd41a71e47.md
 
 ## Visible assistant response
 ```text
-AUTO004-CLAUDE-LIVE-0bee2fc5
+{
+  "result": "CHANGES_REQUESTED",
+  "summary": "Pre-enable readiness review, not final acceptance. Most of the design holds up: pinned policy digest, installer binding to Git blobs, snapshot comparison around model runs, empty hooks path, sandboxed tests, persistent counters and the legal-state checks. One blocking hole remains, plus smaller robustness and doc issues. The blocking hole is in the tamper-detection path. When the post-model snapshot shows a protected file changed (for example `__agent_control__/git-config`, hooks, `.git/info/attributes`), `allowed_changes` raises Gate. The `except Gate` handler in `Engine.step` then calls `self.gate(...)`, which calls `save(..., emergency=True)`, which calls `tools.checkpoint(...)`. That path runs `publish_paths`, which runs `git add`, `git commit` and `git push` in the parent process, outside the sandbox, against the tampered `.git/config`. A model-written `credential.helper=[REDACTED], `core.sshCommand`, a `filter.*` driver or `remote.origin.pushurl` would then execute with the owner's credentials. `git_prefix` forces only `core.hooksPath` and `core.fsmonitor`. The `except Exception` FAILED path and `flush_capture(failed=True)` have the same exposure. The control plane detects the tampering but does not stop before running the exploit. I could not verify the test evidence beyond what was supplied. It lists no test for tamper followed by gate with a malicious git config.",
+  "required_changes": [
+    "In Engine.step, track a `tampered` flag. Set it whenever a snapshot diff touches a protected path, `__agent_control__/*`, `.git/*`, `.codex`, `.claude` or `.mcp.json`, or when `allowed_changes` or the deletion check raises. When it is set, the Gate and FAILED handlers and `Engine.save(..., emergency=True)` must not call `tools.checkpoint`, `flush_capture` (if it commits or pushes), `publish_paths` or any other parent git mutation or push from that worktree. Record the state through the GitHub API only (ledger, label, comment), and write local AUTO_STOP evidence.",
+    "Harden every parent-owned git invocation in `git_prefix` and `command()`: add `-c credential.helper=[REDACTED] (or a pinned helper), `-c core.sshCommand=`, `-c core.gitProxy=`, `-c core.askPass=`, `-c protocol.ext.allow=never`, `-c core.pager=cat` and `-c diff.external=`. Set `GIT_CONFIG_NOSYSTEM=1`, `GIT_CONFIG_GLOBAL` and `GIT_SSH_COMMAND` to pinned values, and push to the pinned explicit URL instead of the `origin` remote. Before any publication that follows model execution, verify the `.git/config` and `.git/info/*` hashes against the pre-run `before` snapshot.",
+    "Add a real-git integration test: a fake model run writes a malicious `credential.helper` or `core.sshCommand` into `.git/config` and a marker-writing script. Assert that the Gate fires, that no git push or helper executes (the marker is absent), and that the state is still recorded as USER_DECISION_REQUIRED through the API. Add a similar test for the FAILED path.",
+    "`GitHub.lock` `finally`: if a lock ref is already missing, `value['object']` raises TypeError and masks the original error. Use `missing=True` and treat an absent ref as a Locked ownership-changed condition. Do the same for the recovery guard cleanup.",
+    "The follow-up issue is created after the review verdict is saved, but `state['next_issue']` is persisted only by the final save. If that save fails, a retry or recovery cannot see the created issue (and `recover()` ignores follow-ups entirely). Persist an intent record before `create_issue`, and check for an existing issue by title or Task ID before creating, so no duplicate follow-up is made.",
+    "Fix the doc inconsistency: BOUNDED_AGENT_WORKFLOW_GUIDE says the full 113-test suite passed in the native sandbox, but the test evidence shows 120 fast tests plus 14 integration tests. Update the guide to match, and cite the evidence paths."
+  ],
+  "recommended_next_task": "",
+  "user_question": ""
+}
 ```
 
 
 ## Full sanitized response and visible tools
-- [Content part 1](/collaboration/live-turns/claude/0bee2fc5-6d3d-4164-96a2-32769d1fe603/visible-f7db3f0fd91855728cbd55c2/part-0001.md)
+- [Content part 1](/collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c/part-0001.md)
 
-Source: /collaboration/cc-sessions/2026-10-30_0334_0bee2fc5-6d3d-4164-96a2-32769d1fe603.md
+Source: /collaboration/cc-sessions/2026-10-30_1004_c736e6b9-b3a0-4b8e-90c3-66dd41a71e47.md
 Visible records: 1; content parts: 1. Parts are numbered consecutively from part-0001.md in the turn directory.
 Latest includes the assistant response and up to eight tool/error excerpts; all content remains in parts.
 This is a completed visible record/quiescent snapshot, not process-exit proof.
 
 
-Full turn index: /collaboration/live-turns/claude/0bee2fc5-6d3d-4164-96a2-32769d1fe603/visible-f7db3f0fd91855728cbd55c2.md
+Full turn index: /collaboration/live-turns/claude/c736e6b9-b3a0-4b8e-90c3-66dd41a71e47/visible-84db80aea1c9efdf9780191c.md
 

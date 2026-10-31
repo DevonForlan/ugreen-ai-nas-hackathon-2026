@@ -13,9 +13,19 @@
   "external_path_classes_denied": 8,
   "positive_controls_readable": 3,
   "real_smoke": "NOT_RUN_NATIVE_LOGIN_GATE",
-  "independent_review": "PENDING",
+  "independent_review": "PROTOCOL_REJECTED",
   "autonomous_execution_enabled": false,
   "credential_contents_accessed": false,
   "host_auth_copied": false,
-  "final_response_captured": "unknown"
+  "final_response_captured": "unknown",
+  "review_reported_result": "USER_DECISION_REQUIRED",
+  "review_rounds_used": 1,
+  "review_report": "collaboration/cc-reports/2026-10-31_1428_AUTO-007_review-round-1.md",
+  "reviewed_source_sha": "9ff47ccbf6b0abb57eb37191b8267a6fce4848a4",
+  "implementation_commit": "5beb45ddf48b129de2f1a0458d0e37daf8d6aa2e",
+  "review_transcript_receipt": "a67d56f01335b7f7603a546542e1cbc455202314",
+  "credential_gate_task_line": 138,
+  "host_github_sync": "VERIFIED",
+  "isolated_github_roundtrip": "NOT_RUN",
+  "guest_live_pointers": "NOT_TESTED_WITH_AUTHENTICATED_MODELS"
 }

@@ -1,0 +1,23 @@
+{
+  "task_id": "AUTO-007",
+  "checkpoint_kind": "MANUAL_FOUNDATION_USER_GATE",
+  "state": "USER_DECISION_REQUIRED",
+  "source_commit": "5beb45ddf48b129de2f1a0458d0e37daf8d6aa2e",
+  "published_source_sha": "9ff47ccbf6b0abb57eb37191b8267a6fce4848a4",
+  "review_receipt_sha": "a67d56f01335b7f7603a546542e1cbc455202314",
+  "reason": "Runtime-local Codex and Claude native status unauthenticated; task line 138 gates login. Review intent is User Gate, but controller rejected question-label protocol. No PASS/no smoke.",
+  "options": [
+    "User performs native guest login and confirms minimum provider egress; resume bounded implementation and review",
+    "Defer login and keep automation disabled"
+  ],
+  "recommendation": "Use native guest login; never copy host auth",
+  "autonomous_execution_enabled": false,
+  "max_codex_attempts": 3,
+  "max_cc_review_rounds": 3,
+  "review_rounds_used": 1,
+  "tests": {
+    "fast_passed": 140,
+    "integration_passed": 16
+  },
+  "final_response_captured": "unknown"
+}

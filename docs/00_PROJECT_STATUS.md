@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-31 14:26 +0800
+Last Updated: 2026-10-31 14:34 +0800
 
 ## Current Phase
 
@@ -22,7 +22,7 @@ Resolve AUTO-006 R4 using a real microVM boundary, without host credential copyi
 
 ## In Progress
 
-Publish isolated-runtime decision, evidence and independent host-native Claude review.
+None: stopped at the explicit native-login User Gate. Independent host-native Claude review is published; its USER_DECISION_REQUIRED JSON failed the required question-label protocol, so no review state transition was accepted.
 
 ## Blockers
 
@@ -36,5 +36,5 @@ network access needed for that login. Never map/copy host auth; no passwords/MFA
 
 ## Next Planned Step
 
-Finish evidence handoff, then User resolves native login. Resume bounded implementation/review;
-only independent CC PASS may unlock one real isolated roundtrip. Do not resume REG-002/R01-R06.
+User resolves native login. Resume bounded implementation/review (review budget 1/3 used);
+only independent CC PASS may unlock one real isolated roundtrip. No PASS or smoke is claimed. Do not resume REG-002/R01-R06.

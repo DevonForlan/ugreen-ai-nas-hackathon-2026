@@ -2,21 +2,21 @@
   "agents": {
     "claude": {
       "agent": "claude",
-      "content_sha256": "bb67aa37e52d276a05dd97b580d240d51c3f36eb3f383a386dd503701537763e",
-      "github_commit_sha": "7b99ed5d9ec316eb3fa4dfdf0893b85e564c7ba6",
-      "github_remote_verified": true,
+      "content_sha256": "c36867c467fa6cbaa3dff2a58855d0538f90f163f4e10c79f077bf1fb8648d3a",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
       "part_count": 1,
       "response_id": "result-1",
       "response_ordinal": 1,
-      "response_sha256": "7f124871b366357d15125191a67574d70260c5c2db0003122b4c59ccf27657e4",
+      "response_sha256": "c6d0e9fd5f4dd3c357d58daac4db2a57106dc5f39705eeccd0f879a0fe600cf9",
       "secret_scan": "PASS",
-      "session_id": "90fa3859-f53a-44dc-a764-da78fbd3adc3",
-      "session_started_at": "2026-10-30T11:28:27.960660+00:00",
-      "source_transcript_path": "collaboration/cc-sessions/2026-10-30_1128_90fa3859-f53a-44dc-a764-da78fbd3adc3.md",
-      "status": "SYNC_COMPLETE",
-      "timestamp": "2026-10-30T11:28:54.725829Z",
+      "session_id": "8cc54427-c069-4977-afae-63d4b3f8039f",
+      "session_started_at": "2026-10-31T06:28:16.160754+00:00",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-31_0628_8cc54427-c069-4977-afae-63d4b3f8039f.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-31T06:28:44.483723Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
-      "turn_path": "collaboration/live-turns/claude/90fa3859-f53a-44dc-a764-da78fbd3adc3/visible-84db80aea1c9efdf9780191c.md"
+      "turn_path": "collaboration/live-turns/claude/8cc54427-c069-4977-afae-63d4b3f8039f/visible-84db80aea1c9efdf9780191c.md"
     },
     "codex": {
       "agent": "codex",
@@ -89,6 +89,24 @@
       "timestamp": "2026-10-30T11:14:20.073274Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
       "turn_path": "collaboration/live-turns/claude/24c122fa-bf28-4549-aeec-f242a44d591f/visible-84db80aea1c9efdf9780191c.md"
+    },
+    "claude:8cc54427-c069-4977-afae-63d4b3f8039f": {
+      "agent": "claude",
+      "content_sha256": "c36867c467fa6cbaa3dff2a58855d0538f90f163f4e10c79f077bf1fb8648d3a",
+      "github_commit_sha": null,
+      "github_remote_verified": false,
+      "part_count": 1,
+      "response_id": "result-1",
+      "response_ordinal": 1,
+      "response_sha256": "c6d0e9fd5f4dd3c357d58daac4db2a57106dc5f39705eeccd0f879a0fe600cf9",
+      "secret_scan": "PASS",
+      "session_id": "8cc54427-c069-4977-afae-63d4b3f8039f",
+      "session_started_at": "2026-10-31T06:28:16.160754+00:00",
+      "source_transcript_path": "collaboration/cc-sessions/2026-10-31_0628_8cc54427-c069-4977-afae-63d4b3f8039f.md",
+      "status": "LOCAL_ONLY",
+      "timestamp": "2026-10-31T06:28:44.483723Z",
+      "turn_id": "visible-84db80aea1c9efdf9780191c",
+      "turn_path": "collaboration/live-turns/claude/8cc54427-c069-4977-afae-63d4b3f8039f/visible-84db80aea1c9efdf9780191c.md"
     },
     "claude:90fa3859-f53a-44dc-a764-da78fbd3adc3": {
       "agent": "claude",

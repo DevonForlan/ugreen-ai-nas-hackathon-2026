@@ -5,7 +5,11 @@
     {
       "round": 1,
       "reviewed_head": "9ff47ccbf6b0abb57eb37191b8267a6fce4848a4",
-      "status": "STARTED"
+      "status": "PROTOCOL_REJECTED",
+      "reported_result": "USER_DECISION_REQUIRED",
+      "accepted": false,
+      "reason": "missing required Options: and Recommendation: labels",
+      "report": "collaboration/cc-reports/2026-10-31_1428_AUTO-007_review-round-1.md"
     }
   ]
 }

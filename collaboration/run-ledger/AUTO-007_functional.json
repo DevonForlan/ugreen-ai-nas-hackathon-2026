@@ -1,0 +1,10 @@
+{
+  "workspace_read_write": true,
+  "tests_exit": 0,
+  "git_status_exit": 0,
+  "unapproved_https_denied": true,
+  "recovery_marker_written": true,
+  "checked_at": "2026-10-31T06:19:02.518576+00:00",
+  "backend": "docker-sandbox-microvm-v0.12",
+  "git_trust": "single exact disposable workspace path; no wildcard"
+}

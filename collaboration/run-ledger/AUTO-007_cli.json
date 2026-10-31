@@ -1,0 +1,19 @@
+{
+  "codex": {
+    "launched": true,
+    "version": "codex-cli 0.166.0"
+  },
+  "claude": {
+    "launched": true,
+    "version": "2.1.316 (Claude Code)"
+  },
+  "git": {
+    "launched": true,
+    "version": "git version 2.53.0"
+  },
+  "node": {
+    "launched": true,
+    "version": "v22.22.1"
+  },
+  "ssh_agent_exposed": false
+}

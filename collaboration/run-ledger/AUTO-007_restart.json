@@ -1,0 +1,25 @@
+{
+  "backend": "docker-sandbox-microvm-v0.12",
+  "checked_at": "2026-10-31T06:19:47.581182+00:00",
+  "same_named_vm": "auto007-probe-1",
+  "runtime_marker_persisted": true,
+  "cli_after_restart": {
+    "codex": {
+      "launched": true,
+      "version": "codex-cli 0.166.0"
+    },
+    "claude": {
+      "launched": true,
+      "version": "2.1.316 (Claude Code)"
+    },
+    "git": {
+      "launched": true,
+      "version": "git version 2.53.0"
+    },
+    "node": {
+      "launched": true,
+      "version": "v22.22.1"
+    },
+    "ssh_agent_exposed": false
+  }
+}

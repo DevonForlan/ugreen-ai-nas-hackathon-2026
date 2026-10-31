@@ -187,3 +187,20 @@ Code review PASS alone cannot override this environment Gate. User must choose a
 supported deny-read backend/environment and new synthetic evidence before any real
 smoke. Do not install/configure a service, WSL/MXC, Registry, Firewall or auth setup
 as an implicit workaround. No credential-read risk has been waived.
+
+
+## AUTO-007 experimental isolated backend (not enabled)
+
+See [isolated runtime decision](AUTO-007_ISOLATED_RUNTIME_DECISION.md) and
+`scripts/isolated_runtime.py`. Existing Docker Sandboxes v0.12.0 provides a
+user-scope microVM with one disposable workspace mount and runtime-local homes.
+Native Codex/Claude launch, synthetic boundary controls, per-VM default-deny proxy,
+and stop/resume are validated in AUTO-007 ledgers. Host native auth is never copied.
+
+This does not replace the controller's approved plan/runtime adapter. Both guest
+provider status commands are unauthenticated: **USER_DECISION_REQUIRED** for native
+login, as explicitly required by AUTO-007. Keep all autonomous plans disabled.
+Host-native tool-less Claude review of the foundation is distinct from the actual
+guest Codex/Claude smoke. No review or CLI version check can substitute for smoke.
+No existing iteration counter is reset. Continue only within the task's 3-attempt /
+3-review bounds after the gate is resolved; no UGREEN development or registration.

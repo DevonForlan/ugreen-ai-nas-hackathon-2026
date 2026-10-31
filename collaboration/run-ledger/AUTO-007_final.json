@@ -1,0 +1,21 @@
+{
+  "task_id": "AUTO-007",
+  "status": "USER_DECISION_REQUIRED",
+  "implementation_attempts": {
+    "docker-sandbox-microvm": 1
+  },
+  "max_implementation_attempts_per_candidate": 3,
+  "max_cc_review_rounds": 3,
+  "runtime": "docker-sandbox-microvm-v0.12",
+  "runtime_name": "auto007-probe-1",
+  "fast_tests_passed": 140,
+  "integration_tests_passed": 16,
+  "external_path_classes_denied": 8,
+  "positive_controls_readable": 3,
+  "real_smoke": "NOT_RUN_NATIVE_LOGIN_GATE",
+  "independent_review": "PENDING",
+  "autonomous_execution_enabled": false,
+  "credential_contents_accessed": false,
+  "host_auth_copied": false,
+  "final_response_captured": "unknown"
+}

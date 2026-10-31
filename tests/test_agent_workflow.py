@@ -289,7 +289,7 @@ class WorkflowTests(unittest.TestCase):
 
     def test_cc_uses_toolless_isolated_json_print_mode(self):
         tools = w.LiveTools()
-        with patch.object(w.shutil, 'which', return_value='claude.exe'), patch.object(w, 'command', return_value=json.dumps({'structured_output': review()})) as run:
+        with patch.object(w, 'claude_launcher', return_value=['claude.exe']), patch.object(w, 'command', return_value=json.dumps({'structured_output': review()})) as run:
             value, _ = tools.cc('bounded fixture', 30)
         argv = run.call_args.args[0]
         self.assertIn('-p', argv)

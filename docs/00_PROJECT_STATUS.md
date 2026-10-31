@@ -1,44 +1,40 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-10-30 19:37 +0800
+Last Updated: 2026-10-31 14:26 +0800
 
 ## Current Phase
 
-AUTO-006 USER_DECISION_REQUIRED: remediation reviewed; R4 environment isolation blocked.
-AUTO-004 remains PASS. AUTO-005 original 3/3 review history preserved. Automation disabled.
+AUTO-007 USER_DECISION_REQUIRED: isolated runtime foundation validated; native guest login missing.
+AUTO-004 remains PASS. AUTO-005/AUTO-006 historical counters preserved. Automation disabled.
 
 ## Current Objective
 
-Await User choice of a supported read-isolating runtime/backend. No smoke or product work.
+Resolve AUTO-006 R4 using a real microVM boundary, without host credential copying.
 
 ## Completed
 
-- R1/R2/R3/R5 and freshness code remediations; independent CC round 2 found no blocking code defect.
-- Complete final native sandbox fast suite: 130 PASS. Complete integration suite: 16 PASS.
-- Large failure metadata, secret/oversize Gate, shim planting, literal [x].py publication,
-  API-only checkpoints, restart/unrelated/user-gate and freshness regressions recorded.
-- Current Codex harmless visible response and both latest pointers/index verified through
-  ChatGPT GitHub connector; exact snapshot SYNC_COMPLETE, not future final capture.
-- Real API-only stop checkpoint: ref agent-state/issue-3,
-  collaboration/checkpoints/AUTO-006/latest.json. See AUTO-006_api-stop-checkpoint.json.
+- Selected existing Docker Sandboxes v0.12.0; user-scope VM start required no elevation.
+- Eight synthetic external credential path classes denied; workspace/config/temp positive controls readable.
+- Guest Codex 0.166.0 and Claude Code 2.1.316 launch; workspace R/W, unittest, exact-path Git status and denied unapproved HTTPS verified.
+- Same VM stop/resume preserves runtime marker and both CLIs.
+- 140 fast tests and 16 disposable-Git integration tests PASS; no model quota used by these tests.
+- AUTO-006 remediation history and disabled policy unchanged.
 
 ## In Progress
 
-None. AUTO-006 smoke NOT RUN. Review budget used 2/3; no budget reset or further review needed for unchanged environment.
+Publish isolated-runtime decision, evidence and independent host-native Claude review.
 
 ## Blockers
 
-R4 synthetic external reads remain allowed in :workspace and explicit synthetic-deny;
-existing managed 0.166.0 also allowed narrow synthetic external read. No real credential
-contents inspected. CC result USER_DECISION_REQUIRED; autonomous enablement is NO.
+Both runtime-local native provider status commands report unauthenticated. Real guest models,
+controller adapter, authenticated smoke and both guest live pointers are NOT verified.
 
 ## Pending User Decisions
 
-Issue #3: separately scope a supported isolated runtime/backend plan (recommended),
-or keep automation disabled. No credential-risk waiver, OS/service/Registry/PATH change authorized.
+AUTO-007 explicit User Gate: native Codex/Claude login inside the isolated VM and provider
+network access needed for that login. Never map/copy host auth; no passwords/MFA in chat.
 
 ## Next Planned Step
 
-Wait for User decision. Final report: collaboration/codex-reports/2026-10-30_1907_AUTO-006.md.
-Independent review: collaboration/cc-reports/2026-10-30_1928_AUTO-006_review-round-2.md.
-Do not resume REG-002, R01-R06, topic selection or product implementation.
+Finish evidence handoff, then User resolves native login. Resume bounded implementation/review;
+only independent CC PASS may unlock one real isolated roundtrip. Do not resume REG-002/R01-R06.

@@ -1,0 +1,68 @@
+[
+  {
+    "path_class": "USERPROFILE",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "APPDATA",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "LOCALAPPDATA",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "CODEX_HOME",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "Claude-config",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "gh-config",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "SSH",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "Documents-Desktop",
+    "readable": false,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "runtime-config",
+    "readable": true,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "runtime-temp",
+    "readable": true,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  },
+  {
+    "path_class": "workspace",
+    "readable": true,
+    "runtime_backend": "docker-sandbox-microvm-v0.12",
+    "test_timestamp": "2026-10-31T06:22:09.099731+00:00"
+  }
+]

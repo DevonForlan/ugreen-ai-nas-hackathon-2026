@@ -89,6 +89,71 @@ Preferred order:
 
 If no candidate satisfies the boundary, stop USER_DECISION_REQUIRED.
 
+
+
+## Standing User Authorization for AUTO-007
+
+The User explicitly authorizes Codex to proceed without pausing for confirmation for the following categories, as long as actions remain local, reversible, non-destructive, and limited to AUTO-007:
+
+### Pre-authorized
+
+- repository-local code/config/document changes
+- creating/deleting temporary test files and synthetic sentinel files
+- creating local isolated working directories under user-controlled non-system paths
+- creating disposable local test repositories/worktrees
+- installing or updating project-local / virtual-environment / user-scope dependencies
+- using Python venv, npm user/project packages, portable binaries already present, and repo-local tooling
+- creating runtime-local HOME / USERPROFILE / APPDATA / CODEX_HOME / Claude config equivalents inside the chosen isolated environment
+- creating/recreating disposable containers, WSL user-space instances, sandbox configs, or VM config files when no admin/system feature change is required
+- downloading free/open-source runtime dependencies from official sources when no paid account, license acceptance beyond standard OSS terms, or privileged installer is involved
+- running long tests, integration tests, synthetic security probes, restart/recovery simulations, and bounded smoke tests
+- starting/stopping/restarting repo-local processes, containers, test runtimes, Codex, Claude Code, and controller processes
+- Git operations on this repository: fetch, pull, branch, commit, push, merge of task-owned branches when conflict-free; no force push
+- GitHub issue/comment/label/checkpoint/report updates required by AUTO-007
+- selecting among evaluated isolation architectures and implementing the highest-ranked option without asking the User first, provided it stays within the pre-authorized boundary
+- automatically falling back to the next-best candidate runtime if the first candidate fails validation, without stopping for User confirmation
+- up to 3 implementation attempts per candidate and up to 3 independent CC review rounds
+- automatically fixing CC CHANGES_REQUESTED findings and re-running only the necessary tests
+- after CC PASS, automatically running the real bounded autonomous smoke roundtrip defined by AUTO-007
+- cleaning up disposable test artifacts after evidence has been recorded
+
+### Do not stop merely because
+
+- a test fails
+- a candidate runtime is unsuitable
+- a dependency is missing but can be installed at user/project scope
+- a local port is occupied and a different non-privileged port can be selected
+- a disposable container/distro/test VM config must be recreated
+- Claude requests ordinary code/security fixes
+- Codex needs to retry a bounded implementation/test step
+
+### User Gate remains mandatory only for
+
+- administrator/UAC elevation
+- enabling/disabling Windows optional features such as Hyper-V, WSL platform components, virtualization features, Windows Sandbox feature, or anything requiring reboot
+- installing system-wide software requiring administrator privileges
+- Windows Service, Scheduled Task, Registry autorun, system-wide PATH/environment changes
+- destructive host filesystem actions outside disposable AUTO-007 areas
+- copying, exporting, reading, printing, hashing, or exposing real credentials/secrets
+- login, MFA, CAPTCHA, passkey, credential creation/rotation, or granting new external account permissions
+- paid services, purchases, subscriptions, or non-trivial license/legal acceptance
+- changing firewall/VPN/endpoint-security policy globally
+- production deployment or destructive database operations
+- force push / history rewrite
+- a security finding that cannot be resolved within the task's bounded attempts
+- unresolved Codex vs Claude security disagreement after the review budget is exhausted
+
+### Speed policy
+
+Codex should optimize for forward progress:
+
+1. batch related changes before testing
+2. prefer targeted tests during iteration and full suites at milestones
+3. do not wait on a single hung background process indefinitely; diagnose and terminate disposable hung tests when no progress is observed
+4. checkpoint only at meaningful phase transitions, not every command
+5. continue automatically through architecture evaluation -> implementation -> tests -> CC review -> fixes -> smoke whenever gates allow
+6. if one runtime candidate requires a User Gate, evaluate whether another already-installed/pre-authorized candidate can satisfy the requirements first; only stop if the gate is actually necessary
+
 ## Safety constraints
 
 Do NOT:

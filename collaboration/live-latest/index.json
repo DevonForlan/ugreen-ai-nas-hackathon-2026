@@ -3,8 +3,8 @@
     "claude": {
       "agent": "claude",
       "content_sha256": "c36867c467fa6cbaa3dff2a58855d0538f90f163f4e10c79f077bf1fb8648d3a",
-      "github_commit_sha": null,
-      "github_remote_verified": false,
+      "github_commit_sha": "0a765ab84965fba2274818b165f2a5e5fe35087f",
+      "github_remote_verified": true,
       "part_count": 1,
       "response_id": "result-1",
       "response_ordinal": 1,
@@ -13,7 +13,7 @@
       "session_id": "8cc54427-c069-4977-afae-63d4b3f8039f",
       "session_started_at": "2026-10-31T06:28:16.160754+00:00",
       "source_transcript_path": "collaboration/cc-sessions/2026-10-31_0628_8cc54427-c069-4977-afae-63d4b3f8039f.md",
-      "status": "LOCAL_ONLY",
+      "status": "SYNC_COMPLETE",
       "timestamp": "2026-10-31T06:28:44.483723Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
       "turn_path": "collaboration/live-turns/claude/8cc54427-c069-4977-afae-63d4b3f8039f/visible-84db80aea1c9efdf9780191c.md"
@@ -93,8 +93,8 @@
     "claude:8cc54427-c069-4977-afae-63d4b3f8039f": {
       "agent": "claude",
       "content_sha256": "c36867c467fa6cbaa3dff2a58855d0538f90f163f4e10c79f077bf1fb8648d3a",
-      "github_commit_sha": null,
-      "github_remote_verified": false,
+      "github_commit_sha": "0a765ab84965fba2274818b165f2a5e5fe35087f",
+      "github_remote_verified": true,
       "part_count": 1,
       "response_id": "result-1",
       "response_ordinal": 1,
@@ -103,7 +103,7 @@
       "session_id": "8cc54427-c069-4977-afae-63d4b3f8039f",
       "session_started_at": "2026-10-31T06:28:16.160754+00:00",
       "source_transcript_path": "collaboration/cc-sessions/2026-10-31_0628_8cc54427-c069-4977-afae-63d4b3f8039f.md",
-      "status": "LOCAL_ONLY",
+      "status": "SYNC_COMPLETE",
       "timestamp": "2026-10-31T06:28:44.483723Z",
       "turn_id": "visible-84db80aea1c9efdf9780191c",
       "turn_path": "collaboration/live-turns/claude/8cc54427-c069-4977-afae-63d4b3f8039f/visible-84db80aea1c9efdf9780191c.md"

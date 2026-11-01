@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-01 19:03 +0800
+Last Updated: 2026-11-01 20:17 +0800
 
 ## Current Phase
 
@@ -8,10 +8,11 @@ AUTO-007 = PAUSED_BY_USER. Autonomous execution remains disabled.
 Priority has changed to the UGREEN competition itself and conserving Codex quota.
 MARKET-SYNC-001: independent Market historical snapshot published and read back; bounded live capture attached.
 TOP8-TECH-FEASIBILITY-001: official capability mapping documented; no final topic selected.
+VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research prepared for publication; no winner selected.
 
 ## Current Objective
 
-User review of Top 8 official capability feasibility. No new market research, product implementation,
+Publish and review the evidence-first vertical-workflow landscape. No product implementation,
 provider login or AUTO-007 resumption. Final topic/scope remains the User's decision.
 
 ## Completed
@@ -37,9 +38,15 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
   8 workflows / 72 steps / 85 action references checked against official kit 0.7.3 catalog 2.0.0.
   Original-scope blockers recorded separately from proposed reductions. No UGOS/device execution.
 
+- VERTICAL-WORKFLOW-DISCOVERY-001: `docs/VERTICAL_WORKFLOW_DISCOVERY_2026-11-01.md`;
+  14 workflows / 27 fields each, Generic-AI Collision Test, exactly 6 conditional directions.
+  Top 3 next-investigation hypotheses: ConditionReturn, SampleTrail, SourceWeave; no winner.
+  MemoryWeave not retained; CaseBinder only TradeCloseout; SourceWeave conditional.
+
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
+Vertical research publication verification; no subsequent investigation automatically started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers
@@ -53,10 +60,11 @@ future/final responses are certified only after the companion observes and publi
 ## Pending User Decisions
 
 No AUTO-007 decision requested now. Resume only if the User explicitly restores its priority.
-No product/topic approval inferred. User may clarify ArchiveRescue mount preconditions or approve scope changes; no selection requested automatically.
+No product/topic approval inferred. User may authorize deeper investigation after reviewing the vertical landscape;
+no selection or scope reduction is automatically approved.
 
 ## Next Planned Step
 
-Wait for the User's competition topic/scope instruction after reviewing the capability mapping.
-Do not auto-start product work or new research. Existing Market capture is a separate workflow;
+Stop after publishing VERTICAL-WORKFLOW-DISCOVERY-001; wait for the User's next instruction.
+Do not auto-start product work, new research or CC review. Existing Market capture is a separate workflow;
 this task does not change it. AUTO-007 stays PAUSED_BY_USER; no login/review/smoke or counter reset.

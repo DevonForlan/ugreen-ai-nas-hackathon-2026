@@ -10,5 +10,6 @@ Concatenate all parts in this order; no content omitted.
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0005.md](parts/part-0005.md)
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0006.md](parts/part-0006.md)
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0007.md](parts/part-0007.md)
+- [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0008.md](parts/part-0008.md)
 
-content_sha256: 2d0e3e5966e717a96a7df0ce88d9f32efec24ff20c91c58871df7f1a47567d2f
+content_sha256: 91252e4d055b509405c7410af1897bfa6939e81c6ad3892f5bc744f31a1ebf96

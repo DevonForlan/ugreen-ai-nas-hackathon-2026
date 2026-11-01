@@ -13,4 +13,4 @@ Concatenate all parts in this order; no content omitted.
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0008.md](parts/part-0008.md)
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0009.md](parts/part-0009.md)
 
-content_sha256: 86fa5db5fcbbfb1cd23844a8fb7ee0186dd5c2817fba6e1a37003b2ae203cfc9
+content_sha256: af5123a6e1dad1bad7d244560da7478e635f30e08d990e1bcb2258982fada0c8

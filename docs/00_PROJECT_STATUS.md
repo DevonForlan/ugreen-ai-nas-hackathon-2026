@@ -21,6 +21,8 @@ No provider login, CC review, model smoke or infrastructure work may continue.
   effective proxy receipts confirm npm/nodejs and example.com blocked.
 - Before pause: 151 fast tests and 16 integration tests PASS. No tests rerun for pause closure.
 - Historical review budget remains 1/3; original protocol rejection retained. No credentials copied.
+- 2026-11-01 User-assigned competition intelligence research (Claude Code, research only):
+  `docs/09_COMPETITION_INTELLIGENCE.md`. No topic selected; no product code.
 
 ## In Progress
 

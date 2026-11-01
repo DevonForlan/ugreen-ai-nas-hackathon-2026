@@ -12,4 +12,4 @@ Concatenate all parts in this order; no content omitted.
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0007.md](parts/part-0007.md)
 - [collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0008.md](parts/part-0008.md)
 
-content_sha256: b4c59fb381f3261e09ed6b6e465d43c209ebaabf6122909641fb87d6ed52ebf8
+content_sha256: a5ef82b5247d4cd7ca45ef7b34077f70cf845387bf6199151ad0ac71c6e7f4ac

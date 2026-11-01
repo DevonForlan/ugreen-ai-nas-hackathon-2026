@@ -1,0 +1,131 @@
+{
+  "task_id": "AUTO-007",
+  "checked_at": "2026-11-01T10:05:22.869794+00:00",
+  "sandbox": "auto007-probe-1",
+  "status": "WAITING_FOR_USER_NATIVE_LOGIN",
+  "network_phase": "codex",
+  "allowed_hosts": [
+    "auth.openai.com:443"
+  ],
+  "bootstrap_access": false,
+  "environment": {
+    "runtime_env_correct": true,
+    "credential_environment_absent": true,
+    "only_approved_host_mount": true
+  },
+  "verified_network": [
+    {
+      "host": "auth.openai.com:443",
+      "allowed": true
+    },
+    {
+      "host": "registry.npmjs.org:443",
+      "allowed": false
+    },
+    {
+      "host": "nodejs.org:443",
+      "allowed": false
+    },
+    {
+      "host": "example.com:443",
+      "allowed": false
+    }
+  ],
+  "cli": {
+    "codex": {
+      "launched": true,
+      "version": "codex-cli 0.166.0"
+    },
+    "claude": {
+      "launched": true,
+      "version": "2.1.316 (Claude Code)"
+    },
+    "git": {
+      "launched": true,
+      "version": "git version 2.53.0"
+    },
+    "node": {
+      "launched": true,
+      "version": "v22.22.1"
+    },
+    "ssh_agent_exposed": false
+  },
+  "providers": {
+    "codex": {
+      "authenticated": false
+    },
+    "claude": {
+      "authenticated": false
+    }
+  },
+  "credential_contents_exported": false,
+  "boundary": [
+    {
+      "path_class": "USERPROFILE",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "APPDATA",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "LOCALAPPDATA",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "CODEX_HOME",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "Claude-config",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "gh-config",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "SSH",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "Documents-Desktop",
+      "readable": false,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "runtime-config",
+      "readable": true,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "runtime-temp",
+      "readable": true,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    },
+    {
+      "path_class": "workspace",
+      "readable": true,
+      "runtime_backend": "docker-sandbox-microvm-v0.12",
+      "test_timestamp": "2026-11-01T10:05:22.852322+00:00"
+    }
+  ],
+  "autonomous_execution_enabled": false
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "AUTO-007",
+  "checkpoint_kind": "PROVIDER_LOGIN_ONLY",
+  "status": "WAITING_FOR_USER_NATIVE_LOGIN",
+  "checked_at": "2026-11-01T10:05:22.869794+00:00",
+  "providers": {
+    "codex": {
+      "authenticated": false
+    },
+    "claude": {
+      "authenticated": false
+    }
+  },
+  "network_phase": "codex",
+  "evidence_path": "collaboration/run-ledger/AUTO-007_provider-login.json",
+  "autonomous_execution_enabled": false
+}

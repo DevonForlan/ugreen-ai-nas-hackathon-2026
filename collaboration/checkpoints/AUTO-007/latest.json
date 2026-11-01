@@ -1,7 +1,7 @@
 {
   "task_id": "AUTO-007",
   "checkpoint_kind": "MANUAL_FOUNDATION_USER_GATE",
-  "state": "USER_DECISION_REQUIRED",
+  "state": "PAUSED_BY_USER",
   "source_commit": "5beb45ddf48b129de2f1a0458d0e37daf8d6aa2e",
   "published_source_sha": "9ff47ccbf6b0abb57eb37191b8267a6fce4848a4",
   "review_receipt_sha": "a67d56f01335b7f7603a546542e1cbc455202314",
@@ -19,5 +19,9 @@
     "fast_passed": 140,
     "integration_passed": 16
   },
-  "final_response_captured": "unknown"
+  "final_response_captured": "unknown",
+  "status": "PAUSED_BY_USER",
+  "paused_at": "2026-11-01 18:07 +0800",
+  "pause_reason": "User prioritizes UGREEN competition and Codex quota conservation",
+  "resume_requires": "Explicit User instruction; preserve existing VM/disk and counters"
 }

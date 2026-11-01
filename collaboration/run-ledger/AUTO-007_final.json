@@ -1,6 +1,6 @@
 {
   "task_id": "AUTO-007",
-  "status": "USER_DECISION_REQUIRED",
+  "status": "PAUSED_BY_USER",
   "implementation_attempts": {
     "docker-sandbox-microvm": 1
   },
@@ -27,5 +27,8 @@
   "credential_gate_task_line": 138,
   "host_github_sync": "VERIFIED",
   "isolated_github_roundtrip": "NOT_RUN",
-  "guest_live_pointers": "NOT_TESTED_WITH_AUTHENTICATED_MODELS"
+  "guest_live_pointers": "NOT_TESTED_WITH_AUTHENTICATED_MODELS",
+  "paused_at": "2026-11-01 18:07 +0800",
+  "pause_reason": "User prioritizes UGREEN competition and Codex quota conservation",
+  "resume_requires": "Explicit User instruction; preserve existing VM/disk and counters"
 }

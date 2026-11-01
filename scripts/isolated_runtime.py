@@ -76,6 +76,10 @@ def validate_name(name):
 
 def guest(name, script, timeout=90):
     validate_name(name)
+    return command(['docker','sandbox','exec',name,'python3','-c',guest_wrapper(script)], timeout)
+
+
+def guest_wrapper(script):
     # Clean environment inside VM, not merely in host launcher. No host auth/socket.
     # Retain only the VM's built-in policy proxy and CA paths. Neither provider
     # tokens nor SSH sockets from the template environment are inherited.
@@ -87,7 +91,7 @@ def guest(name, script, timeout=90):
         ' v=os.environ.get(k)\n'
         ' if v and v.startswith("/"): env[k]=v\n'
         'raise SystemExit(subprocess.run(["python3","-c",'+repr(script)+'],env=env).returncode)')
-    return command(['docker','sandbox','exec',name,'python3','-c',wrapper], timeout)
+    return wrapper
 
 
 def configure(name):

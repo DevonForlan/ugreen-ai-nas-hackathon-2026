@@ -1,0 +1,5 @@
+PASS: 8 workflow matrices; 72 classified steps; 85 inline action references; coverage arithmetic; no UGOS/device execution.
+Source: official kit 0.7.3 / catalog 2.0.0; 9 CLIs / 6 experts / 78 actions.
+Research input published at f3567222ed9303cac02351af35d54984be014f0f.
+Checks: exact inline CLI/action/option names; per-workflow status counts; strict SUPPORTED/total coverage.
+No product code, Skill package, model invocation, market research or NAS execution.

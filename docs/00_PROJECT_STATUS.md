@@ -12,7 +12,7 @@ VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research published; no winner se
 EVIDENCE-FIRST-POSITIONING-001: positioning validation published; overall REVISE.
 NAS-NATIVE-VALUE-VALIDATION-001: published; NAS-NATIVE FIT NOT ESTABLISHED.
 CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
-SOURCEWEAVE-WORKFLOW-VALIDATION-001: prepared for publication; overall DROP.
+SOURCEWEAVE-WORKFLOW-VALIDATION-001: published; overall DROP.
 
 ## Current Objective
 
@@ -74,7 +74,7 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-SourceWeave publication checks; no observed-user validation or implementation started.
+SourceWeave validation published; no observed-user validation or implementation started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers

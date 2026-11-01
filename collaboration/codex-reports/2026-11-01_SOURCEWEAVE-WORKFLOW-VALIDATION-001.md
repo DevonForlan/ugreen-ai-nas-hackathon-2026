@@ -32,7 +32,8 @@ Normal Git main merge/push and remote SHA verification; public source readback; 
 
 # Tests
 
-Document consistency PASS: A?K, eight files/four cases, three arms/nine metrics and defined sources. Focused secret scan: 3 files, zero findings. `python -X utf8 -m unittest discover -s tests -p test_*.py`: exit 0, 157 tests PASS in 50.782s. Expected negative-fixture secret/ownership/emergency messages are test outputs, not publication findings. No integration suite needed for Markdown-only changes. No UGREEN execution or empirical workflow comparison. Publication scan / remote SHA / all-three-file readback: PENDING verification.
+Document consistency PASS: A?K, eight files/four cases, three arms/nine metrics and defined sources. Focused secret scan: 3 files, zero findings. `python -X utf8 -m unittest discover -s tests -p test_*.py`: exit 0, 157 tests PASS in 50.782s. Expected negative-fixture secret/ownership/emergency messages are test outputs, not publication findings. No integration suite needed for Markdown-only changes. No UGREEN execution or empirical workflow comparison. Publication scan PASS, zero findings; task push remote SHA matched. All three task files
+read back from immutable GitHub blobs and matched local bytes; metadata receives the same verification.
 
 # Git Diff Summary
 
@@ -64,4 +65,5 @@ DROP / reframe SourceWeave. Stop; wait for User. Do not initiate old Codex, CC, 
 
 # Git Commit
 
-PENDING
+`fd4b0201470fd6a8e6fc3d653a6efa9c7bc53575` - actual research task commit, pushed and read back. One bounded metadata
+commit pins this SHA; later Market transport may advance main.

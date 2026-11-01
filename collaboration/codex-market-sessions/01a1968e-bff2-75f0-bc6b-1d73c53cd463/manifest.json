@@ -171,7 +171,7 @@
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0001.md": "151cdaa1dc395da4a80bd7e4b362e24fb354a1f10f227f872f43dedadf924978",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0002.md": "dba613f9c17fba3c41bf927d79f72424920d1bd0319d4844484f2d3b3528f4f5",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "a329691a05ec41c5164c5d4e82e04df4bcb9624dfb4102c9ce7ffe593c15b1a0",
-    "collaboration/live-latest/codex-market.md": "3a4ab5fe7797c91f63126889861a912e2f4047c223b738dd5d509a6e44687e6e",
+    "collaboration/live-latest/codex-market.md": "8c8af6d5e96572afbf465b46aaf5dcf0b49d33c81c5dbcae6afc80b4eb860132",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
@@ -180,10 +180,26 @@
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000004.md": "603bf1903d8e8c7f644e75af251971607db795bc5f19cb7555321236b32080c8"
   },
   "final_response_captured": "unknown",
+  "github_readback_verified": true,
   "latest_event_id": "byte-2079875",
   "latest_response_sha256": "94e966df8fd71f13eba1b2a2e94452c305e2d7900cb1350141f8f2de342dee1e",
   "latest_turn_id": "turn-000004",
+  "payload_commit_sha": "04ca646788fa37d0b6c6857edfc9eb5dc667820f",
   "project_sha256": "5005929b13d736238db8a579cb781a7ac50eb1232023d9d24799bf38c41eca22",
+  "readback_files": {
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/manifest.json": "ccf3e429e5639671e7b6d965bf0ac7afe6f7f7fd1be4413d6519338a625552c1",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0001.md": "151cdaa1dc395da4a80bd7e4b362e24fb354a1f10f227f872f43dedadf924978",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0002.md": "dba613f9c17fba3c41bf927d79f72424920d1bd0319d4844484f2d3b3528f4f5",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "a329691a05ec41c5164c5d4e82e04df4bcb9624dfb4102c9ce7ffe593c15b1a0",
+    "collaboration/live-latest/codex-market.md": "3a4ab5fe7797c91f63126889861a912e2f4047c223b738dd5d509a6e44687e6e",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0002.md": "1be0e97933833023d4878d43946b9a75fb078f406a5d878c91dafa118b2f6908",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000003.md": "d6765539370cf547eabf695591a9cbc0d50eabe73f2d413759a8001dc7d9e0a5",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000004.md": "603bf1903d8e8c7f644e75af251971607db795bc5f19cb7555321236b32080c8"
+  },
+  "remote_sha_verified": true,
   "runtime": {
     "expires_at": "2026-11-01T18:51:13.996422+00:00",
     "owner_birth": "134378052713903474",
@@ -198,7 +214,7 @@
   "source_complete": true,
   "source_prefix_sha256": "d2e673da9131d7e9c67ce68420b996a46904af74df4155d2dc0b3ec9121caf5a",
   "started_at": "2026-11-01T10:01:42.452Z",
-  "status": "LOCAL_ONLY",
+  "status": "SYNC_COMPLETE",
   "tool_event_count": 144,
   "transcript": {
     "parts": [
@@ -242,5 +258,6 @@
     "byte-340382"
   ],
   "user_prompt_count": 4,
+  "verified_at": "2026-11-01T10:54:10.795141Z",
   "visible_event_count": 162
 }

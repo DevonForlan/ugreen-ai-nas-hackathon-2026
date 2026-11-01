@@ -81,7 +81,9 @@ code was changed or weakened. Existing unrelated dirty legacy exports remain unt
 - No actual NAS/Skill/runtime/model/customer tests: proposed device/demo concepts are not
   executed evidence. Product-format fidelity, latency, locality and target-user value remain
   unknown, explicitly carried as gates in the research.
-- Secret scans and GitHub SHA/blob verification: PENDING publication checks below.
+- Secret scans: scoped 3 files / 0 findings; staged index scan PASS.
+  Task push remote SHA matched; all three task files read back from immutable GitHub blobs
+  and matched local bytes. Metadata publication is verified by the publisher receipt.
 
 # Git Diff Summary
 
@@ -132,4 +134,6 @@ investigations, build a Skill/demo/product, or resume AUTO-007.
 
 # Git Commit
 
-PENDING
+`f4851126d5298b14a51cc99e094ab8435bfbd188` — actual research task commit; normal main push and full three-file GitHub
+blob readback verified. A bounded metadata commit pins this SHA; transcript transport
+commits may subsequently advance main.

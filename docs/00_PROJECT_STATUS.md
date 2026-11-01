@@ -8,7 +8,7 @@ AUTO-007 = PAUSED_BY_USER. Autonomous execution remains disabled.
 Priority has changed to the UGREEN competition itself and conserving Codex quota.
 MARKET-SYNC-001: independent Market historical snapshot published and read back; bounded live capture attached.
 TOP8-TECH-FEASIBILITY-001: official capability mapping documented; no final topic selected.
-VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research prepared for publication; no winner selected.
+VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research published; no winner selected.
 
 ## Current Objective
 
@@ -46,10 +46,13 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Vertical research publication verification; no subsequent investigation automatically started.
+Vertical research published; no subsequent investigation automatically started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers
+
+Vertical research: real-user incumbent gaps, target NAS custody, actual source-pointer fidelity
+and model routing remain unverified; all six retained directions are conditional.
 
 Runtime-local providers remain unauthenticated. Controller adapter, accepted CC PASS,
 authenticated isolated smoke and guest-model live pointers remain incomplete.

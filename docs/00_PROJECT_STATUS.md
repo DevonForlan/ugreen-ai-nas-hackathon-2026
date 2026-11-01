@@ -11,7 +11,7 @@ TOP8-TECH-FEASIBILITY-001: official capability mapping documented; no final topi
 VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research published; no winner selected.
 EVIDENCE-FIRST-POSITIONING-001: positioning validation published; overall REVISE.
 NAS-NATIVE-VALUE-VALIDATION-001: published; NAS-NATIVE FIT NOT ESTABLISHED.
-CREATOR-EVIDENCE-REVIEW-001: prepared for publication; overall REVISE.
+CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
 
 ## Current Objective
 
@@ -67,7 +67,7 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Creator validation publication checks; no observed-user validation or implementation started.
+Creator validation published; no observed-user validation or implementation started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers

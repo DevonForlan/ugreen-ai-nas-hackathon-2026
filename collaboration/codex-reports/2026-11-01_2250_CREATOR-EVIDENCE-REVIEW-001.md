@@ -62,7 +62,8 @@ ten inputs / 175 planned seconds / 26 source entries / current report-template h
 Focused secret scan: exit 0, three files, zero findings (heuristic).
 Fast suite: exit 0, **157 tests PASS**, 38.013 seconds. Printed secret/ownership/error
 rejections are intentional negative fixtures, not actual project findings.
-Publication scan / remote SHA / all-three-file readback: PENDING verification.
+Publication scan PASS, zero findings; task push remote SHA matched. All three task files
+read back from immutable GitHub blobs and matched local bytes; metadata receives the same verification.
 No runtime, actual-user, parser, model or speed experiment. Proposed demo timing is
 not a measured result. Integration suite is unnecessary for Markdown-only changes.
 
@@ -114,4 +115,5 @@ configured baseline; do not reopen broad ideation or automatically implement.
 
 # Git Commit
 
-PENDING
+`dd1481d9468d7443f4ec407006964daaf8581f1b` - actual research task commit, pushed and read back. One bounded metadata
+commit pins this SHA; later Market transport may advance main.

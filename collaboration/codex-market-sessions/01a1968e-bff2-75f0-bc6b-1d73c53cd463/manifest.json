@@ -321,7 +321,7 @@
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0004.md": "585fd38312be9fc9d7827d49bc3cd05adee3cd5a15307f8ac2870500e713173d",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0005.md": "814b5c8417c305e663202b4e872403eba0f58e97fe19246135519d68b85c03e0",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "52bd4e258799413d98f55dc39954844a8e4fbd6e4a3e1aafd8d34404f3314730",
-    "collaboration/live-latest/codex-market.md": "417c8951d2b66943c6ac65f097e08d7a9ee6b788543d301d8cc9d070b9d6fccf",
+    "collaboration/live-latest/codex-market.md": "f27e014c5f12d7fb56f3a31a37f31e2204d2d85b153afeceea489224ddc676ec",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
@@ -336,10 +336,35 @@
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007.md": "47c9fbcf34758b852a01bcc27985297ec16ebb7979d168908d8f75574fed7ad8"
   },
   "final_response_captured": "unknown",
+  "github_readback_verified": true,
   "latest_event_id": "byte-5272940",
   "latest_response_sha256": "5501f1cb66dd8106fb6f215051b74a2e57dab3a78ecf7f1469ec6349969c5834",
   "latest_turn_id": "turn-000007",
+  "payload_commit_sha": "01bab8c52fcca2dbbc6b0a89c918368fb309b03a",
   "project_sha256": "5005929b13d736238db8a579cb781a7ac50eb1232023d9d24799bf38c41eca22",
+  "readback_files": {
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/manifest.json": "589b1773f4212c0bf9ebd6f86f54adb09b9f0c6413a97751d531379d9928bd41",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0001.md": "151cdaa1dc395da4a80bd7e4b362e24fb354a1f10f227f872f43dedadf924978",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0002.md": "16a79ff4871768cc849359bb8b0885f81206b62aa2404e4ce7420c17f7da7695",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0003.md": "6602d1e235d514178e2bf5c407fcf86ef000e3cd271c119fc94ba0845cb13ec8",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0004.md": "585fd38312be9fc9d7827d49bc3cd05adee3cd5a15307f8ac2870500e713173d",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0005.md": "814b5c8417c305e663202b4e872403eba0f58e97fe19246135519d68b85c03e0",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "52bd4e258799413d98f55dc39954844a8e4fbd6e4a3e1aafd8d34404f3314730",
+    "collaboration/live-latest/codex-market.md": "417c8951d2b66943c6ac65f097e08d7a9ee6b788543d301d8cc9d070b9d6fccf",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0002.md": "1be0e97933833023d4878d43946b9a75fb078f406a5d878c91dafa118b2f6908",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000003.md": "d6765539370cf547eabf695591a9cbc0d50eabe73f2d413759a8001dc7d9e0a5",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000004.md": "53aa67ce443a22c5de9de8999bdf46f0c52036b313712a35f65a6e1e0373328b",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000005.md": "f853bc2f23474f3ed92f9d43dbe42431865dc0048b3211c0aab0e1d04ce3edc0",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006.md": "478f063c6853fc97a6fe49f8e1bb7b90f4434f030910925973f82290a5090c4c",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0001.md": "84f3053b11a0b5e1fa45c84f25e7aa382d12cf91264d46b75b279be04a87e064",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0002.md": "90d19b0898e3999a16a238f14a6fe1a6ea0a9cc820327ae8f19f960f81725463",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0003.md": "f91f5e8a8b7931cb568bb2d8d7469f6372abc4578e1dd0a4d785aeceb2864f2f",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007.md": "47c9fbcf34758b852a01bcc27985297ec16ebb7979d168908d8f75574fed7ad8"
+  },
+  "remote_sha_verified": true,
   "runtime": {
     "expires_at": "2026-11-01T21:09:07.919066+00:00",
     "owner_birth": "134378052713903474",
@@ -354,7 +379,7 @@
   "source_complete": true,
   "source_prefix_sha256": "442479c6c5b7c31ae011e82f114588e0b481a7f144d2cef8120c948e3f2032ee",
   "started_at": "2026-11-01T10:01:42.452Z",
-  "status": "LOCAL_ONLY",
+  "status": "SYNC_COMPLETE",
   "tool_event_count": 278,
   "transcript": {
     "parts": [
@@ -429,5 +454,6 @@
     "byte-5168847"
   ],
   "user_prompt_count": 7,
+  "verified_at": "2026-11-01T13:10:52.721289Z",
   "visible_event_count": 309
 }

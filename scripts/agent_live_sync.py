@@ -129,7 +129,7 @@ def selected_scan(root, names):
         raise h.ArtifactScanError(Path(names[0]), findings)
 
 
-def publish(root, names, message):
+def publish(root, names, message, namespace=None):
     """Isolated index: preserve developer staging and dirty files; never force/rebase/reset."""
     root = Path(root).resolve()
     if git(root, 'diff', '--cached', '--name-only'):
@@ -147,8 +147,14 @@ def publish(root, names, message):
     def mirror_path(n):
         return (n in {'collaboration/live-latest/codex.md','collaboration/live-latest/claude.md','collaboration/live-latest/index.json'}
             or re.fullmatch(r'collaboration/live-turns/(?:codex|claude)/[A-Za-z0-9_-]{8,100}/visible-[a-f0-9]{24}(?:/part-[0-9]{4})?\.md',n))
-    if any(n != 'collaboration/live-sync-status.json' and not
-           ((n.startswith(allowed) and n.endswith('.md') and '..' not in Path(n).parts) or mirror_path(n)) for n in names):
+    def market_path(n):
+        return (n == 'collaboration/live-latest/codex-market.md' or
+                re.fullmatch(r'collaboration/codex-market-sessions/[A-Za-z0-9_-]{8,100}/(?:transcript\.md|manifest\.json|parts/part-[0-9]{4,}\.md)', n) or
+                re.fullmatch(r'collaboration/live-turns/codex-market/[A-Za-z0-9_-]{8,100}/turn-[0-9]{6,}(?:/part-[0-9]{4,})?\.md', n))
+    valid = (all(market_path(n) for n in names) if namespace == 'codex-market' else
+             namespace is None and all(n == 'collaboration/live-sync-status.json' or
+             ((n.startswith(allowed) and n.endswith('.md') and '..' not in Path(n).parts) or mirror_path(n)) for n in names))
+    if not valid:
         raise SyncError('Publication path outside transcript allowlist')
     selected_scan(root, names)
     before = git(root, 'rev-parse', 'HEAD')

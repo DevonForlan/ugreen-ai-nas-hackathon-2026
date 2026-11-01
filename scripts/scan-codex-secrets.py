@@ -19,7 +19,7 @@ ASSIGN = re.compile(r'''(?ix)
     ["']?\b(?:[\w.-]*(?:api[_-]?key|access[_-]?key(?:[_-]?id)?|secret(?:[_-]?access[_-]?key)?|password|passwd|pwd|token|credential)|AccountKey|User\s+ID|UID)["']?
     \s*[:=]\s*(?:"([^"\r\n]*)"|'([^'\r\n]*)'|([^\s,;\r\n}\]]+))
 ''')
-PLACEHOLDERS = {'', '[REDACTED]', '[REDACTED', 'PENDING', 'None', 'null', 'true', 'false', 'REDACTED', '...', 'changeme', 'example', 'YOUR_TOKEN', 'YOUR_API_KEY', 'ghp_', 'sk-'}
+PLACEHOLDERS = {'', '[REDACTED]', '[REDACTED', '[REDACTED_SECRET]', '[REDACTED_SECRET', 'PENDING', 'None', 'null', 'true', 'false', 'REDACTED', '...', 'changeme', 'example', 'YOUR_TOKEN', 'YOUR_API_KEY', 'ghp_', 'sk-'}
 MAX_BYTES = 10 * 1024 * 1024
 CACHE = {}
 

@@ -369,7 +369,7 @@
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0004.md": "585fd38312be9fc9d7827d49bc3cd05adee3cd5a15307f8ac2870500e713173d",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0005.md": "b202fa00216b07cb6de224c434c42e434de0b375849337bf01749f0423b4178d",
     "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "be22dce8e7720f9c80229824f5c753dbf55ad483c91c303f0f2795ac1be44582",
-    "collaboration/live-latest/codex-market.md": "eaa0e4942987e3fa18a5eafe44702aec5db8f12bd1643ef28c23086e9c5350bc",
+    "collaboration/live-latest/codex-market.md": "bef7c6330c2b87d8f8c8e3f51567bb25a5ca827ceae20eff56618c637aa752a8",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
@@ -386,10 +386,37 @@
     "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007/part-0002.md": "37e0372641f86b52ef2c9e94bae67649a0f16eab70d5174624bf72f5779c8e6b"
   },
   "final_response_captured": "unknown",
+  "github_readback_verified": true,
   "latest_event_id": "byte-6304290",
   "latest_response_sha256": "71d28472a09b25ea7d07c231cfcc156a05be0305add3b4c0e95ba701fb2b902c",
   "latest_turn_id": "turn-000007",
+  "payload_commit_sha": "2424a6f62a577b222aba3b63c678c7a23965dafc",
   "project_sha256": "5005929b13d736238db8a579cb781a7ac50eb1232023d9d24799bf38c41eca22",
+  "readback_files": {
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/manifest.json": "3a1b110e781705516cb2e4ad504065da266f97b9426df5e3b473d2a734a5d68e",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0001.md": "151cdaa1dc395da4a80bd7e4b362e24fb354a1f10f227f872f43dedadf924978",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0002.md": "16a79ff4871768cc849359bb8b0885f81206b62aa2404e4ce7420c17f7da7695",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0003.md": "6602d1e235d514178e2bf5c407fcf86ef000e3cd271c119fc94ba0845cb13ec8",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0004.md": "585fd38312be9fc9d7827d49bc3cd05adee3cd5a15307f8ac2870500e713173d",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/parts/part-0005.md": "b202fa00216b07cb6de224c434c42e434de0b375849337bf01749f0423b4178d",
+    "collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md": "be22dce8e7720f9c80229824f5c753dbf55ad483c91c303f0f2795ac1be44582",
+    "collaboration/live-latest/codex-market.md": "eaa0e4942987e3fa18a5eafe44702aec5db8f12bd1643ef28c23086e9c5350bc",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000001.md": "f49571fc76e9ce1d364a50d091a547c824a93ba8887b7339ea2df765fe19faf8",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002.md": "2f94c8536b9676870ae3ba22ade837f183685f1afac414d7c9fc7b206424afc2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0001.md": "315cb3b9af0dbcac28f78885a8cfcfd7dfd64f5ca38410a32eff3f7c2ca663d2",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000002/part-0002.md": "1be0e97933833023d4878d43946b9a75fb078f406a5d878c91dafa118b2f6908",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000003.md": "d6765539370cf547eabf695591a9cbc0d50eabe73f2d413759a8001dc7d9e0a5",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000004.md": "53aa67ce443a22c5de9de8999bdf46f0c52036b313712a35f65a6e1e0373328b",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000005.md": "f853bc2f23474f3ed92f9d43dbe42431865dc0048b3211c0aab0e1d04ce3edc0",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006.md": "478f063c6853fc97a6fe49f8e1bb7b90f4434f030910925973f82290a5090c4c",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0001.md": "84f3053b11a0b5e1fa45c84f25e7aa382d12cf91264d46b75b279be04a87e064",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0002.md": "90d19b0898e3999a16a238f14a6fe1a6ea0a9cc820327ae8f19f960f81725463",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000006/part-0003.md": "f91f5e8a8b7931cb568bb2d8d7469f6372abc4578e1dd0a4d785aeceb2864f2f",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007.md": "4a2e4e5767a5b45044b867050f8c3128b07f91efc2f44690d526be6bb9f26743",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007/part-0001.md": "559055f9320d30d07b4785aeeb3fcad2f267b8f6d783778a2d6d580c3c81e948",
+    "collaboration/live-turns/codex-market/01a1968e-bff2-75f0-bc6b-1d73c53cd463/turn-000007/part-0002.md": "37e0372641f86b52ef2c9e94bae67649a0f16eab70d5174624bf72f5779c8e6b"
+  },
+  "remote_sha_verified": true,
   "runtime": {
     "expires_at": "2026-11-01T21:09:07.919066+00:00",
     "owner_birth": "134378052713903474",
@@ -404,7 +431,7 @@
   "source_complete": true,
   "source_prefix_sha256": "791aefe47d85c1ff7bfaa5645e5fbb42fd9d82b58bbf56aed7066116ff7a8577",
   "started_at": "2026-11-01T10:01:42.452Z",
-  "status": "LOCAL_ONLY",
+  "status": "SYNC_COMPLETE",
   "tool_event_count": 323,
   "transcript": {
     "parts": [
@@ -482,5 +509,6 @@
     "byte-5168847"
   ],
   "user_prompt_count": 7,
+  "verified_at": "2026-11-01T13:27:14.984009Z",
   "visible_event_count": 357
 }

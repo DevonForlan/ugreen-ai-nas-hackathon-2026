@@ -85,7 +85,9 @@ if both observed workflows lack a residual, abandon/reframe the NAS-specific dir
 - Scoped secret scan: exit 0, three files, zero findings (heuristic).
 - Fast suite: exit 0, **157 tests PASS**, 40.486 seconds. Printed secret/ownership
   rejection messages belong to intentional negative fixtures, not project findings.
-- Secret scans and remote SHA/all-task-file readback: PENDING publication verification.
+- Secret scans: scoped three-file scan PASS, zero findings; staged index scan PASS.
+  Task push remote SHA matched. All three task files read back from immutable GitHub blobs
+  and matched local bytes. Bounded metadata publication receives the same verification.
 - No new runtime/product tests: research-only change. No specialized parser, model,
   actual NAS, permission, coverage or user-benefit proof was performed.
 - No workflow code changes; separate integration suite not required.
@@ -145,4 +147,6 @@ workflow validation; do not start it, a proof, Skill, proposal, demo or AUTO-007
 
 # Git Commit
 
-PENDING
+`1bc04da848faab63e3e6c2159660232c2c5debb1` — actual research task commit; normal main push and three-file GitHub
+blob readback verified. One bounded metadata commit pins this SHA; Market transport may
+subsequently advance main.

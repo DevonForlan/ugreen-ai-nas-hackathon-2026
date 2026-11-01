@@ -3,11 +3,11 @@
 session_id: 01a1968e-bff2-75f0-bc6b-1d73c53cd463
 turn_id: turn-000011
 timestamp: 2026-11-01T16:04:13.707Z
-status: SYNC_COMPLETE
+status: LOCAL_ONLY
 current task: Market / Ideation session visible-history synchronization
 transcript path: collaboration/codex-market-sessions/01a1968e-bff2-75f0-bc6b-1d73c53cd463/transcript.md
-latest commit SHA: 8610292689a7a6c85d916ad3cbbc0a33d2194642
-remote verification status: SHA and full GitHub blob bytes verified
+latest commit SHA: PENDING
+remote verification status: PENDING
 final_response_captured: unknown (active session)
 
 ## Full latest visible response

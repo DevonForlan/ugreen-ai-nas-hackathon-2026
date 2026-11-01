@@ -27,6 +27,8 @@ No provider login, CC review, model smoke, research rerun or product implementat
 - Existing Codex Market research copied unchanged into `docs/MARKET_IDEATION_RESEARCH_2026-11-01.md`:
   14 candidates / Top 8; no new research performed during synchronization.
 - Dedicated Market identity/export and strict publication allowlist implemented; 157 fast tests PASS.
+- 2026-11-01 Claude Code Top 8 critical review: `docs/TOP8_CRITICAL_REVIEW_2026-11-01.md`.
+  KEEP I03/I04; BORDERLINE I02 (rescoped)/I08/I07; DROP I01/I06/I05. No winner selected; User decides.
 
 ## In Progress
 

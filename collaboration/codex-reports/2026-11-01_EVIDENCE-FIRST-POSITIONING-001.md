@@ -99,7 +99,9 @@ with independently verified owner PID/birth. No lock was stolen and no backgroun
 - No integration suite required: no infrastructure/workflow implementation changed.
 - No UGOS actions, Skill checker, product/model A/B, device, customer or demo tests run.
   Planned evidence gates and expected synthetic results are not runtime validation.
-- Secret scans and remote SHA/all-task-file readback: PENDING publication verification.
+- Secret scans: scoped three-file scan PASS, zero findings; staged index scan PASS.
+  Task push remote SHA matched. All three task files read back from immutable GitHub blobs
+  and matched local bytes. Bounded metadata publication receives the same verification.
 
 # Git Diff Summary
 
@@ -149,4 +151,6 @@ old Codex, CC, Skill/product work, proposal drafting, demo creation or AUTO-007.
 
 # Git Commit
 
-PENDING
+`213a40c47d8759f97287eabff3909545dd216b73` — actual research task commit; normal main push and three-file GitHub
+blob readback verified. One bounded metadata commit pins this SHA; Market transport may
+subsequently advance main.

@@ -9,7 +9,7 @@ Priority has changed to the UGREEN competition itself and conserving Codex quota
 MARKET-SYNC-001: independent Market historical snapshot published and read back; bounded live capture attached.
 TOP8-TECH-FEASIBILITY-001: official capability mapping documented; no final topic selected.
 VERTICAL-WORKFLOW-DISCOVERY-001: evidence-first research published; no winner selected.
-EVIDENCE-FIRST-POSITIONING-001: positioning validation prepared for publication; overall REVISE.
+EVIDENCE-FIRST-POSITIONING-001: positioning validation published; overall REVISE.
 
 ## Current Objective
 
@@ -53,7 +53,7 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Positioning publication verification; no subsequent validation or implementation started.
+Positioning research published; no subsequent validation or implementation started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers

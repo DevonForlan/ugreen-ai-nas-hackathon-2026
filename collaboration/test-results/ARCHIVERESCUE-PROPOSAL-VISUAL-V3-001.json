@@ -1,0 +1,157 @@
+{
+  "verdict": "VISUAL_V3_READY_FOR_USER_REVIEW",
+  "pdf_pages": 3,
+  "docx_pages": 3,
+  "pdf_bytes": 135997,
+  "docx_bytes": 39778,
+  "pdf_sha256": "8f0c41056acfd4d23cae46a8474c867645b80a79633c2b802767f6d682e10d0f",
+  "docx_sha256": "f2d325291148f0ae70b2ed0328f0fda1eec36fc331275a5ca86eb9fd3a87fd7f",
+  "word_render": {
+    "application": "Microsoft Word",
+    "version": "16.0",
+    "pages": 3,
+    "edit_probe": false,
+    "tables": 5,
+    "inline_shapes": 0,
+    "floating_shapes": 0
+  },
+  "edit_probe": {
+    "application": "Microsoft Word",
+    "version": "16.0",
+    "pages": 3,
+    "edit_probe": true,
+    "tables": 5,
+    "inline_shapes": 0,
+    "floating_shapes": 0
+  },
+  "counts": {
+    "answers_whitespace": 437,
+    "answers_alphanumeric": 466,
+    "added_diagram_whitespace": 15,
+    "added_diagram_alphanumeric": 15,
+    "all_substantive_whitespace": 452,
+    "all_substantive_alphanumeric": 481,
+    "strict_whitespace": 467,
+    "strict_alphanumeric": 497
+  },
+  "grid": {
+    "page_width_pt": 595.28,
+    "page_height_pt": 841.89,
+    "margin_pt": 42,
+    "content_width_pt": 511.28,
+    "spacing_pt": [
+      4,
+      8,
+      12,
+      16,
+      24
+    ],
+    "workflow_width_pt": 116.57,
+    "connector_width_pt": 15,
+    "workflow_height_pt": 104,
+    "padding_pt": 9,
+    "stroke_pt": 0.75,
+    "panel_width_pt": 162.43,
+    "panel_gap_pt": 12,
+    "panel_height_pt": 224,
+    "font": "Arial",
+    "body_pt": 11,
+    "question_pt": 11,
+    "diagram_pt": 10.5,
+    "line_pt": 15,
+    "diagram_line_pt": 13.5,
+    "disclosure_pt": 9
+  },
+  "palette": {
+    "ink": "243A3F",
+    "accent": "4A7575",
+    "line": "ABBDBB",
+    "cool": "EAF1F0",
+    "warm": "F3EDE4",
+    "human": "E6D8C0",
+    "gray": "F1F3F3",
+    "white": "FFFFFF"
+  },
+  "measured_geometry": {
+    "workflow_frames_pt": [
+      [
+        42.36,
+        386.57,
+        115.94,
+        112.22
+      ],
+      [
+        174.02,
+        386.57,
+        115.82,
+        112.22
+      ],
+      [
+        305.57,
+        386.57,
+        115.94,
+        112.22
+      ],
+      [
+        437.26,
+        386.57,
+        115.8,
+        112.22
+      ],
+      [
+        42.36,
+        521.83,
+        115.94,
+        112.2
+      ],
+      [
+        174.02,
+        521.83,
+        115.82,
+        112.2
+      ],
+      [
+        305.57,
+        521.83,
+        115.94,
+        112.2
+      ],
+      [
+        437.26,
+        521.83,
+        115.8,
+        112.2
+      ]
+    ],
+    "panel_frames_pt": [
+      [
+        42.36,
+        236.54,
+        161.69,
+        232.25
+      ],
+      [
+        216.77,
+        236.54,
+        161.78,
+        232.25
+      ],
+      [
+        391.27,
+        236.54,
+        161.78,
+        232.25
+      ]
+    ],
+    "arrows_centered": true,
+    "equal_number_baselines": true,
+    "panel_text_padding_pass": true
+  },
+  "secret_findings": 0,
+  "protected_sha256": {
+    "ArchiveRescue_Proposal.pdf": "360a372dc79459bb81cd744a8acc2f622e79893ffeb4b9ca2e1fdc7887b3c1fc",
+    "ArchiveRescue_Proposal_VISUAL_V2.pdf": "625c1145c844a7024339d3da1c73956ed999a0df7c0487cfb78a0ae0f2c2f3ef",
+    "ArchiveRescue_Pretest_Skill.zip": "732abef29c100b44d49e3cc0bb2ace4e7bc829d40c596bf5deb8b14851117d77",
+    "skill/SKILL.md": "3819b43d6dae1e3c9fc84df14843c7a93f3a7955f169305e35f7474aa3d634f5"
+  }
+}

@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-02 00:13 +0800
+Last Updated: 2026-11-02 09:18 +0800
 
 ## Current Phase
 
@@ -13,12 +13,15 @@ EVIDENCE-FIRST-POSITIONING-001: positioning validation published; overall REVISE
 NAS-NATIVE-VALUE-VALIDATION-001: published; NAS-NATIVE FIT NOT ESTABLISHED.
 CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
 SOURCEWEAVE-WORKFLOW-VALIDATION-001: published; overall DROP.
+FINAL-TOPIC-SELECTION-001: prepared for publication; topic-selection phase completed.
+Selected: ArchiveRescue (companion-aware NAS archive intake), 72/100.
+Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
 ## Current Objective
 
-Publish bounded SourceWeave post-revision/pre-lock validation and stop; recommendation DROP.
-No product implementation,
-provider login or AUTO-007 resumption. Final topic/scope remains the User's decision.
+Publish final topic selection and stop for User review. ArchiveRescue accepts already staged NAS
+folders; approved companion-preserving copy and actual hash verification are indispensable.
+No implementation, proposal, demo, provider login or AUTO-007 resumption is started.
 
 ## Completed
 
@@ -71,17 +74,27 @@ provider login or AUTO-007 resumption. Final topic/scope remains the User's deci
   AI advantage. CUTLINE is close conceptual prior art, not validated production effectiveness.
   Eight-file diagnostic and three-arm comparison specified only; no experiment/demo executed.
 
+- FINAL-TOPIC-SELECTION-001: `docs/FINAL_TOPIC_SELECTION_2026-11-02.md`;
+  exactly three finalists, four official /25 criteria, capability/market/competitor/general-AI/
+  NAS/collision/demo and adversarial tests. Selected ArchiveRescue 72; backup ConditionReturn 65;
+  SampleTrail 63. Zero new candidates. SourceWeave/Evidence-first DROP remains effective.
+  Current kit 0.7.3/catalog 2.0.0 rechecked read-only. No device/model/workflow experiment run.
+  Market/topic-selection phase completed; next recommended stage is bounded technical proof
+  of the selected scope after User review, with no automatic start.
+
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-SourceWeave validation published; no observed-user validation or implementation started.
+Final selection publication checks; no technical proof, observed-user study or implementation started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers
 
-SourceWeave: no demonstrated operational advantage over competent incumbent tools plus same-folder AI.
-NAS production storage is real; a differentiated NAS editorial review workflow remains unestablished.
-Current positioning recommended DROP; no further validation or implementation automatically scheduled.
+ArchiveRescue: differentiation confidence LOW against PhotoPrism/OffShoot and same-folder AI;
+native hash/copy/non-overwrite/approval latency and relationship fidelity remain untested.
+Report-only fallback cannot replace the selected file-action outcome. Backup switching is limited
+to a separately authorized capability failure before Round 1; no silent Round 2 topic change.
+SourceWeave/Evidence-first DROP retained; no further market-selection loop scheduled.
 
 Runtime-local providers remain unauthenticated. Controller adapter, accepted CC PASS,
 authenticated isolated smoke and guest-model live pointers remain incomplete.
@@ -92,11 +105,13 @@ future/final responses are certified only after the companion observes and publi
 ## Pending User Decisions
 
 No AUTO-007 decision requested now. Resume only if the User explicitly restores its priority.
-No product/topic approval inferred. User decides whether to accept the DROP recommendation or issue another task.
-No replacement topic, observed-user validation or implementation automatically approved.
+Final selection delivered under explicit User mandate: ArchiveRescue, backup ConditionReturn.
+User reviews the selection and decides whether to authorize bounded technical proof.
+No observed-user contact, implementation, proposal or demo automatically approved.
 
 ## Next Planned Step
 
-Stop after publishing SOURCEWEAVE-WORKFLOW-VALIDATION-001; wait for the User's next instruction.
-Do not auto-start product work, new research or CC review. Existing Market capture is a separate workflow;
+Stop after publishing FINAL-TOPIC-SELECTION-001; wait for the User's next instruction.
+Recommended next stage: technical proof of ArchiveRescue, not another ideation round.
+Do not auto-start old Codex, CC, Skill, proposal, demo or product work. Existing Market capture is separate;
 this task does not change it. AUTO-007 stays PAUSED_BY_USER; no login/review/smoke or counter reset.

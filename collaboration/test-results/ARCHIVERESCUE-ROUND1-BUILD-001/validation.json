@@ -1,0 +1,110 @@
+{
+  "verdict": "ROUND1_PACKAGE_READY",
+  "nas_runtime": "NOT_TESTED",
+  "answer_words_by_question": [
+    19,
+    37,
+    60,
+    39,
+    46,
+    40,
+    72,
+    37,
+    46,
+    41
+  ],
+  "answer_word_count": 437,
+  "count_method": "Python str.split() on the ten answer bodies only",
+  "conservative_alphanumeric_word_count": 466,
+  "pdf": {
+    "bytes": 15723,
+    "sha256": "360a372dc79459bb81cd744a8acc2f622e79893ffeb4b9ca2e1fdc7887b3c1fc",
+    "pages": 2,
+    "all_questions_and_answers_match": true,
+    "selectable_text": true
+  },
+  "zip": {
+    "bytes": 5644,
+    "sha256": "732abef29c100b44d49e3cc0bb2ace4e7bc829d40c596bf5deb8b14851117d77",
+    "files": 2,
+    "extracted_bytes": 12849,
+    "largest_file_bytes": 9654,
+    "root_tree": [
+      "SKILL.md",
+      "references/usage-notes.md"
+    ]
+  },
+  "source_checker": {
+    "command": [
+      "node",
+      "tmp\\ARCHIVERESCUE-TECHNICAL-PROOF-001\\uliya-skill-kit\\scripts\\check-skill.mjs",
+      "submission\\round1\\archiverescue\\skill"
+    ],
+    "exit_code": 0,
+    "result": {
+      "checkFormatVersion": "2.0.0",
+      "status": "static-pass",
+      "target": {
+        "skillName": "skill"
+      },
+      "catalog": {
+        "checkedVersion": "2.0.0"
+      },
+      "files": [
+        {
+          "path": "references/usage-notes.md",
+          "sha256": "2a7a02ed5e0f12960a4ae8f6402936fda2017093d57608d457c28d99e117e024"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "3819b43d6dae1e3c9fc84df14843c7a93f3a7955f169305e35f7474aa3d634f5"
+        }
+      ],
+      "summary": {
+        "errors": 0,
+        "warnings": 0,
+        "info": 0
+      },
+      "diagnostics": []
+    }
+  },
+  "exact_extracted_zip_checker": {
+    "command": [
+      "node",
+      "tmp\\ARCHIVERESCUE-TECHNICAL-PROOF-001\\uliya-skill-kit\\scripts\\check-skill.mjs",
+      "tmp\\ARCHIVERESCUE-ROUND1-BUILD-001\\extracted-2ytelhhr\\skill"
+    ],
+    "exit_code": 0,
+    "result": {
+      "checkFormatVersion": "2.0.0",
+      "status": "static-pass",
+      "target": {
+        "skillName": "skill"
+      },
+      "catalog": {
+        "checkedVersion": "2.0.0"
+      },
+      "files": [
+        {
+          "path": "references/usage-notes.md",
+          "sha256": "2a7a02ed5e0f12960a4ae8f6402936fda2017093d57608d457c28d99e117e024"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "3819b43d6dae1e3c9fc84df14843c7a93f3a7955f169305e35f7474aa3d634f5"
+        }
+      ],
+      "summary": {
+        "errors": 0,
+        "warnings": 0,
+        "info": 0
+      },
+      "diagnostics": []
+    }
+  },
+  "secret_findings": 0,
+  "checker_sha256": {
+    "check-skill.mjs": "6a9e8ad164862ab787f45e577c2e2bc98cfb31cea10f5ec291cb6550eb51fb52",
+    "check-lib.mjs": "a4020044c1138f1937777d8a600df9d304ea00bf4f3bd20ae5e00883ad6542a7"
+  }
+}

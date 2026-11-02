@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-02 09:54 +0800
+Last Updated: 2026-11-02 11:54 +0800
 
 ## Current Phase
 
@@ -15,14 +15,15 @@ CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
 SOURCEWEAVE-WORKFLOW-VALIDATION-001: published; overall DROP.
 FINAL-TOPIC-SELECTION-001: published; topic-selection phase completed.
 ARCHIVERESCUE-TECHNICAL-PROOF-001: PASS_FOR_ROUND1_BUILD (catalog/static only; device not tested).
+ARCHIVERESCUE-ROUND1-BUILD-001: ROUND1_PACKAGE_READY; manual submission NOT SUBMITTED.
 Selected: ArchiveRescue (companion-aware NAS archive intake), 72/100.
 Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
 ## Current Objective
 
-Publish the bounded ArchiveRescue proof and stop. Source SHA-256, approved non-overwriting
-copy and destination SHA-256 map to official registered actions; no NAS execution is claimed.
-ArchiveRescue remains selected. No final Skill, Proposal, Demo or next agent is started.
+Publish upload-ready ArchiveRescue Round 1 materials and stop. Final Pre-test Skill,
+Proposal PDF/source, disclosures and checklist are ready at static scope. No NAS
+execution is claimed; Devpost submission remains the owner's manual action.
 
 ## Completed
 
@@ -90,10 +91,17 @@ ArchiveRescue remains selected. No final Skill, Proposal, Demo or next agent is 
   ug-filesystem sha256sum(path), cpmv(src,dst,type=copy,overwrite=false), destination sha256sum;
   knowledge-agent save-text plus file-agent cat for receipt readback. No custom copy/hash runtime.
 
+- ARCHIVERESCUE-ROUND1-BUILD-001: `docs/ARCHIVERESCUE_ROUND1_BUILD_2026-11-02.md`;
+  `submission/round1/archiverescue/` contains final SKILL.md, ZIP, PDF/source, disclosures
+  and manual checklist. Ten answers 437 words; PDF 15,723 bytes; ZIP 5,644 bytes,
+  2 files / 12,849 extracted bytes. Source and exact extracted ZIP checker both
+  static-pass, 0 errors/warnings; text parity, deterministic rebuild and content scans pass.
+  No NAS run, submission, new agent, Round 2 or AUTO-007 activity.
+
 ## In Progress
 
-Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Technical proof authored and statically checked; no device test, final implementation or observed-user study started.
+Owner's manual Round 1 project submission remains NOT SUBMITTED; no agent task continues.
+Existing separate Market capture is outside this build's publication scope.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers
@@ -117,13 +125,15 @@ No AUTO-007 decision requested now. Resume only if the User explicitly restores 
 Final selection delivered under explicit User mandate: ArchiveRescue, backup ConditionReturn.
 Bounded technical proof was explicitly authorized and is PASS_FOR_ROUND1_BUILD at static scope.
 ArchiveRescue remains selected; ConditionReturn proof is not currently recommended or started.
-Any final build/proposal/demo requires the next User instruction, not this static result.
-No observed-user contact, implementation, proposal or demo automatically approved.
+Round 1 build was explicitly authorized and is now materially ready. Owner must confirm
+Devpost identity, consent/disclosures and upload the exact PDF/ZIP manually. No observed-user
+contact, demo, device testing or future implementation has been automatically approved.
 
 ## Next Planned Step
 
-Stop after proof publication/readback. User reviews PASS_FOR_ROUND1_BUILD and device-only risks.
-No automatic New Codex, Claude Code, ConditionReturn, final Skill, Proposal or Demo.
-If an assigned-device core hash/copy/no-overwrite gate fails, mark FAIL_ARCHIVERESCUE;
-recommend a separately authorized ConditionReturn proof rather than a report-only fallback.
-Existing Market capture is separate. AUTO-007 remains PAUSED_BY_USER; no login/review/smoke.
+Stop after Round 1 package publication and pinned GitHub readback. Owner uses
+`submission/round1/archiverescue/ROUND1_SUBMISSION_CHECKLIST.md` for manual submission;
+then records actual success evidence and timestamp. No automatic Devpost operation,
+Claude Code, New Codex, Round 2/device test, ConditionReturn or AUTO-007.
+If a later assigned-device core hash/copy/no-overwrite gate fails, stop without a
+report-only fallback; any topic change requires a separate owner decision.

@@ -1,0 +1,26 @@
+{
+  "checkFormatVersion": "2.0.0",
+  "status": "static-pass",
+  "target": {
+    "skillName": "skill"
+  },
+  "catalog": {
+    "checkedVersion": "2.0.0"
+  },
+  "files": [
+    {
+      "path": "references/usage-notes.md",
+      "sha256": "2a7a02ed5e0f12960a4ae8f6402936fda2017093d57608d457c28d99e117e024"
+    },
+    {
+      "path": "SKILL.md",
+      "sha256": "3819b43d6dae1e3c9fc84df14843c7a93f3a7955f169305e35f7474aa3d634f5"
+    }
+  ],
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 0
+  },
+  "diagnostics": []
+}

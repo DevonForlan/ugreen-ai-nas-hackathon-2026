@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-02 11:54 +0800
+Last Updated: 2026-11-02 15:43 +0800
 
 ## Current Phase
 
@@ -97,6 +97,11 @@ execution is claimed; Devpost submission remains the owner's manual action.
   2 files / 12,849 extracted bytes. Source and exact extracted ZIP checker both
   static-pass, 0 errors/warnings; text parity, deterministic rebuild and content scans pass.
   No NAS run, submission, new agent, Round 2 or AUTO-007 activity.
+
+- ARCHIVERESCUE-PROPOSAL-VISUAL-REDESIGN-001: VISUAL_V2_READY_FOR_USER_REVIEW;
+  three-page candidate and comparison at `docs/ARCHIVERESCUE_PROPOSAL_VISUAL_REDESIGN_2026-11-02.md`.
+  RECOMMEND_VISUAL_V2 for owner choice only; current baseline Proposal PDF and Skill ZIP
+  remain unchanged. No automatic replacement or submission.
 
 ## In Progress
 

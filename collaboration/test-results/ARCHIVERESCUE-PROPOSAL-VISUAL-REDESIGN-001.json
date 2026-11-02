@@ -1,0 +1,38 @@
+{
+  "verdict": "VISUAL_V2_READY_FOR_USER_REVIEW",
+  "pages": 3,
+  "pdf_bytes": 32120,
+  "pdf_sha256": "625c1145c844a7024339d3da1c73956ed999a0df7c0487cfb78a0ae0f2c2f3ef",
+  "counts": {
+    "qa_whitespace": 437,
+    "qa_alphanumeric": 466,
+    "added_diagram_whitespace": 19,
+    "added_diagram_alphanumeric": 18,
+    "all_substantive_whitespace": 456,
+    "all_substantive_alphanumeric": 484,
+    "nonlicense_disclosure_whitespace": 15,
+    "nonlicense_disclosure_alphanumeric": 16,
+    "secondary_with_nonlicense_disclosure_whitespace": 471,
+    "secondary_with_nonlicense_disclosure_alphanumeric": 500,
+    "diagram_whitespace_including_reused_answers": 104,
+    "diagram_alphanumeric_including_reused_answers": 103
+  },
+  "qa_content_unchanged": true,
+  "candidate_source": "submission/round1/archiverescue/ArchiveRescue_Proposal_VISUAL_V2.md",
+  "minimum_font_points": 9.0,
+  "overlapping_text_lines": 0,
+  "off_page_text_lines": 0,
+  "vector_only": true,
+  "secret_findings": 0,
+  "protected_sha256": {
+    "ArchiveRescue_Proposal.pdf": "360a372dc79459bb81cd744a8acc2f622e79893ffeb4b9ca2e1fdc7887b3c1fc",
+    "ArchiveRescue_Proposal.md": "b21b291a6335c05147e1417a31b09193dd6053c5af71e614fed1574848ffe05b",
+    "ArchiveRescue_Pretest_Skill.zip": "732abef29c100b44d49e3cc0bb2ace4e7bc829d40c596bf5deb8b14851117d77",
+    "skill/SKILL.md": "3819b43d6dae1e3c9fc84df14843c7a93f3a7955f169305e35f7474aa3d634f5"
+  },
+  "render_previews": [
+    "tmp/archiverescue-visual-v2/page-1.png",
+    "tmp/archiverescue-visual-v2/page-2.png",
+    "tmp/archiverescue-visual-v2/page-3.png"
+  ]
+}

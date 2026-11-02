@@ -69,19 +69,37 @@ secret scan, or tests prevent synchronization, explicitly report
 - Keep AUTO-001 disabled pending its existing User decisions; transcript improvements
   do not approve policy/control-plane trust or host test execution boundaries.
 
-- After each substantive task/response, when tools are available, run
-  `./scripts/show-codex-usage.ps1` and copy its exact short footer. Use UNKNOWN
-  for unavailable values. Never infer subscription quota from local token usage.
-  This is a project instruction, not a forced global CLI response hook.
+- **Mandatory persistent response rule:** every human-visible final assistant
+  response from Old Codex in this repository, including short answers, follow-ups,
+  status updates, failures, user-decision requests and all future conversations, MUST
+  end with a Usage footer. Read and follow `docs/CODEX_USAGE_FOOTER_POLICY.md`.
+  There is no "substantive response only" exception and no silent omission.
+- Before each human-visible final response, run
+  `./scripts/show-codex-usage.ps1` (or the repository-supported equivalent) and
+  copy the native values. Never infer subscription quota from local token usage,
+  prior percentages, elapsed time, another Codex session or codex-market.
+- If usage collection is unavailable or any field is missing, the footer is still
+  mandatory: show UNKNOWN for unavailable values and include
+  `Usage source: UNAVAILABLE — footer retained by policy` when the helper itself
+  cannot run. Never omit the footer because collection failed.
+- The Usage block must be the final visible section of the reply; do not place prose
+  after it. Preserve it in sanitized visible transcript/live-sync capture whenever
+  that human-visible response is captured.
 - Footer labels come from native window duration (300 minutes = 5H, 360 = 6H;
   other durations stay dynamic). Missing duration is Window UNKNOWN. Show remaining
   percentage with used-to-remaining conversion noted, reset/Updated in Asia/Taipei
   UTC+08:00, and session tokens. Never read/export auth tokens or infer quota.
-- Finalize automatically appends usage, elapsed finalize time, and one-shot native
-  Windows notification + system sound. SUCCESS requires remote SHA verification;
-  local success/push failure is WARNING; secret/test/fatal failure is FAILED.
-- Honor NoUsage, NoNotification, NoSound and corresponding documented environment
-  switches. No daemon, Windows Service, registry modification, or persistent UI.
+- `NoUsage` or equivalent suppression MUST NOT suppress Usage for interactive,
+  human-visible Old Codex responses. Such switches are allowed only for internal
+  machine workflows that produce no human-visible final assistant reply. Notification
+  and sound suppression remain separate preferences.
+- Strict machine-readable controller payloads are exempt from prose footer injection
+  only to avoid breaking their schema. If a human-visible Old Codex final response
+  follows, that visible response still MUST contain the Usage footer.
+- Finalize may append usage automatically; avoid duplicate footers and ensure exactly
+  one readable Usage footer is present in the human-visible final response.
+  SUCCESS requires remote SHA verification; local success/push failure is WARNING;
+  secret/test/fatal failure is FAILED.
 - Workflow changes require the separate Git integration suite in tests/integration;
   normal task finalization runs the fast project unittest suite.
 

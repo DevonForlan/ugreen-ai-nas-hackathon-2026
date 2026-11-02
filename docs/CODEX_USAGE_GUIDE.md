@@ -72,6 +72,6 @@ Session tokens 來自 `ccusage codex session --offline --json --no-cost`，只�
 
 `/usage`、`/status` 與其帳號端回應才是 quota/rate limit 依據；任何窗口及 weekly 數值都必須有真實資料。ccusage 是本機 session usage，不能推算訂閱額度或帳單。
 
-Finalize 自動呼叫 footer。一般回覆由 AGENTS.md 指示盡可能追加；未修改 CLI 安裝檔，也沒有保證所有 UI/其他專案對話都會自動插入 footer 的全域 hook。
+Finalize 自動呼叫 footer。依 root `AGENTS.md` 與 `docs/CODEX_USAGE_FOOTER_POLICY.md`，本 repository 內 Old Codex 的每一個 human-visible final response 都必須追加 Usage footer；取不到資料時仍須顯示 UNKNOWN，不得省略。這是 repository-scoped policy，未修改 Codex CLI 安裝檔，因此不宣稱能強制其他 repository 或其他產品 UI 的對話。
 
 官方依據：[Codex App Server](https://developers.openai.com/codex/app-server)、[原生指令](https://developers.openai.com/codex/cli/slash-commands)。

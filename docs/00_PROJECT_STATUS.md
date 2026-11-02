@@ -13,7 +13,7 @@ EVIDENCE-FIRST-POSITIONING-001: positioning validation published; overall REVISE
 NAS-NATIVE-VALUE-VALIDATION-001: published; NAS-NATIVE FIT NOT ESTABLISHED.
 CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
 SOURCEWEAVE-WORKFLOW-VALIDATION-001: published; overall DROP.
-FINAL-TOPIC-SELECTION-001: prepared for publication; topic-selection phase completed.
+FINAL-TOPIC-SELECTION-001: published; topic-selection phase completed.
 Selected: ArchiveRescue (companion-aware NAS archive intake), 72/100.
 Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
@@ -85,7 +85,7 @@ No implementation, proposal, demo, provider login or AUTO-007 resumption is star
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Final selection publication checks; no technical proof, observed-user study or implementation started.
+Final selection published; no technical proof, observed-user study or implementation started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers

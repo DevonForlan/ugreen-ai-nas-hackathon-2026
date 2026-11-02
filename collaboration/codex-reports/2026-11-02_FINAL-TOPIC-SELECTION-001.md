@@ -60,7 +60,8 @@ known ownership mismatch. No finalizer/security/ownership/infrastructure code wa
 # Tests
 
 Document/capability consistency PASS: three finalists, one winner/backup, four equal criteria, A-P definition, 14-word positioning, nine winner assets and 28 defined sources. Focused scan: three files, zero findings. Fast suite `python -X utf8 -m unittest discover -s tests -p test_*.py`: exit 0, 157 PASS in 33.148s. Expected negative-fixture secret/ownership/emergency messages are test outputs, not project security findings.
-Publication scan / remote SHA / all-three-file readback: PENDING verification.
+Publication scan PASS, zero findings; task push remote SHA matched. All three task files
+read back from immutable GitHub blobs and matched local bytes; metadata receives the same verification.
 No integration suite needed for Markdown-only changes; no runtime/competitor/model experiment executed.
 
 # Git Diff Summary
@@ -106,4 +107,5 @@ do not defer selection to CC or start another market-selection loop.
 
 # Git Commit
 
-PENDING
+`1c1439be06519afa2ac2bb338e749d27759c75f0` - actual research task commit, pushed and read back. One bounded metadata
+commit pins this SHA; later Market transport may advance main.

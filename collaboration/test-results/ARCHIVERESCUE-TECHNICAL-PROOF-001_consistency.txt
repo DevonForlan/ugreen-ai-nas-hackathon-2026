@@ -1,0 +1,11 @@
+Scope consistency: selected revised topic accepts already staged folders; no mount/restore/decode/index/watch.
+Package tree: exactly SKILL.md and directly linked references/proof-cases.md; no README/manifest/runtime.
+P1-P10: present; unique registered expert/CLI contracts checked against fresh official catalog.
+Hard gates: official source sha256sum(path), cpmv(src,dst,type=copy,overwrite=false) gateway, destination sha256sum(path).
+Case A: specification trace covers equal-media/different-companion observations, human keep-pair decision, two genuine copies and both hash verifications, save/readback.
+Case B: specification trace covers same-name/different-bytes, fresh disjoint target and no-overwrite; native hashes required.
+Case C: exactly one primary boundary: user cancels before writes; P5-P10 not reached; no receipt/verified label.
+P8 guards: partial copy, unavailable destination hash and changed/unread source never become completed verified intake.
+No UGOS/NAS business execution, no fixture/mock/runtime/hash/copy substitute; cases DEVICE_NOT_RUN.
+Official static checker: exit 0, static-pass, 0 errors, 0 warnings; full checker output retained separately.
+Verdict: PASS_FOR_ROUND1_BUILD; device-only semantics retained, not runtime PASS.

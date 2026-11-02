@@ -1,6 +1,6 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-02 09:18 +0800
+Last Updated: 2026-11-02 09:54 +0800
 
 ## Current Phase
 
@@ -14,14 +14,15 @@ NAS-NATIVE-VALUE-VALIDATION-001: published; NAS-NATIVE FIT NOT ESTABLISHED.
 CREATOR-EVIDENCE-REVIEW-001: published; overall REVISE.
 SOURCEWEAVE-WORKFLOW-VALIDATION-001: published; overall DROP.
 FINAL-TOPIC-SELECTION-001: published; topic-selection phase completed.
+ARCHIVERESCUE-TECHNICAL-PROOF-001: PASS_FOR_ROUND1_BUILD (catalog/static only; device not tested).
 Selected: ArchiveRescue (companion-aware NAS archive intake), 72/100.
 Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
 ## Current Objective
 
-Publish final topic selection and stop for User review. ArchiveRescue accepts already staged NAS
-folders; approved companion-preserving copy and actual hash verification are indispensable.
-No implementation, proposal, demo, provider login or AUTO-007 resumption is started.
+Publish the bounded ArchiveRescue proof and stop. Source SHA-256, approved non-overwriting
+copy and destination SHA-256 map to official registered actions; no NAS execution is claimed.
+ArchiveRescue remains selected. No final Skill, Proposal, Demo or next agent is started.
 
 ## Completed
 
@@ -82,16 +83,24 @@ No implementation, proposal, demo, provider login or AUTO-007 resumption is star
   Market/topic-selection phase completed; next recommended stage is bounded technical proof
   of the selected scope after User review, with no automatic start.
 
+- ARCHIVERESCUE-TECHNICAL-PROOF-001: `docs/ARCHIVERESCUE_TECHNICAL_PROOF_2026-11-02.md`;
+  proof package `proofs/archiverescue/skill/SKILL.md`. Fresh official kit 0.7.3/catalog 2.0.0
+  verified; P1-P10 mapped; Case A/B/C specification traces checked (DEVICE_NOT_RUN).
+  Official checker: exit 0, static-pass, 0 errors/warnings. Core actions: file-agent
+  ug-filesystem sha256sum(path), cpmv(src,dst,type=copy,overwrite=false), destination sha256sum;
+  knowledge-agent save-text plus file-agent cat for receipt readback. No custom copy/hash runtime.
+
 ## In Progress
 
 Bounded Market live capture and subsequent snapshot verification; per-session manifest is the freshness source.
-Final selection published; no technical proof, observed-user study or implementation started.
+Technical proof authored and statically checked; no device test, final implementation or observed-user study started.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
 ## Blockers
 
 ArchiveRescue: differentiation confidence LOW against PhotoPrism/OffShoot and same-folder AI;
-native hash/copy/non-overwrite/approval latency and relationship fidelity remain untested.
+native action availability is catalog-proven; actual hash output/path attribution, file-to-directory copy,
+non-overwrite/collision behavior, gateway UX, save/readback and latency still require device validation.
 Report-only fallback cannot replace the selected file-action outcome. Backup switching is limited
 to a separately authorized capability failure before Round 1; no silent Round 2 topic change.
 SourceWeave/Evidence-first DROP retained; no further market-selection loop scheduled.
@@ -106,12 +115,15 @@ future/final responses are certified only after the companion observes and publi
 
 No AUTO-007 decision requested now. Resume only if the User explicitly restores its priority.
 Final selection delivered under explicit User mandate: ArchiveRescue, backup ConditionReturn.
-User reviews the selection and decides whether to authorize bounded technical proof.
+Bounded technical proof was explicitly authorized and is PASS_FOR_ROUND1_BUILD at static scope.
+ArchiveRescue remains selected; ConditionReturn proof is not currently recommended or started.
+Any final build/proposal/demo requires the next User instruction, not this static result.
 No observed-user contact, implementation, proposal or demo automatically approved.
 
 ## Next Planned Step
 
-Stop after publishing FINAL-TOPIC-SELECTION-001; wait for the User's next instruction.
-Recommended next stage: technical proof of ArchiveRescue, not another ideation round.
-Do not auto-start old Codex, CC, Skill, proposal, demo or product work. Existing Market capture is separate;
-this task does not change it. AUTO-007 stays PAUSED_BY_USER; no login/review/smoke or counter reset.
+Stop after proof publication/readback. User reviews PASS_FOR_ROUND1_BUILD and device-only risks.
+No automatic New Codex, Claude Code, ConditionReturn, final Skill, Proposal or Demo.
+If an assigned-device core hash/copy/no-overwrite gate fails, mark FAIL_ARCHIVERESCUE;
+recommend a separately authorized ConditionReturn proof rather than a report-only fallback.
+Existing Market capture is separate. AUTO-007 remains PAUSED_BY_USER; no login/review/smoke.

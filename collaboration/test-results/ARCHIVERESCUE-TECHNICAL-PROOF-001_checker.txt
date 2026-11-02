@@ -1,0 +1,31 @@
+Command: node tmp/ARCHIVERESCUE-TECHNICAL-PROOF-001/uliya-skill-kit/scripts/check-skill.mjs proofs/archiverescue/skill
+Exit code: 0
+STDOUT:
+{
+  "checkFormatVersion": "2.0.0",
+  "status": "static-pass",
+  "target": {
+    "skillName": "skill"
+  },
+  "catalog": {
+    "checkedVersion": "2.0.0"
+  },
+  "files": [
+    {
+      "path": "references/proof-cases.md",
+      "sha256": "615a24c2323012c5c2bc23128a8e45c0da62dc729a74d132cb5e5240acf5f5cd"
+    },
+    {
+      "path": "SKILL.md",
+      "sha256": "1e7a9a06b58b6c59a6807d450f1916e5f41c5d0c055abbab0b3a18ea9dad9464"
+    }
+  ],
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "info": 0
+  },
+  "diagnostics": []
+}
+
+STDERR:

@@ -1,9 +1,10 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-02 17:24 +0800
+Last Updated: 2026-11-03 16:45 +0800
 
 ## Current Phase
 
+ARCHIVERESCUE-DEVPOST-PROJECT-DETAILS-001: DEVPOST_PROJECT_DETAILS_READY (manual-entry content only).
 AUTO-007 = PAUSED_BY_USER. Autonomous execution remains disabled.
 Priority has changed to the UGREEN competition itself and conserving Codex quota.
 MARKET-SYNC-001: independent Market historical snapshot published and read back; bounded live capture attached.
@@ -21,11 +22,16 @@ Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
 ## Current Objective
 
-Publish upload-ready ArchiveRescue Round 1 materials and stop. Final Pre-test Skill,
-Proposal PDF/source, disclosures and checklist are ready at static scope. No NAS
-execution is claimed; Devpost submission remains the owner's manual action.
+Prepare ArchiveRescue Devpost Project details for owner copy/paste and stop.
+Story, nine Built with tags and three image recommendations are ready; links/demo
+are recommended empty for Round 1. No NAS execution or Devpost mutation is claimed.
 
 ## Completed
+
+- ARCHIVERESCUE-DEVPOST-PROJECT-DETAILS-001: `submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS.md`
+  and `docs/ARCHIVERESCUE_DEVPOST_PROJECT_DETAILS_REVIEW_2026-11-03.md`;
+  eight-section story (803 words including headings), nine tags, three image plans;
+  reviewed against V3/Skill/proof/disclosures. Existing submission artifacts preserved.
 
 - Existing auto007-probe-1 VM/disk/config retained; Codex 0.166.0 and Claude Code 2.1.316 launch.
 - Runtime-local homes, absent inherited credential variables and workspace-only host mount verified.
@@ -110,7 +116,9 @@ execution is claimed; Devpost submission remains the owner's manual action.
 
 ## In Progress
 
-Owner's manual Round 1 project submission remains NOT SUBMITTED; no agent task continues.
+Owner reports an existing Devpost submission draft; final submission success has not
+been verified. Manual Project details entry, media review and final checks remain;
+no agent task continues and no automated Devpost operation is authorized here.
 Existing separate Market capture is outside this build's publication scope.
 AUTO-007 explicitly paused; no OAuth flow or model smoke started.
 
@@ -141,7 +149,8 @@ contact, demo, device testing or future implementation has been automatically ap
 
 ## Next Planned Step
 
-Stop after Round 1 package publication and pinned GitHub readback. Owner uses
+Stop after Project details publication and pinned GitHub readback. Owner uses
+`submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS.md` for manual entry and
 `submission/round1/archiverescue/ROUND1_SUBMISSION_CHECKLIST.md` for manual submission;
 then records actual success evidence and timestamp. No automatic Devpost operation,
 Claude Code, New Codex, Round 2/device test, ConditionReturn or AUTO-007.

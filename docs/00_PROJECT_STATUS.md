@@ -1,10 +1,10 @@
 # UGREEN Hackathon 2026 Project Status
 
-Last Updated: 2026-11-03 16:45 +0800
+Last Updated: 2026-11-03 17:20 +0800
 
 ## Current Phase
 
-ARCHIVERESCUE-DEVPOST-PROJECT-DETAILS-001: DEVPOST_PROJECT_DETAILS_READY (manual-entry content only).
+ARCHIVERESCUE-DEVPOST-EXACT-FORM-REWRITE-001: DEVPOST_EXACT_FORM_READY (copy + media plan only).
 AUTO-007 = PAUSED_BY_USER. Autonomous execution remains disabled.
 Priority has changed to the UGREEN competition itself and conserving Codex quota.
 MARKET-SYNC-001: independent Market historical snapshot published and read back; bounded live capture attached.
@@ -22,11 +22,16 @@ Backup only: ConditionReturn, 65/100. Third finalist: SampleTrail, 63/100.
 
 ## Current Objective
 
-Prepare ArchiveRescue Devpost Project details for owner copy/paste and stop.
-Story, nine Built with tags and three image recommendations are ready; links/demo
-are recommended empty for Round 1. No NAS execution or Devpost mutation is claimed.
+Prepare ArchiveRescue Project details matching the supplied seven Devpost headings exactly.
+Use DEVPOST_PROJECT_DETAILS_EXACT.md; prior custom-heading copy is not adopted.
+Media/POC plan is ready; no final images, NAS execution or Devpost mutation.
 
 ## Completed
+
+- ARCHIVERESCUE-DEVPOST-EXACT-FORM-REWRITE-001: exact answer and separate media/POC plan
+  in `submission/round1/archiverescue/`; review in `docs/ARCHIVERESCUE_DEVPOST_EXACT_FORM_REVIEW_2026-11-03.md`.
+  Seven headings verbatim; About 830 words including headings; nine tags; three planned
+  images including honestly labeled recorded static evidence. 52 targeted checks PASS.
 
 - ARCHIVERESCUE-IMAGE-STYLE-PILOT-001 (Claude Code): four 3:2 style pilots in
   `submission/round1/archiverescue/devpost-media/style-pilot/`; review
@@ -36,7 +41,8 @@ are recommended empty for Round 1. No NAS execution or Devpost mutation is claim
 - ARCHIVERESCUE-DEVPOST-PROJECT-DETAILS-001: `submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS.md`
   and `docs/ARCHIVERESCUE_DEVPOST_PROJECT_DETAILS_REVIEW_2026-11-03.md`;
   eight-section story (803 words including headings), nine tags, three image plans;
-  reviewed against V3/Skill/proof/disclosures. Existing submission artifacts preserved.
+  reviewed against V3/Skill/proof/disclosures. Historical only: User rejected its custom
+  heading structure; superseded by DEVPOST_PROJECT_DETAILS_EXACT.md. Artifacts preserved.
 
 - Existing auto007-probe-1 VM/disk/config retained; Codex 0.166.0 and Claude Code 2.1.316 launch.
 - Runtime-local homes, absent inherited credential variables and workspace-only host mount verified.
@@ -155,7 +161,9 @@ contact, demo, device testing or future implementation has been automatically ap
 ## Next Planned Step
 
 Stop after Project details publication and pinned GitHub readback. Owner uses
-`submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS.md` for manual entry and
+`submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS_EXACT.md` for manual entry,
+reviews `submission/round1/archiverescue/DEVPOST_PROJECT_MEDIA_POC_PLAN.md` before any
+separately authorized media production, and uses
 `submission/round1/archiverescue/ROUND1_SUBMISSION_CHECKLIST.md` for manual submission;
 then records actual success evidence and timestamp. No automatic Devpost operation,
 Claude Code, New Codex, Round 2/device test, ConditionReturn or AUTO-007.

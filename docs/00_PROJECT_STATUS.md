@@ -28,6 +28,11 @@ are recommended empty for Round 1. No NAS execution or Devpost mutation is claim
 
 ## Completed
 
+- ARCHIVERESCUE-IMAGE-STYLE-PILOT-001 (Claude Code): four 3:2 style pilots in
+  `submission/round1/archiverescue/devpost-media/style-pilot/`; review
+  `docs/ARCHIVERESCUE_IMAGE_STYLE_PILOT_REVIEW_2026-11-03.md`. Recommend workflow B / concept A;
+  User picks. Not final media; no Devpost upload; Proposal/Skill/scope unchanged.
+
 - ARCHIVERESCUE-DEVPOST-PROJECT-DETAILS-001: `submission/round1/archiverescue/DEVPOST_PROJECT_DETAILS.md`
   and `docs/ARCHIVERESCUE_DEVPOST_PROJECT_DETAILS_REVIEW_2026-11-03.md`;
   eight-section story (803 words including headings), nine tags, three image plans;

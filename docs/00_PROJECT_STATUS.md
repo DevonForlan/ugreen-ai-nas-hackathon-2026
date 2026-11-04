@@ -28,6 +28,12 @@ Media/POC plan is ready; no final images, NAS execution or Devpost mutation.
 
 ## Completed
 
+- ARCHIVERESCUE-DEVPOST-MEDIA-PACKAGE-COMPLETE (Claude Code, 2026-11-04): 4-image gallery ready
+  for manual upload in `submission/round1/archiverescue/devpost-media/final/` (Hero, Concept,
+  Workflow, StaticProof; 1800×1200 PNG). Summary `docs/ARCHIVERESCUE_DEVPOST_MEDIA_PACKAGE_2026-11-04.md`;
+  EXACT §4 updated with order + captions. Not uploaded; none is a NAS runtime screenshot;
+  User confirms hero image rights. Proposal/Skill/scope unchanged.
+
 - ARCHIVERESCUE-DEVPOST-MEDIA-FINALIZATION (Claude Code): User selected workflow B + concept A;
   finals in `submission/round1/archiverescue/devpost-media/final/` (2 PNG, 1800×1200);
   record `docs/ARCHIVERESCUE_DEVPOST_MEDIA_FINALIZATION_2026-11-03.md`. Ready for manual upload;

@@ -66,11 +66,18 @@ If selected as a Finalist, the plan is to validate native hash attribution, copy
 No public hosted application, demo site, app-store listing or code link is available. Do not add a private repository URL or create a link merely to fill the field.
 
 ## 4. Project Media
-### PLANNING STATUS
+### UPLOAD THESE (FINAL — NOT YET UPLOADED)
 
-Planning only; no final images generated or uploaded. See:
+Four final images are in `submission/round1/archiverescue/devpost-media/final/`. All are 1800×1200 PNG (3:2) and each is under 5 MB. Upload them in this order, and paste the matching caption for each. The first image becomes the gallery lead.
 
-`submission/round1/archiverescue/DEVPOST_PROJECT_MEDIA_POC_PLAN.md`
+| # | File | Type | Caption |
+|---|---|---|---|
+| 1 | `ArchiveRescue_Hero_Final.png` | Concept illustration | ArchiveRescue — companion-aware intake for creative files already staged on NAS. Concept illustration; not a NAS runtime screenshot. |
+| 2 | `ArchiveRescue_Concept_Final.png` | Concept diagram | Same source bytes, different companion: a person may intentionally preserve the pair. Byte equality does not decide creative intent. Concept diagram, not runtime evidence. |
+| 3 | `ArchiveRescue_Workflow_Final.png` | Technical diagram, planned behavior | Planned flow: Select → Inspect → Compare → Review companion evidence → Human approval → Fresh non-overwrite copy → Verify hashes → Save/read back the intake record. NAS runtime validation remains pending. |
+| 4 | `ArchiveRescue_StaticProof_Final.png` | Static validation evidence | Recorded official static-check result for the extracted Round 1 Skill package: static-pass, 0 errors, 0 warnings. Source excerpt and validation data only; no NAS runtime POC or real-device copy/hash result is claimed. |
+
+None of the four is a NAS runtime screenshot. Each image carries its own status label as well as the caption. Package details are in `docs/ARCHIVERESCUE_DEVPOST_MEDIA_PACKAGE_2026-11-04.md`. The earlier plan is `submission/round1/archiverescue/DEVPOST_PROJECT_MEDIA_POC_PLAN.md`.
 
 ## 5. Demo video URL
 ### LEAVE EMPTY / PASTE THIS
